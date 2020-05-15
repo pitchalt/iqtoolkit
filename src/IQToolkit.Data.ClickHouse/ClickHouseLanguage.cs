@@ -19,17 +19,29 @@ namespace IQToolkit.Data.ClickHouse
 
         public override string Quote(string name)
         {
-            if (name.StartsWith("[") && name.EndsWith("]"))
+//            if (name.StartsWith("[") && name.EndsWith("]"))
+//            {
+//                return name;
+//            }
+//            else if (name.IndexOf('.') > 0)
+//            {
+//                return "[" + string.Join("].[", name.Split(splitChars, StringSplitOptions.RemoveEmptyEntries)) + "]";
+//            }
+//            else
+//            {
+//                return "[" + name + "]";
+//            }
+            if (name.StartsWith("\"") && name.EndsWith("\""))
             {
                 return name;
             }
             else if (name.IndexOf('.') > 0)
             {
-                return "[" + string.Join("].[", name.Split(splitChars, StringSplitOptions.RemoveEmptyEntries)) + "]";
+                return "\"" + string.Join("\".\"", name.Split(splitChars, StringSplitOptions.RemoveEmptyEntries)) + "\"";
             }
             else
             {
-                return "[" + name + "]";
+                return "\"" + name + "\"";
             }
         }
 

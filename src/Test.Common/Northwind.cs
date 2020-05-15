@@ -28,7 +28,7 @@ namespace Test
         public string CustomerID;
         public DateTime OrderDate;
         public Customer Customer;
-        public List<OrderDetail> Details;
+        public IList<OrderDetail> Details;
     }
 
     public class OrderDetail

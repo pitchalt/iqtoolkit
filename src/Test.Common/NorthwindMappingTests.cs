@@ -3,6 +3,8 @@
 
 using System.Linq;
 
+using Xunit;
+
 #pragma warning disable CS0649
 
 namespace Test
@@ -28,6 +30,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestBasicMapping_AttributesOnEntity()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -66,6 +69,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestBasicMapping_AttributesOnEntity_RuntimeType()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -99,6 +103,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestBasicMapping_AttributesOnContext()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Basic_AttributesOnContext.Context)));
@@ -133,6 +138,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestBasicMapping_AttributesOnContext_TableNameInferred()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Basic_AttributesOnContext_TableNameInferred.Context)));
@@ -174,6 +180,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestBasicMapping_AttributesOnContext_RuntimeType()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Basic_AttributesOnContext_RuntimeType.Context)));
@@ -209,6 +216,7 @@ namespace Test
 ";
         }
 
+        [Fact]
         public void TestBasicMapping_XmlMapped()
         {
             var provider = this.GetProvider().WithMapping(XmlMapping.FromXml(Basic_XmlMapped.Xml));
@@ -295,6 +303,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_AttributesOnEntity_Orders()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -313,7 +322,8 @@ namespace Test
                 Assert.Equal(0, item.Orders.Count); // not retrieved, no policy
             }
         }
-
+        
+        [Fact]
         public void TestAssociation_AttributesOnEntity_Customer()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -357,6 +367,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_AttributesOnEntity_DifferentKeys_Orders()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -376,6 +387,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_AttributesOnEntity_DifferenteKeys_Customer()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -425,6 +437,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_AttributesOnContext_Orders()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Association_AttributesOnContext.Context)));
@@ -444,6 +457,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_AttributesOnContext_Customer()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Association_AttributesOnContext.Context)));
@@ -494,6 +508,7 @@ namespace Test
 ";
         }
 
+        [Fact]
         public void TestAssociation_XmlMapping_Orders()
         {
             var provider = this.GetProvider().WithMapping(
@@ -515,6 +530,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_XmlMapping_Customer()
         {
             var provider = this.GetProvider().WithMapping(
@@ -567,6 +583,7 @@ namespace Test
 ";
         }
 
+        [Fact]
         public void TestAssociation_XmlMapping_DifferentKeys_Orders()
         {
             var provider = this.GetProvider().WithMapping(
@@ -588,6 +605,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestAssociation_XmlMapping_DifferenteKeys_Customer()
         {
             var provider = this.GetProvider().WithMapping(
@@ -636,6 +654,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesDistributed()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -672,6 +691,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesDistributed_NoNestedEntity()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -721,6 +741,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesDistributed_MultipleNestedEntities()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -777,6 +798,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesDistributed_DeeplyNested()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -819,6 +841,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesAtRoot()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -856,7 +879,8 @@ namespace Test
                 public string PostalCode;
             }
         }
-
+        
+        [Fact]
         public void TestNestedEntity_AttributesAtRoot_PartialPath()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -904,6 +928,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesAtRoot_MultipleNestedEntities()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -959,6 +984,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesAtRoot_DeeplyNested()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -1006,6 +1032,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesOnContext()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Nested_AttributesOnContext.Context)));
@@ -1059,6 +1086,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestNestedEntity_AttributesOnContext_DeeplyNested()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(Nested_AttributesOnContext_DeeplyNested.Context)));
@@ -1108,6 +1136,7 @@ namespace Test
 ";
         }
 
+        [Fact]
         public void TestNestedEntity_XmlMapped()
         {
             var provider = this.GetProvider().WithMapping(XmlMapping.FromXml(Nested_XmlMapped.Xml));
@@ -1169,6 +1198,7 @@ namespace Test
 ";
         }
 
+        [Fact]
         public void TestNestedEntity_XmlMapped_DeeplyNested()
         {
             var provider = this.GetProvider().WithMapping(XmlMapping.FromXml(Nested_XmlMapped_DeeplyNested.Xml));
@@ -1209,6 +1239,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestMultiTable_AttributesOnEntity()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping());
@@ -1246,6 +1277,7 @@ namespace Test
             }
         }
 
+        [Fact]
         public void TestMultiTable_AttributesOnContext()
         {
             var provider = this.GetProvider().WithMapping(new AttributeMapping(typeof(MultiTable_AttributesOnContext.Context)));
@@ -1285,6 +1317,7 @@ namespace Test
 ";
         }
 
+        [Fact]
         public void TestMultiTable_XmlMapped()
         {
             var provider = this.GetProvider().WithMapping(XmlMapping.FromXml(MultiTable_XmlMapped.Xml));

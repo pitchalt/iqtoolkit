@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Data;
 using IQToolkit;
+using Xunit;
 
 namespace Test
 {
