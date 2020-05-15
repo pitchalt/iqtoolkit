@@ -2,6 +2,7 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 
 using System;
+using System.Data;
 using System.Data.Common;
 
 namespace IQToolkit.Data
@@ -14,9 +15,9 @@ namespace IQToolkit.Data
     public class DbFieldReader : FieldReader
     {
         private readonly QueryExecutor executor;
-        private readonly DbDataReader reader;
+        private readonly IDataReader reader;
 
-        public DbFieldReader(QueryExecutor executor, DbDataReader reader)
+        public DbFieldReader(QueryExecutor executor, IDataReader reader)
         {
             this.executor = executor;
             this.reader = reader;

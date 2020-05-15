@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IQToolkit.Data.Ado\IQToolkit.Data.Ado.csproj" />
+      <ProjectReference Include="..\IQToolkit.Data\IQToolkit.Data.csproj" />
+      <ProjectReference Include="..\IQToolkit\IQToolkit.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ClickHouse.Ado" Version="1.2.1" />
+    </ItemGroup>
+
+</Project>

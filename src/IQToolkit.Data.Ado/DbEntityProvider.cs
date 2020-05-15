@@ -18,8 +18,8 @@ namespace IQToolkit.Data
     /// </summary>
     public abstract partial class DbEntityProvider : EntityProvider
     {
-        private readonly DbConnection connection;
-        private DbTransaction transaction;
+        private readonly IDbConnection connection;
+        private IDbTransaction transaction;
         private IsolationLevel isolation = IsolationLevel.ReadCommitted;
 
         private int nConnectedActions = 0;
@@ -28,7 +28,7 @@ namespace IQToolkit.Data
         /// <summary>
         /// Constructs a new <see cref="DbEntityProvider"/>
         /// </summary>
-        protected DbEntityProvider(DbConnection connection, QueryLanguage language, QueryMapping mapping, QueryPolicy policy)
+        protected DbEntityProvider(IDbConnection connection, QueryLanguage language, QueryMapping mapping, QueryPolicy policy)
             : base(language, mapping, policy)
         {
             if (connection == null)
@@ -39,7 +39,7 @@ namespace IQToolkit.Data
         /// <summary>
         /// The <see cref="DbConnection"/> used for executing queries.
         /// </summary>
-        public virtual DbConnection Connection
+        public virtual IDbConnection Connection
         {
             get { return this.connection; }
         }
@@ -47,7 +47,7 @@ namespace IQToolkit.Data
         /// <summary>
         /// The <see cref="DbTransaction"/> to use for updates.
         /// </summary>
-        public virtual DbTransaction Transaction
+        public virtual IDbTransaction Transaction
         {
             get
             {
@@ -71,7 +71,7 @@ namespace IQToolkit.Data
             set { this.isolation = value; }
         }
 
-        protected virtual DbEntityProvider New(DbConnection connection, QueryMapping mapping, QueryPolicy policy)
+        protected virtual DbEntityProvider New(IDbConnection connection, QueryMapping mapping, QueryPolicy policy)
         {
             return (DbEntityProvider)Activator.CreateInstance(this.GetType(), new object[] { connection, mapping, policy });
         }
@@ -200,7 +200,7 @@ namespace IQToolkit.Data
             this.StartUsingConnection();
             try
             {
-                DbCommand cmd = this.Connection.CreateCommand();
+                IDbCommand cmd = this.Connection.CreateCommand();
                 cmd.CommandText = commandText;
                 return cmd.ExecuteNonQuery();
             }
@@ -299,8 +299,8 @@ namespace IQToolkit.Data
 
                 try
                 {
-                    DbCommand cmd = this.GetCommand(command, paramValues);
-                    DbDataReader reader = this.ExecuteReader(cmd);
+                    IDbCommand cmd = this.GetCommand(command, paramValues);
+                    IDataReader reader = this.ExecuteReader(cmd);
                     var result = Project(reader, fnProjector, entity, true);
 
                     if (this.provider.ActionOpenedConnection)
@@ -320,7 +320,7 @@ namespace IQToolkit.Data
                 }
             }
 
-            protected virtual DbDataReader ExecuteReader(DbCommand command)
+            protected virtual IDataReader ExecuteReader(IDbCommand command)
             {
                 var reader = command.ExecuteReader();
 
@@ -341,7 +341,7 @@ namespace IQToolkit.Data
                 return reader;
             }
 
-            protected virtual IEnumerable<T> Project<T>(DbDataReader reader, Func<FieldReader, T> fnProjector, MappingEntity entity, bool closeReader)
+            protected virtual IEnumerable<T> Project<T>(IDataReader reader, Func<FieldReader, T> fnProjector, MappingEntity entity, bool closeReader)
             {
                 var freader = new DbFieldReader(this, reader);
                 try
@@ -366,7 +366,7 @@ namespace IQToolkit.Data
                 this.StartUsingConnection();
                 try
                 {
-                    DbCommand cmd = this.GetCommand(query, paramValues);
+                    IDbCommand cmd = this.GetCommand(query, paramValues);
                     this.rowsAffected = cmd.ExecuteNonQuery();
                     return this.rowsAffected;
                 }
@@ -400,7 +400,7 @@ namespace IQToolkit.Data
             private IEnumerable<int> ExecuteBatch(QueryCommand query, IEnumerable<object[]> paramSets)
             {
                 this.LogCommand(query, null);
-                DbCommand cmd = this.GetCommand(query, null);
+                IDbCommand cmd = this.GetCommand(query, null);
                 foreach (var paramValues in paramSets)
                 {
                     this.LogParameters(query, paramValues);
@@ -435,18 +435,19 @@ namespace IQToolkit.Data
             private IEnumerable<T> ExecuteBatch<T>(QueryCommand query, IEnumerable<object[]> paramSets, Func<FieldReader, T> fnProjector, MappingEntity entity)
             {
                 this.LogCommand(query, null);
-                DbCommand cmd = this.GetCommand(query, null);
+                IDbCommand cmd = this.GetCommand(query, null);
                 cmd.Prepare();
                 foreach (var paramValues in paramSets)
                 {
                     this.LogParameters(query, paramValues);
                     this.LogMessage("");
                     this.SetParameterValues(query, cmd, paramValues);
-                    var reader = this.ExecuteReader(cmd);
+                    IDataReader reader = this.ExecuteReader(cmd);
                     var freader = new DbFieldReader(this, reader);
                     try
                     {
-                        if (reader.HasRows)
+//                        if (reader.HasRows)
+                        if (HasRows(reader))
                         {
                             reader.Read();
                             yield return fnProjector(freader);
@@ -463,13 +464,18 @@ namespace IQToolkit.Data
                 }
             }
 
+            protected virtual Boolean HasRows(IDataReader reader) {
+                var common_reader = (DbDataReader) reader;
+                return common_reader != null && common_reader.HasRows;
+            }
+
             public override IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
             {
                 this.LogCommand(query, paramValues);
                 this.StartUsingConnection();
                 try
                 {
-                    DbCommand cmd = this.GetCommand(query, paramValues);
+                    IDbCommand cmd = this.GetCommand(query, paramValues);
                     var reader = this.ExecuteReader(cmd);
                     var freader = new DbFieldReader(this, reader);
                     try
@@ -493,10 +499,10 @@ namespace IQToolkit.Data
             /// <summary>
             /// Get an ADO command object initialized with the command-text and parameters
             /// </summary>
-            protected virtual DbCommand GetCommand(QueryCommand query, object[] paramValues)
+            protected virtual IDbCommand GetCommand(QueryCommand query, object[] paramValues)
             {
                 // create command object (and fill in parameters)
-                DbCommand cmd = this.provider.Connection.CreateCommand();
+                IDbCommand cmd = this.provider.Connection.CreateCommand();
                 cmd.CommandText = query.CommandText;
                 if (this.provider.Transaction != null)
                     cmd.Transaction = this.provider.Transaction;
@@ -504,7 +510,7 @@ namespace IQToolkit.Data
                 return cmd;
             }
 
-            protected virtual void SetParameterValues(QueryCommand query, DbCommand command, object[] paramValues)
+            protected virtual void SetParameterValues(QueryCommand query, IDbCommand command, object[] paramValues)
             {
                 if (query.Parameters.Count > 0 && command.Parameters.Count == 0)
                 {
@@ -517,7 +523,8 @@ namespace IQToolkit.Data
                 {
                     for (int i = 0, n = command.Parameters.Count; i < n; i++)
                     {
-                        DbParameter p = command.Parameters[i];
+//                        DbParameter p = command.Parameters[i];
+                        var p = (IDbDataParameter) command.Parameters[i];
                         if (p.Direction == System.Data.ParameterDirection.Input
                          || p.Direction == System.Data.ParameterDirection.InputOutput)
                         {
@@ -527,23 +534,24 @@ namespace IQToolkit.Data
                 }
             }
 
-            protected virtual void AddParameter(DbCommand command, QueryParameter parameter, object value)
+            protected virtual void AddParameter(IDbCommand command, QueryParameter parameter, object value)
             {
-                DbParameter p = command.CreateParameter();
+                IDbDataParameter p = command.CreateParameter();
                 p.ParameterName = parameter.Name;
                 p.Value = value ?? DBNull.Value;
                 command.Parameters.Add(p);
             }
 
-            protected virtual void GetParameterValues(DbCommand command, object[] paramValues)
+            protected virtual void GetParameterValues(IDbCommand command, object[] paramValues)
             {
                 if (paramValues != null)
                 {
-                    for (int i = 0, n = command.Parameters.Count; i < n; i++)
-                    {
-                        if (command.Parameters[i].Direction != System.Data.ParameterDirection.Input)
+                    for (int i = 0, n = command.Parameters.Count; i < n; i++) {
+                        var parameter = (IDbDataParameter) command.Parameters[i];
+                        //                        if (command.Parameters[i].Direction != System.Data.ParameterDirection.Input)
+                        if (parameter.Direction != System.Data.ParameterDirection.Input)
                         {
-                            object value = command.Parameters[i].Value;
+                            object value = parameter.Value;
                             if (value == DBNull.Value)
                                 value = null;
                             paramValues[i] = value;

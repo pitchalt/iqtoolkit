@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
@@ -79,7 +80,7 @@ namespace IQToolkit.Data.SQLite
             return string.Format("Data Source={0};Pooling=True;Password={1};FailIfMissing={2};", databaseFile, password, failIfMissing ? bool.TrueString : bool.FalseString);
         }
 
-        protected override DbEntityProvider New(DbConnection connection, QueryMapping mapping, QueryPolicy policy)
+        protected override DbEntityProvider New(IDbConnection connection, QueryMapping mapping, QueryPolicy policy)
         {
             return new SQLiteQueryProvider((SQLiteConnection)connection, mapping, policy);
         }
@@ -99,7 +100,7 @@ namespace IQToolkit.Data.SQLite
                 this.provider = provider;
             }
 
-            protected override DbCommand GetCommand(QueryCommand query, object[] paramValues)
+            protected override IDbCommand GetCommand(QueryCommand query, object[] paramValues)
             {
                 SQLiteCommand cmd;
 #if false
@@ -136,7 +137,7 @@ namespace IQToolkit.Data.SQLite
                 return cmd;
             }
 
-            protected override void AddParameter(DbCommand command, QueryParameter parameter, object value)
+            protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
             {
                 QueryType qt = parameter.QueryType;
 
