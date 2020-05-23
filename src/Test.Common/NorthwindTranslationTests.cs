@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 
+using Xunit;
+
 namespace Test
 {
     using IQToolkit.Data;
@@ -25,21 +27,25 @@ namespace Test
             return "NorthwindTranslation_" + this.GetProvider().GetType().Name;
         }
 
+        [Fact]
         public void TestWhere()
         {
             TestQuery(db.Customers.Where(c => c.City == "London"));
         }
 
+        [Fact]
         public void TestWhereTrue()
         {
             TestQuery(db.Customers.Where(c => true));
         }
 
+        [Fact]
         public void TestWhereFalse()
         {
             TestQuery(db.Customers.Where(c => false));
         }
 
+        [Fact]
         public void TestCompareEntityEqual()
         {
             Customer alfki = new Customer { CustomerID = "ALFKI" };
@@ -48,6 +54,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareEntityNotEqual()
         {
             Customer alfki = new Customer { CustomerID = "ALFKI" };
@@ -56,6 +63,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareConstructedEqual()
         {
             TestQuery(
@@ -63,6 +71,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareConstructedMultiValueEqual()
         {
             TestQuery(
@@ -70,6 +79,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareConstructedMultiValueNotEqual()
         {
             TestQuery(
@@ -77,6 +87,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareConstructed()
         {
             TestQuery(
@@ -84,6 +95,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareRelationshipEqualNull()
         {
             TestQuery(
@@ -91,6 +103,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareRelationshipEqualNullReversed()
         {
             TestQuery(
@@ -98,6 +111,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareRelationshipNotEqualNull()
         {
             TestQuery(
@@ -105,6 +119,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareRelationshipNotEqualNullReversed()
         {
             TestQuery(
@@ -112,72 +127,86 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectScalar()
         {
             TestQuery(db.Customers.Select(c => c.City));
         }
 
+        [Fact]
         public void TestSelectAnonymousOne()
         {
             TestQuery(db.Customers.Select(c => new { c.City }));
         }
 
+        [Fact] 
         public void TestSelectAnonymousTwo()
         {
             TestQuery(db.Customers.Select(c => new { c.City, c.Phone }));
         }
 
+        [Fact]
         public void TestSelectAnonymousThree()
         {
             TestQuery(db.Customers.Select(c => new { c.City, c.Phone, c.Country }));
         }
 
+        [Fact]
         public void TestSelectCustomerTable()
         {
             TestQuery(db.Customers);
         }
 
+        [Fact]
         public void TestSelectCustomerIdentity()
         {
             TestQuery(db.Customers.Select(c => c));
         }
 
+        [Fact]
         public void TestSelectAnonymousWithObject()
         {
             TestQuery(db.Customers.Select(c => new { c.City, c }));
         }
 
+        [Fact]
         public void TestSelectAnonymousNested()
         {
             TestQuery(db.Customers.Select(c => new { c.City, Country = new { c.Country } }));
         }
 
+        [Fact]
         public void TestSelectAnonymousEmpty()
         {
             TestQuery(db.Customers.Select(c => new { }));
         }
 
+        [Fact]
         public void TestSelectAnonymousLiteral()
         {
             TestQuery(db.Customers.Select(c => new { X = 10 }));
         }
 
+        [Fact]
         public void TestSelectConstantInt()
         {
             TestQuery(db.Customers.Select(c => 0));
         }
 
+        [Fact]
         public void TestSelectConstantNullString()
         {
             TestQuery(db.Customers.Select(c => (string)null));
         }
 
+        [Fact]
         public void TestSelectLocal()
         {
             int x = 10;
             TestQuery(db.Customers.Select(c => x));
         }
 
+        [Fact]
         public void TestSelectNestedCollection()
         {
             TestQuery(
@@ -187,6 +216,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectNestedCollectionInAnonymousType()
         {
             TestQuery(
@@ -196,6 +226,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestJoinCustomerOrders()
         {
             TestQuery(
@@ -205,6 +236,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestJoinMultiKey()
         {
             TestQuery(
@@ -214,6 +246,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestJoinIntoCustomersOrders()
         {
             TestQuery(
@@ -223,6 +256,7 @@ namespace Test
                 );
         }
 
+        [Fact] 
         public void TestJoinIntoCustomersOrdersCount()
         {
             TestQuery(
@@ -232,6 +266,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestJoinIntoDefaultIfEmpty()
         {
             TestQuery(
@@ -242,6 +277,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectManyCustomerOrders()
         {
             TestQuery(
@@ -252,6 +288,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestMultipleJoinsWithJoinConditionsInWhere()
         {
             // this should reduce to inner joins
@@ -265,6 +302,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestMultipleJoinsWithMissingJoinCondition()
         {
             // this should force a naked cross join
@@ -278,6 +316,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderBy()
         {
             TestQuery(
@@ -285,6 +324,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderBySelect()
         {
             TestQuery(
@@ -292,6 +332,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByOrderBy()
         {
             TestQuery(
@@ -299,6 +340,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByThenBy()
         {
             TestQuery(
@@ -306,6 +348,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByDescending()
         {
             TestQuery(
@@ -313,6 +356,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByDescendingThenBy()
         {
             TestQuery(
@@ -320,6 +364,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByDescendingThenByDescending()
         {
             TestQuery(
@@ -327,6 +372,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByJoin()
         {
             TestQuery(
@@ -336,6 +382,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderBySelectMany()
         {
             TestQuery(
@@ -346,6 +393,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupBy()
         {
             TestQuery(
@@ -353,6 +401,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupBySelectMany()
         {
             TestQuery(
@@ -360,6 +409,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupBySum()
         {
             TestQuery(
@@ -367,6 +417,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByCount()
         {
             TestQuery(
@@ -374,6 +425,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByLongCount()
         {
             TestQuery(
@@ -381,6 +433,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupBySumMinMaxAvg()
         {
             TestQuery(
@@ -395,6 +448,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByWithResultSelector()
         {
             TestQuery(
@@ -409,6 +463,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByWithElementSelectorSum()
         {
             TestQuery(
@@ -416,6 +471,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByWithElementSelector()
         {
             // note: groups are retrieved through a separately execute subquery per row
@@ -424,6 +480,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByWithElementSelectorSumMax()
         {
             TestQuery(
@@ -431,6 +488,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByWithAnonymousElement()
         {
             TestQuery(
@@ -438,6 +496,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByWithTwoPartKey()
         {
             TestQuery(
@@ -445,6 +504,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByGroupBy()
         {
             // note: order-by is lost when group-by is applied (the sequence of groups is not ordered)
@@ -453,6 +513,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByGroupBySelectMany()
         {
             // note: order-by is preserved within grouped sub-collections
@@ -461,6 +522,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSumWithNoArg()
         {
             TestQuery(
@@ -468,6 +530,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSumWithArg()
         {
             TestQuery(
@@ -475,6 +538,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCountWithNoPredicate()
         {
             TestQuery(
@@ -482,6 +546,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCountWithPredicate()
         {
             TestQuery(
@@ -489,6 +554,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinct()
         {
             TestQuery(
@@ -496,6 +562,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctScalar()
         {
             TestQuery(
@@ -503,6 +570,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestOrderByDistinct()
         {
             TestQuery(
@@ -510,6 +578,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctOrderBy()
         {
             TestQuery(
@@ -517,6 +586,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctGroupBy()
         {
             TestQuery(
@@ -524,6 +594,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestGroupByDistinct()
         {
             TestQuery(
@@ -532,6 +603,7 @@ namespace Test
 
         }
 
+        [Fact]
         public void TestDistinctCount()
         {
             TestQuery(
@@ -539,6 +611,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectDistinctCount()
         {
             // cannot do: SELECT COUNT(DISTINCT some-colum) FROM some-table
@@ -548,6 +621,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectSelectDistinctCount()
         {
             TestQuery(
@@ -555,6 +629,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctCountPredicate()
         {
             TestQuery(
@@ -562,6 +637,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctSumWithArg()
         {
             TestQuery(
@@ -569,6 +645,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectDistinctSum()
         {
             TestQuery(
@@ -576,6 +653,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestTake()
         {
             TestQuery(
@@ -583,6 +661,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestTakeDistinct()
         {
             // distinct must be forced to apply after top has been computed
@@ -591,6 +670,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctTake()
         {
             // top must be forced to apply after distinct has been computed
@@ -599,6 +679,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctTakeCount()
         {
             TestQuery(
@@ -606,6 +687,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestTakeDistinctCount()
         {
             TestQuery(
@@ -615,6 +697,7 @@ namespace Test
 
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
+        [Fact]
         public void TestSkip()
         {
             TestQuery(
@@ -624,6 +707,7 @@ namespace Test
 
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
+        [Fact]
         public void TestTakeSkip()
         {
             TestQuery(
@@ -633,6 +717,7 @@ namespace Test
 
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
+        [Fact]
         public void TestDistinctSkip()
         {
             TestQuery(
@@ -640,6 +725,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSkipTake()
         {
             TestQuery(
@@ -647,6 +733,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestDistinctSkipTake()
         {
             TestQuery(
@@ -656,6 +743,7 @@ namespace Test
 
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
+        [Fact]
         public void TestSkipDistinct()
         {
             TestQuery(
@@ -664,6 +752,7 @@ namespace Test
         }
 
         //[ExcludeProvider("Access")]
+        [Fact]
         public void TestSkipTakeDistinct()
         {
             TestQuery(
@@ -673,6 +762,7 @@ namespace Test
 
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
+        [Fact]
         public void TestTakeSkipDistinct()
         {
             TestQuery(
@@ -680,6 +770,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestFirst()
         {
             TestQuery(
@@ -687,6 +778,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestFirstPredicate()
         {
             TestQuery(
@@ -694,6 +786,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestWhereFirst()
         {
             TestQuery(
@@ -701,6 +794,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestFirstOrDefault()
         {
             TestQuery(
@@ -708,6 +802,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestFirstOrDefaultPredicate()
         {
             TestQuery(
@@ -715,6 +810,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestWhereFirstOrDefault()
         {
             TestQuery(
@@ -722,6 +818,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestReverse()
         {
             TestQuery(
@@ -729,6 +826,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestReverseReverse()
         {
             TestQuery(
@@ -736,6 +834,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestReverseWhereReverse()
         {
             TestQuery(
@@ -743,6 +842,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestReverseTakeReverse()
         {
             TestQuery(
@@ -750,6 +850,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestReverseWhereTakeReverse()
         {
             TestQuery(
@@ -757,6 +858,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestLast()
         {
             TestQuery(
@@ -764,6 +866,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestLastPredicate()
         {
             TestQuery(
@@ -771,6 +874,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestWhereLast()
         {
             TestQuery(
@@ -778,6 +882,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestLastOrDefault()
         {
             TestQuery(
@@ -785,6 +890,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestLastOrDefaultPredicate()
         {
             TestQuery(
@@ -792,6 +898,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestWhereLastOrDefault()
         {
             TestQuery(
@@ -799,6 +906,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSingle()
         {
             TestQueryFails(
@@ -806,6 +914,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSinglePredicate()
         {
             TestQuery(
@@ -813,6 +922,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestWhereSingle()
         {
             TestQuery(
@@ -820,6 +930,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSingleOrDefault()
         {
             TestQueryFails(
@@ -827,6 +938,7 @@ namespace Test
                 );
         }
 
+        [Fact] 
         public void TestSingleOrDefaultPredicate()
         {
             TestQuery(
@@ -834,6 +946,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestWhereSingleOrDefault()
         {
             TestQuery(
@@ -841,6 +954,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAnyWithSubquery()
         {
             TestQuery(
@@ -848,6 +962,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAnyWithSubqueryNoPredicate()
         {
             TestQuery(
@@ -855,6 +970,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAnyWithLocalCollection()
         {
             string[] ids = new[] { "ABCDE", "ALFKI" };
@@ -863,6 +979,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAnyTopLevel()
         {
             TestQuery(
@@ -870,6 +987,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAllWithSubquery()
         {
             TestQuery(
@@ -877,6 +995,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAllWithLocalCollection()
         {
             string[] patterns = new[] { "a", "e" };
@@ -886,6 +1005,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestAllTopLevel()
         {
             TestQuery(
@@ -893,6 +1013,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestContainsWithSubquery()
         {
             TestQuery(
@@ -900,6 +1021,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestContainsWithLocalCollection()
         {
             string[] ids = new[] { "ABCDE", "ALFKI" };
@@ -908,6 +1030,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestContainsTopLevel()
         {
             TestQuery(
@@ -917,11 +1040,13 @@ namespace Test
 
 
 
+        [Fact]
         public void TestCoalesce()
         {
             TestQuery(db.Customers.Where(c => (c.City ?? "Seattle") == "Seattle"));
         }
 
+        [Fact]
         public void TestCoalesce2()
         {
             TestQuery(db.Customers.Where(c => (c.City ?? c.Country ?? "Seattle") == "Seattle"));
@@ -930,121 +1055,144 @@ namespace Test
 
         // framework function tests
 
+        [Fact]
         public void TestStringLength()
         {
             TestQuery(db.Customers.Where(c => c.City.Length == 7));
         }
 
+        [Fact]
         public void TestStringStartsWithLiteral()
         {
             TestQuery(db.Customers.Where(c => c.ContactName.StartsWith("M")));
         }
 
+        [Fact]
         public void TestStringStartsWithColumn()
         {
             TestQuery(db.Customers.Where(c => c.ContactName.StartsWith(c.ContactName)));
         }
 
+        [Fact]
         public void TestStringEndsWithLiteral()
         {
             TestQuery(db.Customers.Where(c => c.ContactName.EndsWith("s")));
         }
 
+        [Fact]
         public void TestStringEndsWithColumn()
         {
             TestQuery(db.Customers.Where(c => c.ContactName.EndsWith(c.ContactName)));
         }
 
+        [Fact]
         public void TestStringContainsLiteral()
         {
             TestQuery(db.Customers.Where(c => c.ContactName.Contains("and")));
         }
 
+        [Fact]
         public void TestStringContainsColumn()
         {
             TestQuery(db.Customers.Where(c => c.ContactName.Contains(c.ContactName)));
         }
 
+        [Fact]
         public void TestStringConcatImplicit2Args()
         {
             TestQuery(db.Customers.Where(c => c.ContactName + "X" == "X"));
         }
 
+        [Fact]
         public void TestStringConcatExplicit2Args()
         {
             TestQuery(db.Customers.Where(c => string.Concat(c.ContactName, "X") == "X"));
         }
 
+        [Fact]
         public void TestStringConcatExplicit3Args()
         {
             TestQuery(db.Customers.Where(c => string.Concat(c.ContactName, "X", c.Country) == "X"));
         }
 
+        [Fact]
         public void TestStringConcatExplicitNArgs()
         {
             TestQuery(db.Customers.Where(c => string.Concat(new string[] { c.ContactName, "X", c.Country }) == "X"));
         }
 
+        [Fact]
         public void TestStringIsNullOrEmpty()
         {
             TestQuery(db.Customers.Where(c => string.IsNullOrEmpty(c.City)));
         }
 
+        [Fact]
         public void TestStringToUpper()
         {
             TestQuery(db.Customers.Where(c => c.City.ToUpper() == "SEATTLE"));
         }
 
+        [Fact]
         public void TestStringToLower()
         {
             TestQuery(db.Customers.Where(c => c.City.ToLower() == "seattle"));
         }
 
+        [Fact]
         public void TestStringSubstring()
         {
             TestQuery(db.Customers.Where(c => c.City.Substring(0, 4) == "Seat"));
         }
 
+        [Fact]
         public void TestStringSubstringNoLength()
         {
             TestQuery(db.Customers.Where(c => c.City.Substring(4) == "tle"));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         public void TestStringIndexOf()
         {
             TestQuery(db.Customers.Where(c => c.City.IndexOf("tt") == 4));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         public void TestStringIndexOfChar()
         {
             TestQuery(db.Customers.Where(c => c.City.IndexOf('t') == 4));
         }
 
+        [Fact]
         public void TestStringTrim()
         {
             TestQuery(db.Customers.Where(c => c.City.Trim() == "Seattle"));
         }
 
+        [Fact]
         public void TestStringToString()
         {
             // just to prove this is a no op
             TestQuery(db.Customers.Where(c => c.City.ToString() == "Seattle"));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestStringReplace()
         {
             TestQuery(db.Customers.Where(c => c.City.Replace("ea", "ae") == "Saettle"));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestStringReplaceChars()
         {
             TestQuery(db.Customers.Where(c => c.City.Replace("e", "y") == "Syattly"));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestStringRemove()
         {
@@ -1052,118 +1200,141 @@ namespace Test
         }
 
         [ExcludeProvider("Access")]
+        [Fact]
         public void TestStringRemoveNoCount()
         {
             TestQuery(db.Customers.Where(c => c.City.Remove(4) == "Seat"));
         }
 
+        [Fact]
         public void TestDateTimeConstructYMD()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate == new DateTime(o.OrderDate.Year, 1, 1)));
         }
 
+        [Fact]
         public void TestDateTimeConstructYMDHMS()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate == new DateTime(o.OrderDate.Year, 1, 1, 10, 25, 55)));
         }
 
+        [Fact]
         public void TestDateTimeDay()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Day == 5));
         }
 
+        [Fact]
         public void TestDateTimeMonth()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Month == 12));
         }
 
+        [Fact]
         public void TestDateTimeYear()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Year == 1997));
         }
 
+        [Fact]
         public void TestDateTimeHour()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Hour == 6));
         }
 
+        [Fact]
         public void TestDateTimeMinute()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Minute == 32));
         }
 
+        [Fact]
         public void TestDateTimeSecond()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Second == 47));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestDateTimeMillisecond()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.Millisecond == 200));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestDateTimeDayOfYear()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.DayOfYear == 360));
         }
 
+        [Fact]
         public void TestDateTimeDayOfWeek()
         {
             TestQuery(db.Orders.Where(o => o.OrderDate.DayOfWeek == DayOfWeek.Friday));
         }
 
+        [Fact]
         public void TestMathAbs()
         {
             TestQuery(db.Orders.Where(o => Math.Abs(o.OrderID) == 10));
         }
 
+        [Fact]
         public void TestMathAtan()
         {
             TestQuery(db.Orders.Where(o => Math.Atan(o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestMathCos()
         {
             TestQuery(db.Orders.Where(o => Math.Cos(o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestMathSin()
         {
             TestQuery(db.Orders.Where(o => Math.Sin(o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestMathTan()
         {
             TestQuery(db.Orders.Where(o => Math.Tan(o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestMathExp()
         {
             TestQuery(db.Orders.Where(o => Math.Exp(o.OrderID < 1000 ? 1 : 2) == 0));
         }
 
+        [Fact]
         public void TestMathLog()
         {
             TestQuery(db.Orders.Where(o => Math.Log(o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestMathSqrt()
         {
             TestQuery(db.Orders.Where(o => Math.Sqrt(o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestMathPow()
         {
             TestQuery(db.Orders.Where(o => Math.Pow(o.OrderID < 1000 ? 1 : 2, 3) == 0));
         }
 
+        [Fact]
         public void TestMathRoundDefault()
         {
             TestQuery(db.Orders.Where(o => Math.Round((decimal)o.OrderID) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
         public void TestMathAcos()
@@ -1171,6 +1342,7 @@ namespace Test
             TestQuery(db.Orders.Where(o => Math.Acos(1.0/o.OrderID) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         [ExcludeProvider("SqlCe")]
         public void TestMathAsin()
@@ -1178,12 +1350,14 @@ namespace Test
             TestQuery(db.Orders.Where(o => Math.Asin(1.0/o.OrderID) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestMathAtan2()
         {
             TestQuery(db.Orders.Where(o => Math.Atan2(1.0/o.OrderID, 3) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         [ExcludeProvider("Access")]
         public void TestMathLog10()
@@ -1191,6 +1365,7 @@ namespace Test
             TestQuery(db.Orders.Where(o => Math.Log10(o.OrderID) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         [ExcludeProvider("Access")]
         public void TestMathCeiling()
@@ -1198,12 +1373,14 @@ namespace Test
             TestQuery(db.Orders.Where(o => Math.Ceiling((double)o.OrderID) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestMathRoundToPlace()
         {
             TestQuery(db.Orders.Where(o => Math.Round((decimal)o.OrderID, 2) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         [ExcludeProvider("Access")]
         public void TestMathFloor()
@@ -1211,132 +1388,157 @@ namespace Test
             TestQuery(db.Orders.Where(o => Math.Floor((double)o.OrderID) == 0));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         public void TestMathTruncate()
         {
             TestQuery(db.Orders.Where(o => Math.Truncate((double)o.OrderID) == 0));
         }
 
+        [Fact]
         public void TestStringCompareToLT()
         {
             TestQuery(db.Customers.Where(c => c.City.CompareTo("Seattle") < 0));
         }
 
+        [Fact]
         public void TestStringCompareToLE()
         {
             TestQuery(db.Customers.Where(c => c.City.CompareTo("Seattle") <= 0));
         }
 
+        [Fact]
         public void TestStringCompareToGT()
         {
             TestQuery(db.Customers.Where(c => c.City.CompareTo("Seattle") > 0));
         }
 
+        [Fact]
         public void TestStringCompareToGE()
         {
             TestQuery(db.Customers.Where(c => c.City.CompareTo("Seattle") >= 0));
         }
 
+        [Fact]
         public void TestStringCompareToEQ()
         {
             TestQuery(db.Customers.Where(c => c.City.CompareTo("Seattle") == 0));
         }
 
+        [Fact]
         public void TestStringCompareToNE()
         {
             TestQuery(db.Customers.Where(c => c.City.CompareTo("Seattle") != 0));
         }
 
+        [Fact]
         public void TestStringCompareLT()
         {
             TestQuery(db.Customers.Where(c => string.Compare(c.City, "Seattle") < 0));
         }
 
+        [Fact]
         public void TestStringCompareLE()
         {
             TestQuery(db.Customers.Where(c => string.Compare(c.City, "Seattle") <= 0));
         }
 
+        [Fact]
         public void TestStringCompareGT()
         {
             TestQuery(db.Customers.Where(c => string.Compare(c.City, "Seattle") > 0));
         }
 
+        [Fact]
         public void TestStringCompareGE()
         {
             TestQuery(db.Customers.Where(c => string.Compare(c.City, "Seattle") >= 0));
         }
 
+        [Fact]
         public void TestStringCompareEQ()
         {
             TestQuery(db.Customers.Where(c => string.Compare(c.City, "Seattle") == 0));
         }
 
+        [Fact]
         public void TestStringCompareNE()
         {
             TestQuery(db.Customers.Where(c => string.Compare(c.City, "Seattle") != 0));
         }
 
+        [Fact]
         public void TestIntCompareTo()
         {
             // prove that x.CompareTo(y) works for types other than string
             TestQuery(db.Orders.Where(o => o.OrderID.CompareTo(1000) == 0));
         }
 
+        [Fact]
         public void TestDecimalCompare()
         {
             // prove that type.Compare(x,y) works with decimal
             TestQuery(db.Orders.Where(o => decimal.Compare((decimal)o.OrderID, 0.0m) == 0));
         }
 
+        [Fact]
         public void TestDecimalAdd()
         {
             TestQuery(db.Orders.Where(o => decimal.Add(o.OrderID, 0.0m) == 0.0m));
         }
 
+        [Fact]
         public void TestDecimalSubtract()
         {
             TestQuery(db.Orders.Where(o => decimal.Subtract(o.OrderID, 0.0m) == 0.0m));
         }
 
+        [Fact]
         public void TestDecimalMultiply()
         {
             TestQuery(db.Orders.Where(o => decimal.Multiply(o.OrderID, 1.0m) == 1.0m));
         }
 
+        [Fact]
         public void TestDecimalDivide()
         {
             TestQuery(db.Orders.Where(o => decimal.Divide(o.OrderID, 1.0m) == 1.0m));
         }
 
+        [Fact]
         [ExcludeProvider("SqlCe")]
         public void TestDecimalRemainder()
         {
             TestQuery(db.Orders.Where(o => decimal.Remainder(o.OrderID, 1.0m) == 0.0m));
         }
 
+        [Fact]
         public void TestDecimalNegate()
         {
             TestQuery(db.Orders.Where(o => decimal.Negate(o.OrderID) == 1.0m));
         }
 
+        [Fact]
         public void TestDecimalRoundDefault()
         {
             TestQuery(db.Orders.Where(o => decimal.Round(o.OrderID) == 0m));
         }
 
+        [Fact]
         [ExcludeProvider("Access")]
         public void TestDecimalRoundPlaces()
         {
             TestQuery(db.Orders.Where(o => decimal.Round(o.OrderID, 2) == 0.00m));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         public void TestDecimalTruncate()
         {
             TestQuery(db.Orders.Where(o => decimal.Truncate(o.OrderID) == 0m));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         [ExcludeProvider("Access")]
         public void TestDecimalCeiling()
@@ -1344,6 +1546,7 @@ namespace Test
             TestQuery(db.Orders.Where(o => decimal.Ceiling(o.OrderID) == 0.0m));
         }
 
+        [Fact]
         [ExcludeProvider("SQLite")]
         [ExcludeProvider("Access")]
         public void TestDecimalFloor()
@@ -1351,147 +1554,176 @@ namespace Test
             TestQuery(db.Orders.Where(o => decimal.Floor(o.OrderID) == 0.0m));
         }
 
+        [Fact]
         public void TestDecimalLT()
         {
             // prove that decimals are treated normally with respect to normal comparison operators
             TestQuery(db.Orders.Where(o => ((decimal)o.OrderID) < 0.0m));
         }
 
+        [Fact]
         public void TestIntLessThan()
         {
             TestQuery(db.Orders.Where(o => o.OrderID < 0));
         }
 
+        [Fact]
         public void TestIntLessThanOrEqual()
         {
             TestQuery(db.Orders.Where(o => o.OrderID <= 0));
         }
 
+        [Fact]
         public void TestIntGreaterThan()
         {
             TestQuery(db.Orders.Where(o => o.OrderID > 0));
         }
 
+        [Fact]
         public void TestIntGreaterThanOrEqual()
         {
             TestQuery(db.Orders.Where(o => o.OrderID >= 0));
         }
 
+        [Fact]
         public void TestIntEqual()
         {
             TestQuery(db.Orders.Where(o => o.OrderID == 0));
         }
 
+        [Fact]
         public void TestIntNotEqual()
         {
             TestQuery(db.Orders.Where(o => o.OrderID != 0));
         }
 
+        [Fact]
         public void TestIntAdd()
         {
             TestQuery(db.Orders.Where(o => o.OrderID + 0 == 0));
         }
 
+        [Fact]
         public void TestIntSubtract()
         {
             TestQuery(db.Orders.Where(o => o.OrderID - 0 == 0));
         }
 
+        [Fact]
         public void TestIntMultiply()
         {
             TestQuery(db.Orders.Where(o => o.OrderID * 1 == 1));
         }
 
+        [Fact]
         public void TestIntDivide()
         {
             TestQuery(db.Orders.Where(o => o.OrderID / 1 == 1));
         }
 
+        [Fact]
         public void TestIntModulo()
         {
             TestQuery(db.Orders.Where(o => o.OrderID % 1 == 0));
         }
 
+        [Fact]
         public void TestIntLeftShift()
         {
             TestQuery(db.Orders.Where(o => o.OrderID << 1 == 0));
         }
 
+        [Fact]
         public void TestIntRightShift()
         {
             TestQuery(db.Orders.Where(o => o.OrderID >> 1 == 0));
         }
 
+        [Fact]
         public void TestIntBitwiseAnd()
         {
             TestQuery(db.Orders.Where(o => (o.OrderID & 1) == 0));
         }
 
+        [Fact]
         public void TestIntBitwiseOr()
         {
             TestQuery(db.Orders.Where(o => (o.OrderID | 1) == 1));
         }
 
+        [Fact]
         public void TestIntBitwiseExclusiveOr()
         {
             TestQuery(db.Orders.Where(o => (o.OrderID ^ 1) == 1));
         }
 
+        [Fact]
         public void TestIntBitwiseNot()
         {
             TestQuery(db.Orders.Where(o => ~o.OrderID == 0));
         }
 
+        [Fact]
         public void TestIntNegate()
         {
             TestQuery(db.Orders.Where(o => -o.OrderID == -1));
         }
 
+        [Fact]
         public void TestAnd()
         {
             TestQuery(db.Orders.Where(o => o.OrderID > 0 && o.OrderID < 2000));
         }
 
+        [Fact]
         public void TestOr()
         {
             TestQuery(db.Orders.Where(o => o.OrderID < 5 || o.OrderID > 10));
         }
 
+        [Fact]
         public void TestNot()
         {
             TestQuery(db.Orders.Where(o => !(o.OrderID == 0)));
         }
 
+        [Fact]
         public void TestEqualNull()
         {
             TestQuery(db.Customers.Where(c => c.City == null));
         }
 
+        [Fact]
         public void TestEqualNullReverse()
         {
             TestQuery(db.Customers.Where(c => null == c.City));
         }
 
+        [Fact]
         public void TestConditional()
         {
             TestQuery(db.Orders.Where(o => (o.CustomerID == "ALFKI" ? 1000 : 0) == 1000));
         }
 
+        [Fact]
         public void TestConditional2()
         {
             TestQuery(db.Orders.Where(o => (o.CustomerID == "ALFKI" ? 1000 : o.CustomerID == "ABCDE" ? 2000 : 0) == 1000));
         }
 
+        [Fact]
         public void TestConditionalTestIsValue()
         {
             TestQuery(db.Orders.Where(o => (((bool)(object)o.OrderID) ? 100 : 200) == 100));
         }
 
+        [Fact]
         public void TestConditionalResultsArePredicates()
         {
             TestQuery(db.Orders.Where(o => (o.CustomerID == "ALFKI" ? o.OrderID < 10 : o.OrderID > 10)));
         }
 
+        [Fact]
         public void TestSelectManyJoined()
         {
             TestQuery(
@@ -1501,6 +1733,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectManyJoinedDefaultIfEmpty()
         {
             TestQuery(
@@ -1510,6 +1743,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectWhereAssociation()
         {
             TestQuery(
@@ -1519,6 +1753,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectWhereAssociations()
         {
             TestQuery(
@@ -1528,6 +1763,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectWhereAssociationTwice()
         {
             TestQuery(
@@ -1537,6 +1773,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectAssociation()
         {
             TestQuery(
@@ -1545,6 +1782,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectAssociations()
         {
             TestQuery(
@@ -1553,6 +1791,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSelectAssociationsWhereAssociations()
         {
             TestQuery(
@@ -1563,6 +1802,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCustomersIncludeOrders()
         {
             var policy = new EntityPolicy();
@@ -1574,6 +1814,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCustomersIncludeOrdersDeferred()
         {
             var policy = new EntityPolicy();
@@ -1585,6 +1826,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCustomersIncludeOrdersViaConstructorOnly()
         {
             var mapping = new AttributeMapping(typeof(NorthwindX));
@@ -1597,6 +1839,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCustomersWhereIncludeOrders()
         {
             var policy = new EntityPolicy();
@@ -1610,6 +1853,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCustomersIncludeOrdersAndDetails()
         {
             var policy = new EntityPolicy();
@@ -1622,6 +1866,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCustomersWhereIncludeOrdersAndDetails()
         {
             var policy = new EntityPolicy();
@@ -1636,6 +1881,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestInterfaceElementTypeAsGenericConstraint()
         {
             TestQuery(
@@ -1648,6 +1894,7 @@ namespace Test
             return query.Where(x => x.ID == id);
         }
 
+        [Fact]
         public void TestXmlMappingSelectCustomers()
         {
             var nw = new Northwind(this.GetProvider().WithMapping(
@@ -1660,6 +1907,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestSingletonAssociationWithMemberAccess()
         {
             TestQuery(
@@ -1670,6 +1918,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCompareDateTimesWithDifferentNullability()
         {
             TestQuery(
@@ -1679,6 +1928,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestContainsWithEmptyLocalList()
         {
             var ids = new string[0];
@@ -1689,6 +1939,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestContainsWithSubQuery()
         {
             var custsInLondon = db.Customers.Where(c => c.City == "London").Select(c => c.CustomerID);
@@ -1700,6 +1951,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestCombineQueriesDeepNesting()
         {
             var custs = db.Customers.Where(c => c.ContactName.StartsWith("xxx"));
@@ -1709,6 +1961,7 @@ namespace Test
                 );
         }
 
+        [Fact]
         public void TestLetWithSubquery()
         {
             TestQuery(
