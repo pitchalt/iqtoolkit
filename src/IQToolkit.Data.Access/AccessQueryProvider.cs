@@ -2,6 +2,7 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 
 using System;
+using System.Data;
 using System.Data.Common;
 using System.Data.OleDb;
 using System.IO;
@@ -32,7 +33,7 @@ namespace IQToolkit.Data.Access
         {
         }
 
-        protected override DbEntityProvider New(DbConnection connection, QueryMapping mapping, QueryPolicy policy)
+        protected override DbEntityProvider New(IDbConnection connection, QueryMapping mapping, QueryPolicy policy)
         {
             return new AccessQueryProvider((OleDbConnection)connection, mapping, policy);
         }
@@ -94,7 +95,7 @@ namespace IQToolkit.Data.Access
                 this.provider = provider;
             }
 
-            protected override DbCommand GetCommand(QueryCommand query, object[] paramValues)
+            protected override IDbCommand GetCommand(QueryCommand query, object[] paramValues)
             {
                 var cmd = (OleDbCommand)this.provider.Connection.CreateCommand();
                 cmd.CommandText = query.CommandText;

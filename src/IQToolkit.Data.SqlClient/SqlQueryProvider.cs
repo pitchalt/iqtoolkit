@@ -36,7 +36,7 @@ namespace IQToolkit.Data.SqlClient
         {
         }
 
-        protected override DbEntityProvider New(DbConnection connection, QueryMapping mapping, QueryPolicy policy)
+        protected override DbEntityProvider New(IDbConnection connection, QueryMapping mapping, QueryPolicy policy)
         {
             return new SqlQueryProvider((SqlConnection)connection, mapping, policy);
         }
@@ -102,7 +102,7 @@ namespace IQToolkit.Data.SqlClient
                 get { return !this.provider.AllowsMultipleActiveResultSets; }
             }
 
-            protected override void AddParameter(DbCommand command, QueryParameter parameter, object value)
+            protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
             {
                 SqlQueryType sqlType = (SqlQueryType)parameter.QueryType;
 

@@ -32,7 +32,7 @@ namespace IQToolkit.Data.OleDb
                 this.provider = provider;
             }
 
-            protected override void AddParameter(DbCommand command, QueryParameter parameter, object value)
+            protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
             {
                 QueryType qt = parameter.QueryType;
                 if (qt == null)

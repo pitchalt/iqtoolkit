@@ -2,6 +2,7 @@
 // This source code is made available under the terms of the Microsoft Public License (MS-PL)
 
 using System;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlServerCe;
 using System.IO;
@@ -32,7 +33,7 @@ namespace IQToolkit.Data.SqlServerCe
         {
         }
 
-        protected override DbEntityProvider New(DbConnection connection, QueryMapping mapping, QueryPolicy policy)
+        protected override DbEntityProvider New(IDbConnection connection, QueryMapping mapping, QueryPolicy policy)
         {
             return new SqlCeQueryProvider((SqlCeConnection)connection, mapping, policy);
         }
@@ -71,7 +72,7 @@ namespace IQToolkit.Data.SqlServerCe
             {
             }
 
-            protected override void AddParameter(DbCommand command, QueryParameter parameter, object value)
+            protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
             {
                 SqlQueryType sqlType = (SqlQueryType)parameter.QueryType;
                 if (sqlType == null)
