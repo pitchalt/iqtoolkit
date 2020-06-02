@@ -188,26 +188,29 @@ namespace IQToolkit.Data.ClickHouse
             {
                 switch (m.Method.Name)
                 {
+                //+
                     case "StartsWith":
-                        this.Write("Like(");
-                        this.Visit(m.Arguments[0]);
-                        this.Write(" || '%', ");
+                        this.Write("like(");
                         this.Visit(m.Object);
-                        this.Write(")");
+                        this.Write(", " );
+                        this.Visit(m.Arguments[0]);
+                        this.Write(" || '%')");
                         return m;
+                //+
                     case "EndsWith":
-                        this.Write("Like('%' || ");
-                        this.Visit(m.Arguments[0]);
-                        this.Write(", ");
+                        this.Write("like(");
                         this.Visit(m.Object);
+                        this.Write(", '%' || ");
+                        this.Visit(m.Arguments[0]);
                         this.Write(")");
                         return m;
+                //+
                     case "Contains":
-                        this.Write("Like('%' || ");
-                        this.Visit(m.Arguments[0]);
-                        this.Write(" || '%', ");
+                        this.Write("position(");
                         this.Visit(m.Object);
-                        this.Write(")");
+                        this.Write(", ");
+                        this.Visit(m.Arguments[0]);
+                        this.Write(") <> 0");
                         return m;
                     case "Concat":
                         IList<Expression> args = m.Arguments;
