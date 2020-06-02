@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Data;
-using System.Data.SqlClient;
+//using System.Data.SqlClient;
 using System.Text;
 using IQToolkit;
 using IQToolkit.Data;
