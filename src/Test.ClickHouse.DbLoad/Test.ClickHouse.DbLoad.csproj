@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\Test.SQLite\Northwind.db3">
+        <Link>Northwind.db3</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ClickHouse.Ado" Version="1.2.1" />
+      <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
+    </ItemGroup>
+
+</Project>

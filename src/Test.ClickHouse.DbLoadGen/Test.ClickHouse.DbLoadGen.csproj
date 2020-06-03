@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\Test.SQLite\Northwind.db3">
+        <Link>Northwind.db3</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="TableAdapters.tt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="TableAdapters.cs" />
+    </ItemGroup>
+
+</Project>
