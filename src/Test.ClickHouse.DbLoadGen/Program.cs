@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
+
 namespace Test.ClickHouse.DbLoadGen {
 
     public class Property {
@@ -123,6 +124,21 @@ namespace Test.ClickHouse.DbLoadGen {
             return table;
         }
 
+   
+        static String GetInsertString(Table  table)
+        {
+            var str = "insert into " + table.CName + " (" + table.Properties.ElementAt(0).CName;
+
+            for (int i = 1; i < table.Properties.Count; i++)
+            {
+                str += ", " + table.Properties.ElementAt(i).CName;
+            }
+
+            str += ") values @bulk";
+
+            return str;
+        }
+
         static String GetCName(String dbname)
         {
             return dbname.Replace(" ", String.Empty).Replace("_", String.Empty);
@@ -143,6 +159,7 @@ namespace Test.ClickHouse.DbLoadGen {
                     return "DateTime";
 //                case "text":
                 case "nvarchar":
+               //     return
                 case "varchar":
                 case "char":
                     return "String";
@@ -168,6 +185,7 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine("using System.Collections;");            
             writer.WriteLine("using System.Collections.Generic;");            
             writer.WriteLine("using System.Data;");
+            writer.WriteLine("using ClickHouse.Ado;");
             writer.WriteLine();
             writer.WriteLine("namespace Test.ClickHouse.DbLoad {");
             writer.Indent++;
@@ -201,9 +219,12 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine();
             writer.WriteLine($"public IDbConnection Connection {{ get; protected set;}}");
             writer.WriteLine();
-            writer.WriteLine($"public Northwind(IDbConnection connection) {{");
+            writer.WriteLine($"public ClickHouseConnection ClickHouseConnection {{ get; protected set;}}");
+            writer.WriteLine();
+            writer.WriteLine($"public Northwind(IDbConnection connection, ClickHouseConnection clickHouseConnection) {{");
             writer.Indent++;
             writer.WriteLine("Connection = connection;");
+            writer.WriteLine("ClickHouseConnection = clickHouseConnection;");
             writer.Indent--;
             writer.WriteLine("}");
             writer.WriteLine();
@@ -212,7 +233,7 @@ namespace Test.ClickHouse.DbLoadGen {
             foreach (var table in tables)
             {
                 writer.Indent++;
-                writer.WriteLine($"{table.CName}List.Reload();");
+                writer.WriteLine($"{table.CName}List.Reload(ClickHouseConnection);");
                 writer.Indent--;
             }
             writer.WriteLine("}");
@@ -227,6 +248,16 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine($"public class {table.CName}List: List<{table.CName}> {{");
             writer.Indent++;
             writer.WriteLine();
+
+            List<String> stringLens = new List<string>();
+            foreach(var el in table.Properties)
+                if (el.CType == "String")
+                {
+                    String str = el.CName ;
+                    stringLens.Add(str);
+                    writer.WriteLine("int " + str + "Len;");
+                }
+
             writer.WriteLine($"public {table.CName}List() {{ }}");
             writer.WriteLine();
             writer.WriteLine($"public {table.CName}List(IDbConnection connection) {{");
@@ -238,18 +269,67 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine("var reader = cmd.ExecuteReader();");
             writer.WriteLine("while(reader.Read()) {");
             writer.Indent++;
-            writer.WriteLine($"Add(new {table.CName}(reader));");
+            writer.WriteLine($"var rec = new {table.CName}(reader);");
+            if (stringLens.Count != 0)
+            {
+                foreach (var el in stringLens)
+                {
+                    writer.WriteLine($"if ( {el}Len < (rec.{el} ?? String.Empty).Length)");
+                    writer.WriteLine($"{el}Len = rec.{el}.Length;");
+                }
+             }
+            writer.WriteLine();
+            writer.WriteLine("Add(rec);");
+
             writer.Indent--;
             writer.WriteLine("}");
             writer.Indent--;
             writer.WriteLine("}");            
             writer.WriteLine();
-            writer.WriteLine("public void Reload() {");
+            writer.WriteLine("public void Reload(ClickHouseConnection clickHouseConnection) {");
+            writer.Indent++;
+            writer.WriteLine("var command = clickHouseConnection.CreateCommand();");
+            writer.WriteLine("command.CommandText = " + '"' + GetInsertString(table) + '"' + ";");
+            writer.WriteLine("command.Parameters.Add(new ClickHouseParameter { ParameterName = " + '"' + "bulk" + '"' + ", Value = this });");
+            writer.WriteLine("command.ExecuteNonQuery();");
+            writer.Indent--;
+
             writer.WriteLine( "}");
+            writer.WriteLine();
+
+
+            writer.WriteLine("public void CreateTable(ClickHouseConnection clickHouseConnection) {");
+            writer.Indent++;
+
+            writer.WriteLine("var command = clickHouseConnection.CreateCommand();");
+            writer.WriteLine("command.CommandText =" + '"' + $"create table {table.DbName}" + '(' + '"');
+            writer.Indent++;
+
+            
+            for (int i = 0; i < table.Properties.Count; i++)
+            {
+                if(i != table.Properties.Count - 1)
+                     writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {table.Properties.ElementAt(i).DbType}," + '"');
+                else
+                    writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {table.Properties.ElementAt(i).DbType})" + '"');
+            }
+            writer.Indent--;
+            writer.WriteLine("+" + '"' + $" ENGINE = MergeTree" + '"');
+            writer.WriteLine("+" + '"' + $"Order by {table.Properties.ElementAt(0).DbName}" + '"' + ';');
+
+
+            writer.WriteLine("command.ExecuteNonQuery();");
+
+          
+            writer.Indent--;
+            writer.WriteLine("}");
+
 
             writer.WriteLine();
             writer.Indent--;
             writer.WriteLine("}");
+
+
         }
 
         static void GenTable(IndentedTextWriter writer, Table table)
@@ -314,6 +394,9 @@ namespace Test.ClickHouse.DbLoadGen {
             }
 
         }
+
+
+        
 
     }
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using ClickHouse.Ado;
 
 namespace Test.ClickHouse.DbLoad {
     
@@ -70,27 +71,30 @@ namespace Test.ClickHouse.DbLoad {
         
         public IDbConnection Connection { get; protected set;}
         
-        public Northwind(IDbConnection connection) {
+        public ClickHouseConnection ClickHouseConnection { get; protected set;}
+        
+        public Northwind(IDbConnection connection, ClickHouseConnection clickHouseConnection) {
             Connection = connection;
+            ClickHouseConnection = clickHouseConnection;
         }
         
         
         public void DoReload() {
-            CustomerDemographicsList.Reload();
-            RegionList.Reload();
-            TextEntryList.Reload();
-            EmployeesList.Reload();
-            CategoriesList.Reload();
-            CustomersList.Reload();
-            ShippersList.Reload();
-            SuppliersList.Reload();
-            EmployeeTerritoriesList.Reload();
-            OrderDetailsList.Reload();
-            ProductCategoryMapList.Reload();
-            CustomerCustomerDemoList.Reload();
-            TerritoriesList.Reload();
-            OrdersList.Reload();
-            ProductsList.Reload();
+            CustomerDemographicsList.Reload(ClickHouseConnection);
+            RegionList.Reload(ClickHouseConnection);
+            TextEntryList.Reload(ClickHouseConnection);
+            EmployeesList.Reload(ClickHouseConnection);
+            CategoriesList.Reload(ClickHouseConnection);
+            CustomersList.Reload(ClickHouseConnection);
+            ShippersList.Reload(ClickHouseConnection);
+            SuppliersList.Reload(ClickHouseConnection);
+            EmployeeTerritoriesList.Reload(ClickHouseConnection);
+            OrderDetailsList.Reload(ClickHouseConnection);
+            ProductCategoryMapList.Reload(ClickHouseConnection);
+            CustomerCustomerDemoList.Reload(ClickHouseConnection);
+            TerritoriesList.Reload(ClickHouseConnection);
+            OrdersList.Reload(ClickHouseConnection);
+            ProductsList.Reload(ClickHouseConnection);
         }
         
     }
@@ -114,6 +118,7 @@ namespace Test.ClickHouse.DbLoad {
     
     public class CustomerDemographicsList: List<CustomerDemographics> {
         
+        int CustomerTypeIDLen;
         public CustomerDemographicsList() { }
         
         public CustomerDemographicsList(IDbConnection connection) {
@@ -121,11 +126,27 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [CustomerTypeID] from [CustomerDemographics]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new CustomerDemographics(reader));
+                var rec = new CustomerDemographics(reader);
+                if ( CustomerTypeIDLen < (rec.CustomerTypeID ?? String.Empty).Length)
+                CustomerTypeIDLen = rec.CustomerTypeID.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into CustomerDemographics (CustomerTypeID) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table CustomerDemographics("
+                + "CustomerTypeID char)"
+            +" ENGINE = MergeTree"
+            +"Order by CustomerTypeID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -152,6 +173,7 @@ namespace Test.ClickHouse.DbLoad {
     
     public class RegionList: List<Region> {
         
+        int RegionDescriptionLen;
         public RegionList() { }
         
         public RegionList(IDbConnection connection) {
@@ -159,11 +181,28 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [RegionID],[RegionDescription] from [Region]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Region(reader));
+                var rec = new Region(reader);
+                if ( RegionDescriptionLen < (rec.RegionDescription ?? String.Empty).Length)
+                RegionDescriptionLen = rec.RegionDescription.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Region (RegionID, RegionDescription) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Region("
+                + "RegionID integer,"
+                + "RegionDescription char)"
+            +" ENGINE = MergeTree"
+            +"Order by RegionID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -232,6 +271,16 @@ namespace Test.ClickHouse.DbLoad {
     
     public class TextEntryList: List<TextEntry> {
         
+        int titleLen;
+        int contentNameLen;
+        int contentLen;
+        int iconPathLen;
+        int lastEditedByLen;
+        int externalLinkLen;
+        int statusLen;
+        int callOutLen;
+        int createdByLen;
+        int modifiedByLen;
         public TextEntryList() { }
         
         public TextEntryList(IDbConnection connection) {
@@ -239,11 +288,60 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [contentID],[contentGUID],[title],[contentName],[content],[iconPath],[dateExpires],[lastEditedBy],[externalLink],[status],[listOrder],[callOut],[createdOn],[createdBy],[modifiedOn],[modifiedBy] from [TextEntry]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new TextEntry(reader));
+                var rec = new TextEntry(reader);
+                if ( titleLen < (rec.title ?? String.Empty).Length)
+                titleLen = rec.title.Length;
+                if ( contentNameLen < (rec.contentName ?? String.Empty).Length)
+                contentNameLen = rec.contentName.Length;
+                if ( contentLen < (rec.content ?? String.Empty).Length)
+                contentLen = rec.content.Length;
+                if ( iconPathLen < (rec.iconPath ?? String.Empty).Length)
+                iconPathLen = rec.iconPath.Length;
+                if ( lastEditedByLen < (rec.lastEditedBy ?? String.Empty).Length)
+                lastEditedByLen = rec.lastEditedBy.Length;
+                if ( externalLinkLen < (rec.externalLink ?? String.Empty).Length)
+                externalLinkLen = rec.externalLink.Length;
+                if ( statusLen < (rec.status ?? String.Empty).Length)
+                statusLen = rec.status.Length;
+                if ( callOutLen < (rec.callOut ?? String.Empty).Length)
+                callOutLen = rec.callOut.Length;
+                if ( createdByLen < (rec.createdBy ?? String.Empty).Length)
+                createdByLen = rec.createdBy.Length;
+                if ( modifiedByLen < (rec.modifiedBy ?? String.Empty).Length)
+                modifiedByLen = rec.modifiedBy.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into TextEntry (contentID, contentGUID, title, contentName, content, iconPath, dateExpires, lastEditedBy, externalLink, status, listOrder, callOut, createdOn, createdBy, modifiedOn, modifiedBy) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table TextEntry("
+                + "contentID integer,"
+                + "contentGUID guid,"
+                + "title nvarchar,"
+                + "contentName nvarchar,"
+                + "content nvarchar,"
+                + "iconPath nvarchar,"
+                + "dateExpires datetime,"
+                + "lastEditedBy nvarchar,"
+                + "externalLink nvarchar,"
+                + "status nvarchar,"
+                + "listOrder int,"
+                + "callOut nvarchar,"
+                + "createdOn datetime,"
+                + "createdBy nvarchar,"
+                + "modifiedOn datetime,"
+                + "modifiedBy nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by contentID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -315,6 +413,18 @@ namespace Test.ClickHouse.DbLoad {
     
     public class EmployeesList: List<Employees> {
         
+        int LastNameLen;
+        int FirstNameLen;
+        int TitleLen;
+        int TitleOfCourtesyLen;
+        int AddressLen;
+        int CityLen;
+        int RegionLen;
+        int PostalCodeLen;
+        int CountryLen;
+        int HomePhoneLen;
+        int ExtensionLen;
+        int PhotoPathLen;
         public EmployeesList() { }
         
         public EmployeesList(IDbConnection connection) {
@@ -322,11 +432,65 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [EmployeeID],[LastName],[FirstName],[Title],[TitleOfCourtesy],[BirthDate],[HireDate],[Address],[City],[Region],[PostalCode],[Country],[HomePhone],[Extension],[ReportsTo],[PhotoPath],[Deleted] from [Employees]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Employees(reader));
+                var rec = new Employees(reader);
+                if ( LastNameLen < (rec.LastName ?? String.Empty).Length)
+                LastNameLen = rec.LastName.Length;
+                if ( FirstNameLen < (rec.FirstName ?? String.Empty).Length)
+                FirstNameLen = rec.FirstName.Length;
+                if ( TitleLen < (rec.Title ?? String.Empty).Length)
+                TitleLen = rec.Title.Length;
+                if ( TitleOfCourtesyLen < (rec.TitleOfCourtesy ?? String.Empty).Length)
+                TitleOfCourtesyLen = rec.TitleOfCourtesy.Length;
+                if ( AddressLen < (rec.Address ?? String.Empty).Length)
+                AddressLen = rec.Address.Length;
+                if ( CityLen < (rec.City ?? String.Empty).Length)
+                CityLen = rec.City.Length;
+                if ( RegionLen < (rec.Region ?? String.Empty).Length)
+                RegionLen = rec.Region.Length;
+                if ( PostalCodeLen < (rec.PostalCode ?? String.Empty).Length)
+                PostalCodeLen = rec.PostalCode.Length;
+                if ( CountryLen < (rec.Country ?? String.Empty).Length)
+                CountryLen = rec.Country.Length;
+                if ( HomePhoneLen < (rec.HomePhone ?? String.Empty).Length)
+                HomePhoneLen = rec.HomePhone.Length;
+                if ( ExtensionLen < (rec.Extension ?? String.Empty).Length)
+                ExtensionLen = rec.Extension.Length;
+                if ( PhotoPathLen < (rec.PhotoPath ?? String.Empty).Length)
+                PhotoPathLen = rec.PhotoPath.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Employees (EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, ReportsTo, PhotoPath, Deleted) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Employees("
+                + "EmployeeID integer,"
+                + "LastName nvarchar,"
+                + "FirstName nvarchar,"
+                + "Title nvarchar,"
+                + "TitleOfCourtesy nvarchar,"
+                + "BirthDate datetime,"
+                + "HireDate datetime,"
+                + "Address nvarchar,"
+                + "City nvarchar,"
+                + "Region nvarchar,"
+                + "PostalCode nvarchar,"
+                + "Country nvarchar,"
+                + "HomePhone nvarchar,"
+                + "Extension nvarchar,"
+                + "ReportsTo int,"
+                + "PhotoPath nvarchar,"
+                + "Deleted bit)"
+            +" ENGINE = MergeTree"
+            +"Order by EmployeeID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -353,6 +517,7 @@ namespace Test.ClickHouse.DbLoad {
     
     public class CategoriesList: List<Categories> {
         
+        int CategoryNameLen;
         public CategoriesList() { }
         
         public CategoriesList(IDbConnection connection) {
@@ -360,11 +525,28 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [CategoryID],[CategoryName] from [Categories]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Categories(reader));
+                var rec = new Categories(reader);
+                if ( CategoryNameLen < (rec.CategoryName ?? String.Empty).Length)
+                CategoryNameLen = rec.CategoryName.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Categories (CategoryID, CategoryName) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Categories("
+                + "CategoryID integer,"
+                + "CategoryName nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by CategoryID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -418,6 +600,17 @@ namespace Test.ClickHouse.DbLoad {
     
     public class CustomersList: List<Customers> {
         
+        int CustomerIDLen;
+        int CompanyNameLen;
+        int ContactNameLen;
+        int ContactTitleLen;
+        int AddressLen;
+        int CityLen;
+        int RegionLen;
+        int PostalCodeLen;
+        int CountryLen;
+        int PhoneLen;
+        int FaxLen;
         public CustomersList() { }
         
         public CustomersList(IDbConnection connection) {
@@ -425,11 +618,57 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [CustomerID],[CompanyName],[ContactName],[ContactTitle],[Address],[City],[Region],[PostalCode],[Country],[Phone],[Fax] from [Customers]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Customers(reader));
+                var rec = new Customers(reader);
+                if ( CustomerIDLen < (rec.CustomerID ?? String.Empty).Length)
+                CustomerIDLen = rec.CustomerID.Length;
+                if ( CompanyNameLen < (rec.CompanyName ?? String.Empty).Length)
+                CompanyNameLen = rec.CompanyName.Length;
+                if ( ContactNameLen < (rec.ContactName ?? String.Empty).Length)
+                ContactNameLen = rec.ContactName.Length;
+                if ( ContactTitleLen < (rec.ContactTitle ?? String.Empty).Length)
+                ContactTitleLen = rec.ContactTitle.Length;
+                if ( AddressLen < (rec.Address ?? String.Empty).Length)
+                AddressLen = rec.Address.Length;
+                if ( CityLen < (rec.City ?? String.Empty).Length)
+                CityLen = rec.City.Length;
+                if ( RegionLen < (rec.Region ?? String.Empty).Length)
+                RegionLen = rec.Region.Length;
+                if ( PostalCodeLen < (rec.PostalCode ?? String.Empty).Length)
+                PostalCodeLen = rec.PostalCode.Length;
+                if ( CountryLen < (rec.Country ?? String.Empty).Length)
+                CountryLen = rec.Country.Length;
+                if ( PhoneLen < (rec.Phone ?? String.Empty).Length)
+                PhoneLen = rec.Phone.Length;
+                if ( FaxLen < (rec.Fax ?? String.Empty).Length)
+                FaxLen = rec.Fax.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Customers (CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Customers("
+                + "CustomerID char,"
+                + "CompanyName nvarchar,"
+                + "ContactName nvarchar,"
+                + "ContactTitle nvarchar,"
+                + "Address nvarchar,"
+                + "City nvarchar,"
+                + "Region nvarchar,"
+                + "PostalCode nvarchar,"
+                + "Country nvarchar,"
+                + "Phone nvarchar,"
+                + "Fax nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by CustomerID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -459,6 +698,8 @@ namespace Test.ClickHouse.DbLoad {
     
     public class ShippersList: List<Shippers> {
         
+        int CompanyNameLen;
+        int PhoneLen;
         public ShippersList() { }
         
         public ShippersList(IDbConnection connection) {
@@ -466,11 +707,31 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [ShipperID],[CompanyName],[Phone] from [Shippers]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Shippers(reader));
+                var rec = new Shippers(reader);
+                if ( CompanyNameLen < (rec.CompanyName ?? String.Empty).Length)
+                CompanyNameLen = rec.CompanyName.Length;
+                if ( PhoneLen < (rec.Phone ?? String.Empty).Length)
+                PhoneLen = rec.Phone.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Shippers (ShipperID, CompanyName, Phone) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Shippers("
+                + "ShipperID integer,"
+                + "CompanyName nvarchar,"
+                + "Phone nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by ShipperID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -524,6 +785,16 @@ namespace Test.ClickHouse.DbLoad {
     
     public class SuppliersList: List<Suppliers> {
         
+        int CompanyNameLen;
+        int ContactNameLen;
+        int ContactTitleLen;
+        int AddressLen;
+        int CityLen;
+        int RegionLen;
+        int PostalCodeLen;
+        int CountryLen;
+        int PhoneLen;
+        int FaxLen;
         public SuppliersList() { }
         
         public SuppliersList(IDbConnection connection) {
@@ -531,11 +802,55 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [SupplierID],[CompanyName],[ContactName],[ContactTitle],[Address],[City],[Region],[PostalCode],[Country],[Phone],[Fax] from [Suppliers]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Suppliers(reader));
+                var rec = new Suppliers(reader);
+                if ( CompanyNameLen < (rec.CompanyName ?? String.Empty).Length)
+                CompanyNameLen = rec.CompanyName.Length;
+                if ( ContactNameLen < (rec.ContactName ?? String.Empty).Length)
+                ContactNameLen = rec.ContactName.Length;
+                if ( ContactTitleLen < (rec.ContactTitle ?? String.Empty).Length)
+                ContactTitleLen = rec.ContactTitle.Length;
+                if ( AddressLen < (rec.Address ?? String.Empty).Length)
+                AddressLen = rec.Address.Length;
+                if ( CityLen < (rec.City ?? String.Empty).Length)
+                CityLen = rec.City.Length;
+                if ( RegionLen < (rec.Region ?? String.Empty).Length)
+                RegionLen = rec.Region.Length;
+                if ( PostalCodeLen < (rec.PostalCode ?? String.Empty).Length)
+                PostalCodeLen = rec.PostalCode.Length;
+                if ( CountryLen < (rec.Country ?? String.Empty).Length)
+                CountryLen = rec.Country.Length;
+                if ( PhoneLen < (rec.Phone ?? String.Empty).Length)
+                PhoneLen = rec.Phone.Length;
+                if ( FaxLen < (rec.Fax ?? String.Empty).Length)
+                FaxLen = rec.Fax.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Suppliers (SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Suppliers("
+                + "SupplierID integer,"
+                + "CompanyName nvarchar,"
+                + "ContactName nvarchar,"
+                + "ContactTitle nvarchar,"
+                + "Address nvarchar,"
+                + "City nvarchar,"
+                + "Region nvarchar,"
+                + "PostalCode nvarchar,"
+                + "Country nvarchar,"
+                + "Phone nvarchar,"
+                + "Fax nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by SupplierID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -562,6 +877,7 @@ namespace Test.ClickHouse.DbLoad {
     
     public class EmployeeTerritoriesList: List<EmployeeTerritories> {
         
+        int TerritoryIDLen;
         public EmployeeTerritoriesList() { }
         
         public EmployeeTerritoriesList(IDbConnection connection) {
@@ -569,11 +885,28 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [EmployeeID],[TerritoryID] from [EmployeeTerritories]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new EmployeeTerritories(reader));
+                var rec = new EmployeeTerritories(reader);
+                if ( TerritoryIDLen < (rec.TerritoryID ?? String.Empty).Length)
+                TerritoryIDLen = rec.TerritoryID.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into EmployeeTerritories (EmployeeID, TerritoryID) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table EmployeeTerritories("
+                + "EmployeeID int,"
+                + "TerritoryID nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by EmployeeID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -616,11 +949,29 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [OrderID],[ProductID],[UnitPrice],[Quantity],[Discount] from [Order Details]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new OrderDetails(reader));
+                var rec = new OrderDetails(reader);
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into OrderDetails (OrderID, ProductID, UnitPrice, Quantity, Discount) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Order Details("
+                + "OrderID int,"
+                + "ProductID int,"
+                + "UnitPrice numeric,"
+                + "Quantity smallint,"
+                + "Discount real)"
+            +" ENGINE = MergeTree"
+            +"Order by OrderID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -654,11 +1005,26 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [CategoryID],[ProductID] from [Product_Category_Map]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new ProductCategoryMap(reader));
+                var rec = new ProductCategoryMap(reader);
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into ProductCategoryMap (CategoryID, ProductID) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Product_Category_Map("
+                + "CategoryID int,"
+                + "ProductID int)"
+            +" ENGINE = MergeTree"
+            +"Order by CategoryID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -685,6 +1051,8 @@ namespace Test.ClickHouse.DbLoad {
     
     public class CustomerCustomerDemoList: List<CustomerCustomerDemo> {
         
+        int CustomerIDLen;
+        int CustomerTypeIDLen;
         public CustomerCustomerDemoList() { }
         
         public CustomerCustomerDemoList(IDbConnection connection) {
@@ -692,11 +1060,30 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [CustomerID],[CustomerTypeID] from [CustomerCustomerDemo]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new CustomerCustomerDemo(reader));
+                var rec = new CustomerCustomerDemo(reader);
+                if ( CustomerIDLen < (rec.CustomerID ?? String.Empty).Length)
+                CustomerIDLen = rec.CustomerID.Length;
+                if ( CustomerTypeIDLen < (rec.CustomerTypeID ?? String.Empty).Length)
+                CustomerTypeIDLen = rec.CustomerTypeID.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into CustomerCustomerDemo (CustomerID, CustomerTypeID) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table CustomerCustomerDemo("
+                + "CustomerID char,"
+                + "CustomerTypeID char)"
+            +" ENGINE = MergeTree"
+            +"Order by CustomerID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -726,6 +1113,8 @@ namespace Test.ClickHouse.DbLoad {
     
     public class TerritoriesList: List<Territories> {
         
+        int TerritoryIDLen;
+        int TerritoryDescriptionLen;
         public TerritoriesList() { }
         
         public TerritoriesList(IDbConnection connection) {
@@ -733,11 +1122,31 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [TerritoryID],[TerritoryDescription],[RegionID] from [Territories]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Territories(reader));
+                var rec = new Territories(reader);
+                if ( TerritoryIDLen < (rec.TerritoryID ?? String.Empty).Length)
+                TerritoryIDLen = rec.TerritoryID.Length;
+                if ( TerritoryDescriptionLen < (rec.TerritoryDescription ?? String.Empty).Length)
+                TerritoryDescriptionLen = rec.TerritoryDescription.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Territories (TerritoryID, TerritoryDescription, RegionID) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Territories("
+                + "TerritoryID nvarchar,"
+                + "TerritoryDescription char,"
+                + "RegionID int)"
+            +" ENGINE = MergeTree"
+            +"Order by TerritoryID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -800,6 +1209,13 @@ namespace Test.ClickHouse.DbLoad {
     
     public class OrdersList: List<Orders> {
         
+        int CustomerIDLen;
+        int ShipNameLen;
+        int ShipAddressLen;
+        int ShipCityLen;
+        int ShipRegionLen;
+        int ShipPostalCodeLen;
+        int ShipCountryLen;
         public OrdersList() { }
         
         public OrdersList(IDbConnection connection) {
@@ -807,11 +1223,52 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [OrderID],[CustomerID],[EmployeeID],[OrderDate],[RequiredDate],[ShippedDate],[ShipVia],[Freight],[ShipName],[ShipAddress],[ShipCity],[ShipRegion],[ShipPostalCode],[ShipCountry] from [Orders]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Orders(reader));
+                var rec = new Orders(reader);
+                if ( CustomerIDLen < (rec.CustomerID ?? String.Empty).Length)
+                CustomerIDLen = rec.CustomerID.Length;
+                if ( ShipNameLen < (rec.ShipName ?? String.Empty).Length)
+                ShipNameLen = rec.ShipName.Length;
+                if ( ShipAddressLen < (rec.ShipAddress ?? String.Empty).Length)
+                ShipAddressLen = rec.ShipAddress.Length;
+                if ( ShipCityLen < (rec.ShipCity ?? String.Empty).Length)
+                ShipCityLen = rec.ShipCity.Length;
+                if ( ShipRegionLen < (rec.ShipRegion ?? String.Empty).Length)
+                ShipRegionLen = rec.ShipRegion.Length;
+                if ( ShipPostalCodeLen < (rec.ShipPostalCode ?? String.Empty).Length)
+                ShipPostalCodeLen = rec.ShipPostalCode.Length;
+                if ( ShipCountryLen < (rec.ShipCountry ?? String.Empty).Length)
+                ShipCountryLen = rec.ShipCountry.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Orders (OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Orders("
+                + "OrderID integer,"
+                + "CustomerID char,"
+                + "EmployeeID int,"
+                + "OrderDate datetime,"
+                + "RequiredDate datetime,"
+                + "ShippedDate datetime,"
+                + "ShipVia int,"
+                + "Freight numeric,"
+                + "ShipName nvarchar,"
+                + "ShipAddress nvarchar,"
+                + "ShipCity nvarchar,"
+                + "ShipRegion nvarchar,"
+                + "ShipPostalCode nvarchar,"
+                + "ShipCountry nvarchar)"
+            +" ENGINE = MergeTree"
+            +"Order by OrderID";
+            command.ExecuteNonQuery();
         }
         
     }
@@ -886,6 +1343,11 @@ namespace Test.ClickHouse.DbLoad {
     
     public class ProductsList: List<Products> {
         
+        int ProductNameLen;
+        int QuantityPerUnitLen;
+        int AttributeXMLLen;
+        int CreatedByLen;
+        int ModifiedByLen;
         public ProductsList() { }
         
         public ProductsList(IDbConnection connection) {
@@ -893,11 +1355,52 @@ namespace Test.ClickHouse.DbLoad {
             cmd.CommandText = "select [ProductID],[ProductName],[SupplierID],[CategoryID],[QuantityPerUnit],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued],[AttributeXML],[DateCreated],[ProductGUID],[CreatedOn],[CreatedBy],[ModifiedOn],[ModifiedBy],[Deleted] from [Products]";
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
-                Add(new Products(reader));
+                var rec = new Products(reader);
+                if ( ProductNameLen < (rec.ProductName ?? String.Empty).Length)
+                ProductNameLen = rec.ProductName.Length;
+                if ( QuantityPerUnitLen < (rec.QuantityPerUnit ?? String.Empty).Length)
+                QuantityPerUnitLen = rec.QuantityPerUnit.Length;
+                if ( AttributeXMLLen < (rec.AttributeXML ?? String.Empty).Length)
+                AttributeXMLLen = rec.AttributeXML.Length;
+                if ( CreatedByLen < (rec.CreatedBy ?? String.Empty).Length)
+                CreatedByLen = rec.CreatedBy.Length;
+                if ( ModifiedByLen < (rec.ModifiedBy ?? String.Empty).Length)
+                ModifiedByLen = rec.ModifiedBy.Length;
+                Add(rec);
             }
         }
         
-        public void Reload() {
+        public void Reload(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText = "insert into Products (ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, AttributeXML, DateCreated, ProductGUID, CreatedOn, CreatedBy, ModifiedOn, ModifiedBy, Deleted) values @bulk";
+            command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
+            command.ExecuteNonQuery();
+        }
+        
+        public void CreateTable(ClickHouseConnection clickHouseConnection) {
+            var command = clickHouseConnection.CreateCommand();
+            command.CommandText ="create table Products("
+                + "ProductID integer,"
+                + "ProductName nvarchar,"
+                + "SupplierID int,"
+                + "CategoryID int,"
+                + "QuantityPerUnit nvarchar,"
+                + "UnitPrice numeric,"
+                + "UnitsInStock smallint,"
+                + "UnitsOnOrder smallint,"
+                + "ReorderLevel smallint,"
+                + "Discontinued bit,"
+                + "AttributeXML varchar,"
+                + "DateCreated datetime,"
+                + "ProductGUID guid,"
+                + "CreatedOn datetime,"
+                + "CreatedBy nvarchar,"
+                + "ModifiedOn datetime,"
+                + "ModifiedBy nvarchar,"
+                + "Deleted bit)"
+            +" ENGINE = MergeTree"
+            +"Order by ProductID";
+            command.ExecuteNonQuery();
         }
         
     }
