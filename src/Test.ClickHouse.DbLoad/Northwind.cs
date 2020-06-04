@@ -6,7 +6,7 @@ using ClickHouse.Ado;
 
 namespace Test.ClickHouse.DbLoad {
     
-    public class Northwind {
+    public partial class Northwind {
         
         
         public CustomerDemographicsList CustomerDemographicsList {
@@ -71,30 +71,57 @@ namespace Test.ClickHouse.DbLoad {
         
         public IDbConnection Connection { get; protected set;}
         
-        public ClickHouseConnection ClickHouseConnection { get; protected set;}
-        
-        public Northwind(IDbConnection connection, ClickHouseConnection clickHouseConnection) {
+        public Northwind(IDbConnection connection) {
             Connection = connection;
-            ClickHouseConnection = clickHouseConnection;
         }
         
         
-        public void DoReload() {
-            CustomerDemographicsList.Reload(ClickHouseConnection);
-            RegionList.Reload(ClickHouseConnection);
-            TextEntryList.Reload(ClickHouseConnection);
-            EmployeesList.Reload(ClickHouseConnection);
-            CategoriesList.Reload(ClickHouseConnection);
-            CustomersList.Reload(ClickHouseConnection);
-            ShippersList.Reload(ClickHouseConnection);
-            SuppliersList.Reload(ClickHouseConnection);
-            EmployeeTerritoriesList.Reload(ClickHouseConnection);
-            OrderDetailsList.Reload(ClickHouseConnection);
-            ProductCategoryMapList.Reload(ClickHouseConnection);
-            CustomerCustomerDemoList.Reload(ClickHouseConnection);
-            TerritoriesList.Reload(ClickHouseConnection);
-            OrdersList.Reload(ClickHouseConnection);
-            ProductsList.Reload(ClickHouseConnection);
+        public void DoReload(ClickHouseConnection clickHouseConnection) {
+            var _CustomerDemographicsList = CustomerDemographicsList;
+            _CustomerDemographicsList.CreateTable(clickHouseConnection);
+            _CustomerDemographicsList.Reload(clickHouseConnection);
+            var _RegionList = RegionList;
+            _RegionList.CreateTable(clickHouseConnection);
+            _RegionList.Reload(clickHouseConnection);
+            var _TextEntryList = TextEntryList;
+            _TextEntryList.CreateTable(clickHouseConnection);
+            _TextEntryList.Reload(clickHouseConnection);
+            var _EmployeesList = EmployeesList;
+            _EmployeesList.CreateTable(clickHouseConnection);
+            _EmployeesList.Reload(clickHouseConnection);
+            var _CategoriesList = CategoriesList;
+            _CategoriesList.CreateTable(clickHouseConnection);
+            _CategoriesList.Reload(clickHouseConnection);
+            var _CustomersList = CustomersList;
+            _CustomersList.CreateTable(clickHouseConnection);
+            _CustomersList.Reload(clickHouseConnection);
+            var _ShippersList = ShippersList;
+            _ShippersList.CreateTable(clickHouseConnection);
+            _ShippersList.Reload(clickHouseConnection);
+            var _SuppliersList = SuppliersList;
+            _SuppliersList.CreateTable(clickHouseConnection);
+            _SuppliersList.Reload(clickHouseConnection);
+            var _EmployeeTerritoriesList = EmployeeTerritoriesList;
+            _EmployeeTerritoriesList.CreateTable(clickHouseConnection);
+            _EmployeeTerritoriesList.Reload(clickHouseConnection);
+            var _OrderDetailsList = OrderDetailsList;
+            _OrderDetailsList.CreateTable(clickHouseConnection);
+            _OrderDetailsList.Reload(clickHouseConnection);
+            var _ProductCategoryMapList = ProductCategoryMapList;
+            _ProductCategoryMapList.CreateTable(clickHouseConnection);
+            _ProductCategoryMapList.Reload(clickHouseConnection);
+            var _CustomerCustomerDemoList = CustomerCustomerDemoList;
+            _CustomerCustomerDemoList.CreateTable(clickHouseConnection);
+            _CustomerCustomerDemoList.Reload(clickHouseConnection);
+            var _TerritoriesList = TerritoriesList;
+            _TerritoriesList.CreateTable(clickHouseConnection);
+            _TerritoriesList.Reload(clickHouseConnection);
+            var _OrdersList = OrdersList;
+            _OrdersList.CreateTable(clickHouseConnection);
+            _OrdersList.Reload(clickHouseConnection);
+            var _ProductsList = ProductsList;
+            _ProductsList.CreateTable(clickHouseConnection);
+            _ProductsList.Reload(clickHouseConnection);
         }
         
     }
@@ -129,6 +156,7 @@ namespace Test.ClickHouse.DbLoad {
                 var rec = new CustomerDemographics(reader);
                 if ( CustomerTypeIDLen < (rec.CustomerTypeID ?? String.Empty).Length)
                 CustomerTypeIDLen = rec.CustomerTypeID.Length;
+                
                 Add(rec);
             }
         }
@@ -184,6 +212,7 @@ namespace Test.ClickHouse.DbLoad {
                 var rec = new Region(reader);
                 if ( RegionDescriptionLen < (rec.RegionDescription ?? String.Empty).Length)
                 RegionDescriptionLen = rec.RegionDescription.Length;
+                
                 Add(rec);
             }
         }
@@ -309,6 +338,7 @@ namespace Test.ClickHouse.DbLoad {
                 createdByLen = rec.createdBy.Length;
                 if ( modifiedByLen < (rec.modifiedBy ?? String.Empty).Length)
                 modifiedByLen = rec.modifiedBy.Length;
+                
                 Add(rec);
             }
         }
@@ -457,6 +487,7 @@ namespace Test.ClickHouse.DbLoad {
                 ExtensionLen = rec.Extension.Length;
                 if ( PhotoPathLen < (rec.PhotoPath ?? String.Empty).Length)
                 PhotoPathLen = rec.PhotoPath.Length;
+                
                 Add(rec);
             }
         }
@@ -528,6 +559,7 @@ namespace Test.ClickHouse.DbLoad {
                 var rec = new Categories(reader);
                 if ( CategoryNameLen < (rec.CategoryName ?? String.Empty).Length)
                 CategoryNameLen = rec.CategoryName.Length;
+                
                 Add(rec);
             }
         }
@@ -641,6 +673,7 @@ namespace Test.ClickHouse.DbLoad {
                 PhoneLen = rec.Phone.Length;
                 if ( FaxLen < (rec.Fax ?? String.Empty).Length)
                 FaxLen = rec.Fax.Length;
+                
                 Add(rec);
             }
         }
@@ -712,6 +745,7 @@ namespace Test.ClickHouse.DbLoad {
                 CompanyNameLen = rec.CompanyName.Length;
                 if ( PhoneLen < (rec.Phone ?? String.Empty).Length)
                 PhoneLen = rec.Phone.Length;
+                
                 Add(rec);
             }
         }
@@ -823,6 +857,7 @@ namespace Test.ClickHouse.DbLoad {
                 PhoneLen = rec.Phone.Length;
                 if ( FaxLen < (rec.Fax ?? String.Empty).Length)
                 FaxLen = rec.Fax.Length;
+                
                 Add(rec);
             }
         }
@@ -888,6 +923,7 @@ namespace Test.ClickHouse.DbLoad {
                 var rec = new EmployeeTerritories(reader);
                 if ( TerritoryIDLen < (rec.TerritoryID ?? String.Empty).Length)
                 TerritoryIDLen = rec.TerritoryID.Length;
+                
                 Add(rec);
             }
         }
@@ -950,6 +986,7 @@ namespace Test.ClickHouse.DbLoad {
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
                 var rec = new OrderDetails(reader);
+                
                 Add(rec);
             }
         }
@@ -1006,6 +1043,7 @@ namespace Test.ClickHouse.DbLoad {
             var reader = cmd.ExecuteReader();
             while(reader.Read()) {
                 var rec = new ProductCategoryMap(reader);
+                
                 Add(rec);
             }
         }
@@ -1065,6 +1103,7 @@ namespace Test.ClickHouse.DbLoad {
                 CustomerIDLen = rec.CustomerID.Length;
                 if ( CustomerTypeIDLen < (rec.CustomerTypeID ?? String.Empty).Length)
                 CustomerTypeIDLen = rec.CustomerTypeID.Length;
+                
                 Add(rec);
             }
         }
@@ -1127,6 +1166,7 @@ namespace Test.ClickHouse.DbLoad {
                 TerritoryIDLen = rec.TerritoryID.Length;
                 if ( TerritoryDescriptionLen < (rec.TerritoryDescription ?? String.Empty).Length)
                 TerritoryDescriptionLen = rec.TerritoryDescription.Length;
+                
                 Add(rec);
             }
         }
@@ -1238,6 +1278,7 @@ namespace Test.ClickHouse.DbLoad {
                 ShipPostalCodeLen = rec.ShipPostalCode.Length;
                 if ( ShipCountryLen < (rec.ShipCountry ?? String.Empty).Length)
                 ShipCountryLen = rec.ShipCountry.Length;
+                
                 Add(rec);
             }
         }
@@ -1366,6 +1407,7 @@ namespace Test.ClickHouse.DbLoad {
                 CreatedByLen = rec.CreatedBy.Length;
                 if ( ModifiedByLen < (rec.ModifiedBy ?? String.Empty).Length)
                 ModifiedByLen = rec.ModifiedBy.Length;
+                
                 Add(rec);
             }
         }

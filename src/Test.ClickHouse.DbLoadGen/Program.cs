@@ -219,21 +219,20 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine();
             writer.WriteLine($"public IDbConnection Connection {{ get; protected set;}}");
             writer.WriteLine();
-            writer.WriteLine($"public ClickHouseConnection ClickHouseConnection {{ get; protected set;}}");
-            writer.WriteLine();
-            writer.WriteLine($"public Northwind(IDbConnection connection, ClickHouseConnection clickHouseConnection) {{");
+            writer.WriteLine($"public Northwind(IDbConnection connection) {{");
             writer.Indent++;
             writer.WriteLine("Connection = connection;");
-            writer.WriteLine("ClickHouseConnection = clickHouseConnection;");
             writer.Indent--;
             writer.WriteLine("}");
             writer.WriteLine();
             writer.WriteLine();
-            writer.WriteLine($"public void DoReload() {{");
+            writer.WriteLine($"public void DoReload(ClickHouseConnection clickHouseConnection) {{");
             foreach (var table in tables)
             {
                 writer.Indent++;
-                writer.WriteLine($"{table.CName}List.Reload(ClickHouseConnection);");
+                writer.WriteLine($"var _{table.CName}List = {table.CName}List;");
+                writer.WriteLine($"_{table.CName}List.CreateTable(clickHouseConnection);");
+                writer.WriteLine($"_{table.CName}List.Reload(clickHouseConnection);");
                 writer.Indent--;
             }
             writer.WriteLine("}");
@@ -381,7 +380,7 @@ namespace Test.ClickHouse.DbLoadGen {
                                         Path.GetDirectoryName(
                                             Path.GetDirectoryName(
                                                 Path.GetDirectoryName(typeof(Program).Assembly.Location)))
-                                    )) ?? throw new NullReferenceException(), "Test.ClickHouse.DbLoad", "Nortwind.cs");
+                                    )) ?? throw new NullReferenceException(), "Test.ClickHouse.DbLoad", "Northwind.cs");
             using (var connection = new SQLiteConnection($"Data Source={dbfilename};Pooling=True"))
             using(var stream = File.Open(path, FileMode.Create))
             using (var writer = new IndentedTextWriter(new StreamWriter(stream, Encoding.UTF8))){

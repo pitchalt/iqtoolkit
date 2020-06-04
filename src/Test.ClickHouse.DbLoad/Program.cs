@@ -11,7 +11,7 @@ namespace Test.ClickHouse.DbLoad {
             using (var connection = new SQLiteConnection($"Data Source={dbfilename};Pooling=True")) {
                 connection.Open();
                 var northdb = new Northwind(connection);
-                northdb.DoReload();
+                northdb.DoReload(null);
                 foreach (var emp in northdb.EmployeesList)
                 {
                     Console.WriteLine($"{emp.EmployeeID} {emp.Country} {emp.Title}");
