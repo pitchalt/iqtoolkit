@@ -6,7 +6,7 @@ using ClickHouse.Ado;
 
 namespace Test.ClickHouse.DbLoad {
     
-    public partial class Northwind {
+    public class Northwind {
         
         
         public CustomerDemographicsList CustomerDemographicsList {
@@ -171,7 +171,7 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table CustomerDemographics("
-                + "CustomerTypeID char)"
+                + "CustomerTypeID String)"
             +" ENGINE = MergeTree"
             +"Order by CustomerTypeID";
             command.ExecuteNonQuery();
@@ -227,8 +227,8 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Region("
-                + "RegionID integer,"
-                + "RegionDescription char)"
+                + "RegionID Int32,"
+                + "RegionDescription String)"
             +" ENGINE = MergeTree"
             +"Order by RegionID";
             command.ExecuteNonQuery();
@@ -353,22 +353,22 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table TextEntry("
-                + "contentID integer,"
-                + "contentGUID guid,"
-                + "title nvarchar,"
-                + "contentName nvarchar,"
-                + "content nvarchar,"
-                + "iconPath nvarchar,"
-                + "dateExpires datetime,"
-                + "lastEditedBy nvarchar,"
-                + "externalLink nvarchar,"
-                + "status nvarchar,"
-                + "listOrder int,"
-                + "callOut nvarchar,"
-                + "createdOn datetime,"
-                + "createdBy nvarchar,"
-                + "modifiedOn datetime,"
-                + "modifiedBy nvarchar)"
+                + "contentID Int32,"
+                + "contentGUID UUID,"
+                + "title String,"
+                + "contentName String,"
+                + "content String,"
+                + "iconPath String,"
+                + "dateExpires DateTime,"
+                + "lastEditedBy String,"
+                + "externalLink String,"
+                + "status String,"
+                + "listOrder Int32,"
+                + "callOut String,"
+                + "createdOn DateTime,"
+                + "createdBy String,"
+                + "modifiedOn DateTime,"
+                + "modifiedBy String)"
             +" ENGINE = MergeTree"
             +"Order by contentID";
             command.ExecuteNonQuery();
@@ -418,6 +418,12 @@ namespace Test.ClickHouse.DbLoad {
             ReportsTo = reader.IsDBNull(14) ? (Int32?) null : reader.GetInt32(14);
             PhotoPath = reader.IsDBNull(15) ?  null : reader.GetString(15);
             Deleted = reader.GetBoolean(16);
+            var shema = reader.GetSchemaTable();
+            foreach (var el in shema.Rows)
+            { 
+
+            }
+
         }
         
         public IEnumerator GetEnumerator() {
@@ -502,23 +508,23 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Employees("
-                + "EmployeeID integer,"
-                + "LastName nvarchar,"
-                + "FirstName nvarchar,"
-                + "Title nvarchar,"
-                + "TitleOfCourtesy nvarchar,"
-                + "BirthDate datetime,"
-                + "HireDate datetime,"
-                + "Address nvarchar,"
-                + "City nvarchar,"
-                + "Region nvarchar,"
-                + "PostalCode nvarchar,"
-                + "Country nvarchar,"
-                + "HomePhone nvarchar,"
-                + "Extension nvarchar,"
-                + "ReportsTo int,"
-                + "PhotoPath nvarchar,"
-                + "Deleted bit)"
+                + "EmployeeID Int32,"
+                + "LastName String,"
+                + "FirstName String,"
+                + "Title String,"
+                + "TitleOfCourtesy String,"
+                + "BirthDate DateTime,"
+                + "HireDate DateTime,"
+                + "Address String,"
+                + "City String,"
+                + "Region String,"
+                + "PostalCode String,"
+                + "Country String,"
+                + "HomePhone String,"
+                + "Extension String,"
+                + "ReportsTo Int32,"
+                + "PhotoPath String,"
+                + "Deleted UInt8)"
             +" ENGINE = MergeTree"
             +"Order by EmployeeID";
             command.ExecuteNonQuery();
@@ -574,8 +580,8 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Categories("
-                + "CategoryID integer,"
-                + "CategoryName nvarchar)"
+                + "CategoryID Int32,"
+                + "CategoryName String)"
             +" ENGINE = MergeTree"
             +"Order by CategoryID";
             command.ExecuteNonQuery();
@@ -610,7 +616,7 @@ namespace Test.ClickHouse.DbLoad {
             City = reader.IsDBNull(5) ?  null : reader.GetString(5);
             Region = reader.IsDBNull(6) ?  null : reader.GetString(6);
             PostalCode = reader.IsDBNull(7) ?  null : reader.GetString(7);
-            Country = reader.IsDBNull(8) ?  null : reader.GetString(8);
+            Country = reader. IsDBNull(8) ?  null : reader.GetString(8);
             Phone = reader.IsDBNull(9) ?  null : reader.GetString(9);
             Fax = reader.IsDBNull(10) ?  null : reader.GetString(10);
         }
@@ -688,17 +694,17 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Customers("
-                + "CustomerID char,"
-                + "CompanyName nvarchar,"
-                + "ContactName nvarchar,"
-                + "ContactTitle nvarchar,"
-                + "Address nvarchar,"
-                + "City nvarchar,"
-                + "Region nvarchar,"
-                + "PostalCode nvarchar,"
-                + "Country nvarchar,"
-                + "Phone nvarchar,"
-                + "Fax nvarchar)"
+                + "CustomerID String,"
+                + "CompanyName String,"
+                + "ContactName String,"
+                + "ContactTitle String,"
+                + "Address String,"
+                + "City String,"
+                + "Region String,"
+                + "PostalCode String,"
+                + "Country String,"
+                + "Phone String,"
+                + "Fax String)"
             +" ENGINE = MergeTree"
             +"Order by CustomerID";
             command.ExecuteNonQuery();
@@ -760,9 +766,9 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Shippers("
-                + "ShipperID integer,"
-                + "CompanyName nvarchar,"
-                + "Phone nvarchar)"
+                + "ShipperID Int32,"
+                + "CompanyName String,"
+                + "Phone String)"
             +" ENGINE = MergeTree"
             +"Order by ShipperID";
             command.ExecuteNonQuery();
@@ -872,17 +878,17 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Suppliers("
-                + "SupplierID integer,"
-                + "CompanyName nvarchar,"
-                + "ContactName nvarchar,"
-                + "ContactTitle nvarchar,"
-                + "Address nvarchar,"
-                + "City nvarchar,"
-                + "Region nvarchar,"
-                + "PostalCode nvarchar,"
-                + "Country nvarchar,"
-                + "Phone nvarchar,"
-                + "Fax nvarchar)"
+                + "SupplierID Int32,"
+                + "CompanyName String,"
+                + "ContactName String,"
+                + "ContactTitle String,"
+                + "Address String,"
+                + "City String,"
+                + "Region String,"
+                + "PostalCode String,"
+                + "Country String,"
+                + "Phone String,"
+                + "Fax String)"
             +" ENGINE = MergeTree"
             +"Order by SupplierID";
             command.ExecuteNonQuery();
@@ -938,8 +944,8 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table EmployeeTerritories("
-                + "EmployeeID int,"
-                + "TerritoryID nvarchar)"
+                + "EmployeeID Int32,"
+                + "TerritoryID String)"
             +" ENGINE = MergeTree"
             +"Order by EmployeeID";
             command.ExecuteNonQuery();
@@ -1001,11 +1007,11 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Order Details("
-                + "OrderID int,"
-                + "ProductID int,"
-                + "UnitPrice numeric,"
-                + "Quantity smallint,"
-                + "Discount real)"
+                + "OrderID Int32,"
+                + "ProductID Int32,"
+                + "UnitPrice Decimal32(4),"
+                + "Quantity Int16,"
+                + "Discount Float64)"
             +" ENGINE = MergeTree"
             +"Order by OrderID";
             command.ExecuteNonQuery();
@@ -1058,8 +1064,8 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Product_Category_Map("
-                + "CategoryID int,"
-                + "ProductID int)"
+                + "CategoryID Int32,"
+                + "ProductID Int32)"
             +" ENGINE = MergeTree"
             +"Order by CategoryID";
             command.ExecuteNonQuery();
@@ -1118,8 +1124,8 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table CustomerCustomerDemo("
-                + "CustomerID char,"
-                + "CustomerTypeID char)"
+                + "CustomerID String,"
+                + "CustomerTypeID String)"
             +" ENGINE = MergeTree"
             +"Order by CustomerID";
             command.ExecuteNonQuery();
@@ -1181,9 +1187,9 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Territories("
-                + "TerritoryID nvarchar,"
-                + "TerritoryDescription char,"
-                + "RegionID int)"
+                + "TerritoryID String,"
+                + "TerritoryDescription String,"
+                + "RegionID Int32)"
             +" ENGINE = MergeTree"
             +"Order by TerritoryID";
             command.ExecuteNonQuery();
@@ -1293,20 +1299,20 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Orders("
-                + "OrderID integer,"
-                + "CustomerID char,"
-                + "EmployeeID int,"
-                + "OrderDate datetime,"
-                + "RequiredDate datetime,"
-                + "ShippedDate datetime,"
-                + "ShipVia int,"
-                + "Freight numeric,"
-                + "ShipName nvarchar,"
-                + "ShipAddress nvarchar,"
-                + "ShipCity nvarchar,"
-                + "ShipRegion nvarchar,"
-                + "ShipPostalCode nvarchar,"
-                + "ShipCountry nvarchar)"
+                + "OrderID Int32,"
+                + "CustomerID String,"
+                + "EmployeeID Int32,"
+                + "OrderDate DateTime,"
+                + "RequiredDate DateTime,"
+                + "ShippedDate DateTime,"
+                + "ShipVia Int32,"
+                + "Freight Decimal32(4),"
+                + "ShipName String,"
+                + "ShipAddress String,"
+                + "ShipCity String,"
+                + "ShipRegion String,"
+                + "ShipPostalCode String,"
+                + "ShipCountry String)"
             +" ENGINE = MergeTree"
             +"Order by OrderID";
             command.ExecuteNonQuery();
@@ -1422,24 +1428,24 @@ namespace Test.ClickHouse.DbLoad {
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
             command.CommandText ="create table Products("
-                + "ProductID integer,"
-                + "ProductName nvarchar,"
-                + "SupplierID int,"
-                + "CategoryID int,"
-                + "QuantityPerUnit nvarchar,"
-                + "UnitPrice numeric,"
-                + "UnitsInStock smallint,"
-                + "UnitsOnOrder smallint,"
-                + "ReorderLevel smallint,"
-                + "Discontinued bit,"
-                + "AttributeXML varchar,"
-                + "DateCreated datetime,"
-                + "ProductGUID guid,"
-                + "CreatedOn datetime,"
-                + "CreatedBy nvarchar,"
-                + "ModifiedOn datetime,"
-                + "ModifiedBy nvarchar,"
-                + "Deleted bit)"
+                + "ProductID Int32,"
+                + "ProductName String,"
+                + "SupplierID Int32,"
+                + "CategoryID Int32,"
+                + "QuantityPerUnit String,"
+                + "UnitPrice Decimal32(4),"
+                + "UnitsInStock Int16,"
+                + "UnitsOnOrder Int16,"
+                + "ReorderLevel Int16,"
+                + "Discontinued UInt8,"
+                + "AttributeXML String,"
+                + "DateCreated DateTime,"
+                + "ProductGUID UUID,"
+                + "CreatedOn DateTime,"
+                + "CreatedBy String,"
+                + "ModifiedOn DateTime,"
+                + "ModifiedBy String,"
+                + "Deleted UInt8)"
             +" ENGINE = MergeTree"
             +"Order by ProductID";
             command.ExecuteNonQuery();

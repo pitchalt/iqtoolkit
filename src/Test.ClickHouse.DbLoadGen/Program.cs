@@ -20,6 +20,8 @@ namespace Test.ClickHouse.DbLoadGen {
         public Int16 DbSize { get; protected set; }
         public Boolean IsCanNull { get; protected set; }
 
+        public Boolean IsPrimaryKey { get; protected set; }
+
         public String GetReaderValueExp(Int32 index)
         {
             return (IsCanNull ? ($"reader.IsDBNull({index}) ? " + 
@@ -28,13 +30,14 @@ namespace Test.ClickHouse.DbLoadGen {
                 $"reader.Get{CType}({index})";
         }
 
-        public Property(String cname, String ctype, String dbname, String dbtype, Int16 dbsize, Boolean iscannull) {
+        public Property(String cname, String ctype, String dbname, String dbtype, Int16 dbsize, Boolean iscannull, Boolean isPrimaryKey) {
             CName = cname;
             CType = ctype;
             DbName = dbname;
             DbType = dbtype;
             DbSize = dbsize;
             IsCanNull = iscannull;
+            IsPrimaryKey = isPrimaryKey;
         }
 
     }
@@ -49,8 +52,8 @@ namespace Test.ClickHouse.DbLoadGen {
             get { return _Properties; }
         }
 
-        public Property PropertiesCreate(String cname, String ctype, String dbname, String dbtype, Int16 dbsize, Boolean iscannull) {
-            var property = new Property(cname, ctype, dbname, dbtype, dbsize, iscannull);
+        public Property PropertiesCreate(String cname, String ctype, String dbname, String dbtype, Int16 dbsize, Boolean iscannull, Boolean isPrimaryKey) {
+            var property = new Property(cname, ctype, dbname, dbtype, dbsize, iscannull, isPrimaryKey);
             _Properties.Add(property);
             return property;
         }
@@ -106,18 +109,26 @@ namespace Test.ClickHouse.DbLoadGen {
                 {
                     var pname = match.Groups["1"].Value;
                     var ptype = match.Groups["2"].Value;
+                    var primaryKeys = match.Groups["3"].Captures;
                     var options = match.Groups["4"].Captures;
 //                    Console.WriteLine($"{pname} {ptype}");
                     Boolean cannull = true;
+                    Boolean isPrimaryKey = true;
                     foreach (Capture option in options)
                     {
                         if (option.Value.Equals("not null", StringComparison.InvariantCultureIgnoreCase))
                             cannull = false;
                     }
+                    // ???????????????????????????????????
+                    foreach (Capture primaryKey in primaryKeys)
+                    {
+                        if (primaryKey.Value.Equals("false", StringComparison.InvariantCultureIgnoreCase))
+                            isPrimaryKey = false;
+                    }
 
                     var dbtype = GetCType(ptype);
                     if (dbtype != null)
-                        table.PropertiesCreate(GetCName(pname), dbtype, pname, ptype, 0, cannull);
+                        table.PropertiesCreate(GetCName(pname), dbtype, pname, ptype, 0, cannull, isPrimaryKey);
                 }
             }
 
@@ -143,7 +154,41 @@ namespace Test.ClickHouse.DbLoadGen {
         {
             return dbname.Replace(" ", String.Empty).Replace("_", String.Empty);
         }
-
+        static String GetClickHouseType(String dbtype)
+        {
+            dbtype = dbtype.ToLower().Trim();
+            switch (dbtype)
+            {
+                case "real":
+                    return "Float64";
+                //                case "blob":
+                //                    return "Byte[]";
+                case "bit":
+                    return "UInt8";
+                case "datetime":
+                    return "DateTime";
+                //                case "text":
+                case "nvarchar":
+                    return "String";
+                case "varchar":
+                    return "String";
+                case "char":
+                    return "String";
+                //                    return "Char";
+                case "guid":
+                    return "UUID";
+                case "numeric":
+                    return "Decimal32(4)";
+                case "integer":
+                case "int":
+                    return "Int32";
+                case "smallint":
+                    return "Int16";
+                default:
+                    Console.WriteLine("Fail type " + dbtype);
+                    return null;
+            }
+        }
         static String GetCType(String dbtype)
         {
             dbtype = dbtype.ToLower().Trim();
@@ -227,6 +272,12 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine();
             writer.WriteLine();
             writer.WriteLine($"public void DoReload(ClickHouseConnection clickHouseConnection) {{");
+
+            writer.WriteLine("var cmd = connection.CreateCommand();");
+            writer.WriteLine($"cmd.CommandText = " +'"' + "drop database if exists Nothwind" + '"' + ";");
+            writer.WriteLine("cmd.ExecuteReader();");
+            writer.WriteLine($"cmd.CommandText = " + '"' + "create database Nothwind" + '"' + ";");
+            writer.WriteLine("cmd.ExecuteReader();");
             foreach (var table in tables)
             {
                 writer.Indent++;
@@ -308,13 +359,13 @@ namespace Test.ClickHouse.DbLoadGen {
             for (int i = 0; i < table.Properties.Count; i++)
             {
                 if(i != table.Properties.Count - 1)
-                     writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {table.Properties.ElementAt(i).DbType}," + '"');
+                     writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {GetClickHouseType(table.Properties.ElementAt(i).DbType)}," + '"');
                 else
-                    writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {table.Properties.ElementAt(i).DbType})" + '"');
+                    writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {GetClickHouseType(table.Properties.ElementAt(i).DbType)})" + '"');
             }
             writer.Indent--;
             writer.WriteLine("+" + '"' + $" ENGINE = MergeTree" + '"');
-            writer.WriteLine("+" + '"' + $"Order by {table.Properties.ElementAt(0).DbName}" + '"' + ';');
+            writer.WriteLine("+" + '"' + $"Order by ({table.Properties.ElementAt(0).DbName})" + '"');
 
 
             writer.WriteLine("command.ExecuteNonQuery();");
