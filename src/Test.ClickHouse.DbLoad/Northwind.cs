@@ -77,6 +77,11 @@ namespace Test.ClickHouse.DbLoad {
         
         
         public void DoReload(ClickHouseConnection clickHouseConnection) {
+        var cmd = clickHouseConnection.CreateCommand();
+        cmd.CommandText = "drop database if exists Nothwind";
+        cmd.ExecuteReader();
+        cmd.CommandText = "create database Nothwind";
+        cmd.ExecuteReader();
             var _CustomerDemographicsList = CustomerDemographicsList;
             _CustomerDemographicsList.CreateTable(clickHouseConnection);
             _CustomerDemographicsList.Reload(clickHouseConnection);
@@ -173,7 +178,7 @@ namespace Test.ClickHouse.DbLoad {
             command.CommandText ="create table CustomerDemographics("
                 + "CustomerTypeID String)"
             +" ENGINE = MergeTree"
-            +"Order by CustomerTypeID";
+            +"Order by (CustomerTypeID)";
             command.ExecuteNonQuery();
         }
         
@@ -230,7 +235,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "RegionID Int32,"
                 + "RegionDescription String)"
             +" ENGINE = MergeTree"
-            +"Order by RegionID";
+            +"Order by (RegionID)";
             command.ExecuteNonQuery();
         }
         
@@ -370,7 +375,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "modifiedOn DateTime,"
                 + "modifiedBy String)"
             +" ENGINE = MergeTree"
-            +"Order by contentID";
+            +"Order by (contentID)";
             command.ExecuteNonQuery();
         }
         
@@ -418,12 +423,6 @@ namespace Test.ClickHouse.DbLoad {
             ReportsTo = reader.IsDBNull(14) ? (Int32?) null : reader.GetInt32(14);
             PhotoPath = reader.IsDBNull(15) ?  null : reader.GetString(15);
             Deleted = reader.GetBoolean(16);
-            var shema = reader.GetSchemaTable();
-            foreach (var el in shema.Rows)
-            { 
-
-            }
-
         }
         
         public IEnumerator GetEnumerator() {
@@ -526,7 +525,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "PhotoPath String,"
                 + "Deleted UInt8)"
             +" ENGINE = MergeTree"
-            +"Order by EmployeeID";
+            +"Order by (EmployeeID)";
             command.ExecuteNonQuery();
         }
         
@@ -583,7 +582,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "CategoryID Int32,"
                 + "CategoryName String)"
             +" ENGINE = MergeTree"
-            +"Order by CategoryID";
+            +"Order by (CategoryID)";
             command.ExecuteNonQuery();
         }
         
@@ -616,7 +615,7 @@ namespace Test.ClickHouse.DbLoad {
             City = reader.IsDBNull(5) ?  null : reader.GetString(5);
             Region = reader.IsDBNull(6) ?  null : reader.GetString(6);
             PostalCode = reader.IsDBNull(7) ?  null : reader.GetString(7);
-            Country = reader. IsDBNull(8) ?  null : reader.GetString(8);
+            Country = reader.IsDBNull(8) ?  null : reader.GetString(8);
             Phone = reader.IsDBNull(9) ?  null : reader.GetString(9);
             Fax = reader.IsDBNull(10) ?  null : reader.GetString(10);
         }
@@ -706,7 +705,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "Phone String,"
                 + "Fax String)"
             +" ENGINE = MergeTree"
-            +"Order by CustomerID";
+            +"Order by (CustomerID)";
             command.ExecuteNonQuery();
         }
         
@@ -770,7 +769,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "CompanyName String,"
                 + "Phone String)"
             +" ENGINE = MergeTree"
-            +"Order by ShipperID";
+            +"Order by (ShipperID)";
             command.ExecuteNonQuery();
         }
         
@@ -890,7 +889,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "Phone String,"
                 + "Fax String)"
             +" ENGINE = MergeTree"
-            +"Order by SupplierID";
+            +"Order by (SupplierID)";
             command.ExecuteNonQuery();
         }
         
@@ -947,7 +946,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "EmployeeID Int32,"
                 + "TerritoryID String)"
             +" ENGINE = MergeTree"
-            +"Order by EmployeeID";
+            +"Order by (EmployeeID,TerritoryID)";
             command.ExecuteNonQuery();
         }
         
@@ -999,7 +998,7 @@ namespace Test.ClickHouse.DbLoad {
         
         public void Reload(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into OrderDetails (OrderID, ProductID, UnitPrice, Quantity, Discount) values @bulk";
+            command.CommandText = "insert into Order Details (OrderID, ProductID, UnitPrice, Quantity, Discount) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
@@ -1013,7 +1012,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "Quantity Int16,"
                 + "Discount Float64)"
             +" ENGINE = MergeTree"
-            +"Order by OrderID";
+            +"Order by (OrderID,ProductID)";
             command.ExecuteNonQuery();
         }
         
@@ -1056,7 +1055,7 @@ namespace Test.ClickHouse.DbLoad {
         
         public void Reload(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into ProductCategoryMap (CategoryID, ProductID) values @bulk";
+            command.CommandText = "insert into Product_Category_Map (CategoryID, ProductID) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
@@ -1067,7 +1066,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "CategoryID Int32,"
                 + "ProductID Int32)"
             +" ENGINE = MergeTree"
-            +"Order by CategoryID";
+            +"Order by (CategoryID,ProductID)";
             command.ExecuteNonQuery();
         }
         
@@ -1127,7 +1126,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "CustomerID String,"
                 + "CustomerTypeID String)"
             +" ENGINE = MergeTree"
-            +"Order by CustomerID";
+            +"Order by (CustomerID,CustomerTypeID)";
             command.ExecuteNonQuery();
         }
         
@@ -1191,7 +1190,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "TerritoryDescription String,"
                 + "RegionID Int32)"
             +" ENGINE = MergeTree"
-            +"Order by TerritoryID";
+            +"Order by (TerritoryID)";
             command.ExecuteNonQuery();
         }
         
@@ -1314,7 +1313,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "ShipPostalCode String,"
                 + "ShipCountry String)"
             +" ENGINE = MergeTree"
-            +"Order by OrderID";
+            +"Order by (OrderID)";
             command.ExecuteNonQuery();
         }
         
@@ -1447,7 +1446,7 @@ namespace Test.ClickHouse.DbLoad {
                 + "ModifiedBy String,"
                 + "Deleted UInt8)"
             +" ENGINE = MergeTree"
-            +"Order by ProductID";
+            +"Order by (ProductID)";
             command.ExecuteNonQuery();
         }
         

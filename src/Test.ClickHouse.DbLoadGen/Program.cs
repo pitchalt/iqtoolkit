@@ -95,13 +95,41 @@ namespace Test.ClickHouse.DbLoadGen {
             return tables;
         }
 
+        // Не обрабатывает несколько Primary key
         static Regex PropExpr = new Regex(@"^\s*""(.+)""\s+([^\s,]+)(\s+(PRIMARY KEY|NOT NULL|[^\s,]+))*",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+
+        static Regex PrimaryKeyExpr = new Regex(@"^\s*PRIMARY KEY\s*\(\[([a-z]*)\],*\s*\[([a-z]*)\]\)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         static Table IntrospectTable(String tablename, String sql)
         {
             var cname = GetCName(tablename);
             var table = new Table(cname, tablename);
+              if (cname == "CustomerCustomerDemo" || cname == "Product_Category_Map" || cname == "EmployeeTerritories")
+            //    {
+   //        if (cname == "OrderDetails")
+                Console.WriteLine(sql);
+            //     }
+
+             
+            //  Неправильно, создается куча групп для значений, потом переделаю
+            List<String> primaryKeys = new List<String>();
+            foreach (var field in sql.Split('\n'))
+            {
+
+                var matchPrimaryKey = PrimaryKeyExpr.Match(field);
+                if (matchPrimaryKey.Success)
+                {
+                    foreach (var el in matchPrimaryKey.Groups)
+                    {                        
+                        primaryKeys.Add(el.ToString());
+                    }
+                }
+
+            }
+
             foreach (var field in sql.Split('\n'))
             {
                 var match = PropExpr.Match(field);
@@ -109,27 +137,27 @@ namespace Test.ClickHouse.DbLoadGen {
                 {
                     var pname = match.Groups["1"].Value;
                     var ptype = match.Groups["2"].Value;
-                    var primaryKeys = match.Groups["3"].Captures;
                     var options = match.Groups["4"].Captures;
-//                    Console.WriteLine($"{pname} {ptype}");
+                    //                    Console.WriteLine($"{pname} {ptype}");
                     Boolean cannull = true;
-                    Boolean isPrimaryKey = true;
+                    Boolean isPrimaryKey = false;
                     foreach (Capture option in options)
                     {
                         if (option.Value.Equals("not null", StringComparison.InvariantCultureIgnoreCase))
                             cannull = false;
+                        if (option.Value.Equals("primary key", StringComparison.InvariantCultureIgnoreCase))
+                            isPrimaryKey = true;
                     }
-                    // ???????????????????????????????????
-                    foreach (Capture primaryKey in primaryKeys)
-                    {
-                        if (primaryKey.Value.Equals("false", StringComparison.InvariantCultureIgnoreCase))
-                            isPrimaryKey = false;
-                    }
+
+                    if (primaryKeys.Contains(pname))
+                        isPrimaryKey = true;
 
                     var dbtype = GetCType(ptype);
                     if (dbtype != null)
                         table.PropertiesCreate(GetCName(pname), dbtype, pname, ptype, 0, cannull, isPrimaryKey);
-                }
+
+                }        
+
             }
 
             return table;
@@ -138,11 +166,11 @@ namespace Test.ClickHouse.DbLoadGen {
    
         static String GetInsertString(Table  table)
         {
-            var str = "insert into " + table.CName + " (" + table.Properties.ElementAt(0).CName;
+            var str = "insert into " + table.DbName + " (" + table.Properties.ElementAt(0).DbName;
 
             for (int i = 1; i < table.Properties.Count; i++)
             {
-                str += ", " + table.Properties.ElementAt(i).CName;
+                str += ", " + table.Properties.ElementAt(i).DbName;
             }
 
             str += ") values @bulk";
@@ -273,7 +301,7 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine();
             writer.WriteLine($"public void DoReload(ClickHouseConnection clickHouseConnection) {{");
 
-            writer.WriteLine("var cmd = connection.CreateCommand();");
+            writer.WriteLine("var cmd = clickHouseConnection.CreateCommand();");
             writer.WriteLine($"cmd.CommandText = " +'"' + "drop database if exists Nothwind" + '"' + ";");
             writer.WriteLine("cmd.ExecuteReader();");
             writer.WriteLine($"cmd.CommandText = " + '"' + "create database Nothwind" + '"' + ";");
@@ -290,6 +318,23 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine();
             writer.Indent--;
             writer.WriteLine("}");
+        }
+
+        static String GetPrimaryKey(Table table)
+        {
+            String str = "";
+            foreach (var el in table.Properties)
+            {
+                if (el.IsPrimaryKey == true)
+                     str += el.DbName + ",";
+            }
+            if (str.Count() == 0)
+                return "ERROR PRIMARY KEY";
+                //throw new Exception();
+            String resStr = str.Substring(0, str.Count() - 1);
+           
+            return resStr;
+        
         }
 
         static void GenTableLoader(IndentedTextWriter writer, Table table)
@@ -365,7 +410,7 @@ namespace Test.ClickHouse.DbLoadGen {
             }
             writer.Indent--;
             writer.WriteLine("+" + '"' + $" ENGINE = MergeTree" + '"');
-            writer.WriteLine("+" + '"' + $"Order by ({table.Properties.ElementAt(0).DbName})" + '"');
+            writer.WriteLine("+" + '"' + $"Order by ({GetPrimaryKey(table)})" + '"' + ";");
 
 
             writer.WriteLine("command.ExecuteNonQuery();");
