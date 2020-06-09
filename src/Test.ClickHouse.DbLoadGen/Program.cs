@@ -100,7 +100,7 @@ namespace Test.ClickHouse.DbLoadGen {
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 
-        static Regex PrimaryKeyExpr = new Regex(@"^\s*PRIMARY KEY\s*\(\[([a-z]*)\],*\s*\[([a-z]*)\]\)",
+        static Regex PrimaryKeyExpr = new Regex(@"^\s*PRIMARY KEY\s*\(\[([a-z]*)\],*\s*\[([a-z]+)\]\)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         static Table IntrospectTable(String tablename, String sql)
@@ -122,6 +122,9 @@ namespace Test.ClickHouse.DbLoadGen {
                 var matchPrimaryKey = PrimaryKeyExpr.Match(field);
                 if (matchPrimaryKey.Success)
                 {
+
+                    //var memes = matchPrimaryKey.Groups["1"].Value;
+
                     foreach (var el in matchPrimaryKey.Groups)
                     {                        
                         primaryKeys.Add(el.ToString());
@@ -166,7 +169,7 @@ namespace Test.ClickHouse.DbLoadGen {
    
         static String GetInsertString(Table  table)
         {
-            var str = "insert into " + table.DbName + " (" + table.Properties.ElementAt(0).DbName;
+            var str = "insert into Nothwind.`" + table.DbName + "` (" + table.Properties.ElementAt(0).DbName;
 
             for (int i = 1; i < table.Properties.Count; i++)
             {
@@ -355,11 +358,13 @@ namespace Test.ClickHouse.DbLoadGen {
 
             writer.WriteLine($"public {table.CName}List() {{ }}");
             writer.WriteLine();
+
             writer.WriteLine($"public {table.CName}List(IDbConnection connection) {{");
             writer.Indent++;
+
             writer.WriteLine("var cmd = connection.CreateCommand();");
-            writer.WriteLine($"cmd.CommandText = \"select " + 
-                             String.Join(",",table.Properties.Select(x => $"[{x.DbName}]"))
+            writer.WriteLine($"cmd.CommandText = \"select " +
+                             String.Join(",", table.Properties.Select(x => $"[{x.DbName}]"))
                              + $" from [{table.DbName}]\";");
             writer.WriteLine("var reader = cmd.ExecuteReader();");
             writer.WriteLine("while(reader.Read()) {");
@@ -372,17 +377,23 @@ namespace Test.ClickHouse.DbLoadGen {
                     writer.WriteLine($"if ( {el}Len < (rec.{el} ?? String.Empty).Length)");
                     writer.WriteLine($"{el}Len = rec.{el}.Length;");
                 }
-             }
+            }
             writer.WriteLine();
             writer.WriteLine("Add(rec);");
 
             writer.Indent--;
             writer.WriteLine("}");
+
+
+
+
+
             writer.Indent--;
             writer.WriteLine("}");            
             writer.WriteLine();
-            writer.WriteLine("public void Reload(ClickHouseConnection clickHouseConnection) {");
+            writer.WriteLine("public void Reload(ClickHouseConnection clickHouseConnection) {");            
             writer.Indent++;
+            writer.WriteLine("if (this.Count == 0) return;");
             writer.WriteLine("var command = clickHouseConnection.CreateCommand();");
             writer.WriteLine("command.CommandText = " + '"' + GetInsertString(table) + '"' + ";");
             writer.WriteLine("command.Parameters.Add(new ClickHouseParameter { ParameterName = " + '"' + "bulk" + '"' + ", Value = this });");
@@ -397,7 +408,7 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.Indent++;
 
             writer.WriteLine("var command = clickHouseConnection.CreateCommand();");
-            writer.WriteLine("command.CommandText =" + '"' + $"create table {table.DbName}" + '(' + '"');
+            writer.WriteLine($"command.CommandText = \"create table Nothwind.`{table.DbName}` (\"");
             writer.Indent++;
 
             
@@ -409,7 +420,7 @@ namespace Test.ClickHouse.DbLoadGen {
                     writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {GetClickHouseType(table.Properties.ElementAt(i).DbType)})" + '"');
             }
             writer.Indent--;
-            writer.WriteLine("+" + '"' + $" ENGINE = MergeTree" + '"');
+            writer.WriteLine("+" + '"' + $" ENGINE = MergeTree " + '"');
             writer.WriteLine("+" + '"' + $"Order by ({GetPrimaryKey(table)})" + '"' + ";");
 
 
@@ -443,10 +454,16 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine();
             writer.WriteLine($"public {table.CName}(IDataReader reader) {{");
             writer.Indent++;
+
+            List<String> typesList = new List<String>();
             for (int i = 0; i < table.Properties.Count; i++)
             {
                 var property = table.Properties[i];
                 writer.WriteLine($"{property.CName} = { property.GetReaderValueExp(i) };");
+                if (!typesList.Contains(property.CType))
+                {
+                    typesList.Add(property.CType);
+                }
             }
             writer.Indent--;
             writer.WriteLine("}");
@@ -455,15 +472,30 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.Indent++;
             foreach (var property in table.Properties)
             {
-                writer.WriteLine($"yield return {property.CName};");
+                writer.WriteLine($"if ({property.CName} == null) return null; return GetItems({property.CName} );");
             }
             writer.Indent--;
             writer.WriteLine("}");
+
+
+            foreach (var el in typesList)
+            {
+                writer.WriteLine($"public IEnumerator GetItems({el} value) {{");
+                writer.Indent++;
+                writer.WriteLine($" yield return value;");
+                writer.Indent--;
+                writer.WriteLine("}");
+            }
+                    
+                    
             writer.Indent--;
             writer.WriteLine("}");
+
+
+
         }
 
-        static void GenTableProperty(IndentedTextWriter writer, Property property) {
+        static void GenTableProperty(IndentedTextWriter writer, Property property) {     ///////////// УБРАЛА CAN NULL а потом вернула
             writer.WriteLine($"public {property.CType}{(property.CType != "String" && property.IsCanNull? "?": String.Empty)} {property.CName} {{ get; set; }}");
         }
 
