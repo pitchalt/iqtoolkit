@@ -144,10 +144,26 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (CustomerTypeID == null) return null; return GetItems(CustomerTypeID );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return CustomerTypeID;
+        }
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -203,14 +219,28 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (RegionID == null) return null; return GetItems(RegionID );
-            if (RegionDescription == null) return null; return GetItems(RegionDescription );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return RegionID;
+             yield return RegionDescription;
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -295,34 +325,56 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (contentID == null) return null; return GetItems(contentID );
-            if (contentGUID == null) return null; return GetItems(contentGUID );
-            if (title == null) return null; return GetItems(title );
-            if (contentName == null) return null; return GetItems(contentName );
-            if (content == null) return null; return GetItems(content );
-            if (iconPath == null) return null; return GetItems(iconPath );
-            if (dateExpires == null) return null; return GetItems(dateExpires );
-            if (lastEditedBy == null) return null; return GetItems(lastEditedBy );
-            if (externalLink == null) return null; return GetItems(externalLink );
-            if (status == null) return null; return GetItems(status );
-            if (listOrder == null) return null; return GetItems(listOrder );
-            if (callOut == null) return null; return GetItems(callOut );
-            if (createdOn == null) return null; return GetItems(createdOn );
-            if (createdBy == null) return null; return GetItems(createdBy );
-            if (modifiedOn == null) return null; return GetItems(modifiedOn );
-            if (modifiedBy == null) return null; return GetItems(modifiedBy );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return contentID;
+             yield return contentGUID;
+             yield return title;
+             yield return contentName;
+             yield return content;
+             yield return iconPath;
+             yield return dateExpires;
+             yield return lastEditedBy;
+             yield return externalLink;
+             yield return status;
+             yield return listOrder;
+             yield return callOut;
+             yield return createdOn;
+             yield return createdBy;
+             yield return modifiedOn;
+             yield return modifiedBy;
         }
-        public IEnumerator GetItems(Guid value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(Guid);
+                case 2 : return typeof(String);
+                case 3 : return typeof(String);
+                case 4 : return typeof(String);
+                case 5 : return typeof(String);
+                case 6 : return typeof(DateTime);
+                case 7 : return typeof(String);
+                case 8 : return typeof(String);
+                case 9 : return typeof(String);
+                case 10 : return typeof(Int32);
+                case 11 : return typeof(String);
+                case 12 : return typeof(DateTime);
+                case 13 : return typeof(String);
+                case 14 : return typeof(DateTime);
+                case 15 : return typeof(String);
+                default: return null;
+            }
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
-        public IEnumerator GetItems(DateTime value) {
-             yield return value;
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -450,35 +502,58 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (EmployeeID == null) return null; return GetItems(EmployeeID );
-            if (LastName == null) return null; return GetItems(LastName );
-            if (FirstName == null) return null; return GetItems(FirstName );
-            if (Title == null) return null; return GetItems(Title );
-            if (TitleOfCourtesy == null) return null; return GetItems(TitleOfCourtesy );
-            if (BirthDate == null) return null; return GetItems(BirthDate );
-            if (HireDate == null) return null; return GetItems(HireDate );
-            if (Address == null) return null; return GetItems(Address );
-            if (City == null) return null; return GetItems(City );
-            if (Region == null) return null; return GetItems(Region );
-            if (PostalCode == null) return null; return GetItems(PostalCode );
-            if (Country == null) return null; return GetItems(Country );
-            if (HomePhone == null) return null; return GetItems(HomePhone );
-            if (Extension == null) return null; return GetItems(Extension );
-            if (ReportsTo == null) return null; return GetItems(ReportsTo );
-            if (PhotoPath == null) return null; return GetItems(PhotoPath );
-            if (Deleted == null) return null; return GetItems(Deleted );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return EmployeeID;
+             yield return LastName;
+             yield return FirstName;
+             yield return Title;
+             yield return TitleOfCourtesy;
+             yield return BirthDate;
+             yield return HireDate;
+             yield return Address;
+             yield return City;
+             yield return Region;
+             yield return PostalCode;
+             yield return Country;
+             yield return HomePhone;
+             yield return Extension;
+             yield return ReportsTo;
+             yield return PhotoPath;
+             yield return (byte)(Deleted ? 1 : 0 );
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                case 2 : return typeof(String);
+                case 3 : return typeof(String);
+                case 4 : return typeof(String);
+                case 5 : return typeof(DateTime);
+                case 6 : return typeof(DateTime);
+                case 7 : return typeof(String);
+                case 8 : return typeof(String);
+                case 9 : return typeof(String);
+                case 10 : return typeof(String);
+                case 11 : return typeof(String);
+                case 12 : return typeof(String);
+                case 13 : return typeof(String);
+                case 14 : return typeof(Int32);
+                case 15 : return typeof(String);
+                case 16 : return typeof(Boolean);
+                default: return null;
+            }
         }
-        public IEnumerator GetItems(DateTime value) {
-             yield return value;
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
-        public IEnumerator GetItems(Boolean value) {
-             yield return value;
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -583,14 +658,28 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (CategoryID == null) return null; return GetItems(CategoryID );
-            if (CategoryName == null) return null; return GetItems(CategoryName );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return CategoryID;
+             yield return CategoryName;
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -665,20 +754,46 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (CustomerID == null) return null; return GetItems(CustomerID );
-            if (CompanyName == null) return null; return GetItems(CompanyName );
-            if (ContactName == null) return null; return GetItems(ContactName );
-            if (ContactTitle == null) return null; return GetItems(ContactTitle );
-            if (Address == null) return null; return GetItems(Address );
-            if (City == null) return null; return GetItems(City );
-            if (Region == null) return null; return GetItems(Region );
-            if (PostalCode == null) return null; return GetItems(PostalCode );
-            if (Country == null) return null; return GetItems(Country );
-            if (Phone == null) return null; return GetItems(Phone );
-            if (Fax == null) return null; return GetItems(Fax );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return CustomerID;
+             yield return CompanyName;
+             yield return ContactName;
+             yield return ContactTitle;
+             yield return Address;
+             yield return City;
+             yield return Region;
+             yield return PostalCode;
+             yield return Country;
+             yield return Phone;
+             yield return Fax;
+        }
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(String);
+                case 1 : return typeof(String);
+                case 2 : return typeof(String);
+                case 3 : return typeof(String);
+                case 4 : return typeof(String);
+                case 5 : return typeof(String);
+                case 6 : return typeof(String);
+                case 7 : return typeof(String);
+                case 8 : return typeof(String);
+                case 9 : return typeof(String);
+                case 10 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -776,15 +891,30 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (ShipperID == null) return null; return GetItems(ShipperID );
-            if (CompanyName == null) return null; return GetItems(CompanyName );
-            if (Phone == null) return null; return GetItems(Phone );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return ShipperID;
+             yield return CompanyName;
+             yield return Phone;
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                case 2 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -863,23 +993,46 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (SupplierID == null) return null; return GetItems(SupplierID );
-            if (CompanyName == null) return null; return GetItems(CompanyName );
-            if (ContactName == null) return null; return GetItems(ContactName );
-            if (ContactTitle == null) return null; return GetItems(ContactTitle );
-            if (Address == null) return null; return GetItems(Address );
-            if (City == null) return null; return GetItems(City );
-            if (Region == null) return null; return GetItems(Region );
-            if (PostalCode == null) return null; return GetItems(PostalCode );
-            if (Country == null) return null; return GetItems(Country );
-            if (Phone == null) return null; return GetItems(Phone );
-            if (Fax == null) return null; return GetItems(Fax );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return SupplierID;
+             yield return CompanyName;
+             yield return ContactName;
+             yield return ContactTitle;
+             yield return Address;
+             yield return City;
+             yield return Region;
+             yield return PostalCode;
+             yield return Country;
+             yield return Phone;
+             yield return Fax;
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                case 2 : return typeof(String);
+                case 3 : return typeof(String);
+                case 4 : return typeof(String);
+                case 5 : return typeof(String);
+                case 6 : return typeof(String);
+                case 7 : return typeof(String);
+                case 8 : return typeof(String);
+                case 9 : return typeof(String);
+                case 10 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -972,14 +1125,28 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (EmployeeID == null) return null; return GetItems(EmployeeID );
-            if (TerritoryID == null) return null; return GetItems(TerritoryID );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return EmployeeID;
+             yield return TerritoryID;
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -1042,23 +1209,34 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (OrderID == null) return null; return GetItems(OrderID );
-            if (ProductID == null) return null; return GetItems(ProductID );
-            if (UnitPrice == null) return null; return GetItems(UnitPrice );
-            if (Quantity == null) return null; return GetItems(Quantity );
-            if (Discount == null) return null; return GetItems(Discount );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return OrderID;
+             yield return ProductID;
+             yield return UnitPrice;
+             yield return Quantity;
+             yield return Discount;
         }
-        public IEnumerator GetItems(Decimal value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(Int32);
+                case 2 : return typeof(Decimal);
+                case 3 : return typeof(Int16);
+                case 4 : return typeof(Double);
+                default: return null;
+            }
         }
-        public IEnumerator GetItems(Int16 value) {
-             yield return value;
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
-        public IEnumerator GetItems(Double value) {
-             yield return value;
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -1115,11 +1293,28 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (CategoryID == null) return null; return GetItems(CategoryID );
-            if (ProductID == null) return null; return GetItems(ProductID );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return CategoryID;
+             yield return ProductID;
+        }
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(Int32);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -1173,11 +1368,28 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (CustomerID == null) return null; return GetItems(CustomerID );
-            if (CustomerTypeID == null) return null; return GetItems(CustomerTypeID );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return CustomerID;
+             yield return CustomerTypeID;
+        }
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(String);
+                case 1 : return typeof(String);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -1239,15 +1451,30 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (TerritoryID == null) return null; return GetItems(TerritoryID );
-            if (TerritoryDescription == null) return null; return GetItems(TerritoryDescription );
-            if (RegionID == null) return null; return GetItems(RegionID );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return TerritoryID;
+             yield return TerritoryDescription;
+             yield return RegionID;
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(String);
+                case 1 : return typeof(String);
+                case 2 : return typeof(Int32);
+                default: return null;
+            }
+        }
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+        }
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -1332,32 +1559,52 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (OrderID == null) return null; return GetItems(OrderID );
-            if (CustomerID == null) return null; return GetItems(CustomerID );
-            if (EmployeeID == null) return null; return GetItems(EmployeeID );
-            if (OrderDate == null) return null; return GetItems(OrderDate );
-            if (RequiredDate == null) return null; return GetItems(RequiredDate );
-            if (ShippedDate == null) return null; return GetItems(ShippedDate );
-            if (ShipVia == null) return null; return GetItems(ShipVia );
-            if (Freight == null) return null; return GetItems(Freight );
-            if (ShipName == null) return null; return GetItems(ShipName );
-            if (ShipAddress == null) return null; return GetItems(ShipAddress );
-            if (ShipCity == null) return null; return GetItems(ShipCity );
-            if (ShipRegion == null) return null; return GetItems(ShipRegion );
-            if (ShipPostalCode == null) return null; return GetItems(ShipPostalCode );
-            if (ShipCountry == null) return null; return GetItems(ShipCountry );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return OrderID;
+             yield return CustomerID;
+             yield return EmployeeID;
+             yield return OrderDate;
+             yield return RequiredDate;
+             yield return ShippedDate;
+             yield return ShipVia;
+             yield return Freight;
+             yield return ShipName;
+             yield return ShipAddress;
+             yield return ShipCity;
+             yield return ShipRegion;
+             yield return ShipPostalCode;
+             yield return ShipCountry;
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                case 2 : return typeof(Int32);
+                case 3 : return typeof(DateTime);
+                case 4 : return typeof(DateTime);
+                case 5 : return typeof(DateTime);
+                case 6 : return typeof(Int32);
+                case 7 : return typeof(Decimal);
+                case 8 : return typeof(String);
+                case 9 : return typeof(String);
+                case 10 : return typeof(String);
+                case 11 : return typeof(String);
+                case 12 : return typeof(String);
+                case 13 : return typeof(String);
+                default: return null;
+            }
         }
-        public IEnumerator GetItems(DateTime value) {
-             yield return value;
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
-        public IEnumerator GetItems(Decimal value) {
-             yield return value;
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     
@@ -1476,45 +1723,60 @@ namespace Test.ClickHouse.DbLoad {
         }
         
         public IEnumerator GetEnumerator() {
-            if (ProductID == null) return null; return GetItems(ProductID );
-            if (ProductName == null) return null; return GetItems(ProductName );
-            if (SupplierID == null) return null; return GetItems(SupplierID );
-            if (CategoryID == null) return null; return GetItems(CategoryID );
-            if (QuantityPerUnit == null) return null; return GetItems(QuantityPerUnit );
-            if (UnitPrice == null) return null; return GetItems(UnitPrice );
-            if (UnitsInStock == null) return null; return GetItems(UnitsInStock );
-            if (UnitsOnOrder == null) return null; return GetItems(UnitsOnOrder );
-            if (ReorderLevel == null) return null; return GetItems(ReorderLevel );
-            if (Discontinued == null) return null; return GetItems(Discontinued );
-            if (AttributeXML == null) return null; return GetItems(AttributeXML );
-            if (DateCreated == null) return null; return GetItems(DateCreated );
-            if (ProductGUID == null) return null; return GetItems(ProductGUID );
-            if (CreatedOn == null) return null; return GetItems(CreatedOn );
-            if (CreatedBy == null) return null; return GetItems(CreatedBy );
-            if (ModifiedOn == null) return null; return GetItems(ModifiedOn );
-            if (ModifiedBy == null) return null; return GetItems(ModifiedBy );
-            if (Deleted == null) return null; return GetItems(Deleted );
+            int i = 0;
+            foreach (var property in GetItems()) {
+                if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  
+                i++;
+            }
         }
-        public IEnumerator GetItems(Int32 value) {
-             yield return value;
+        public IEnumerable GetItems() {
+             yield return ProductID;
+             yield return ProductName;
+             yield return SupplierID;
+             yield return CategoryID;
+             yield return QuantityPerUnit;
+             yield return UnitPrice;
+             yield return UnitsInStock;
+             yield return UnitsOnOrder;
+             yield return ReorderLevel;
+             yield return (byte)(Discontinued ? 1 : 0 );
+             yield return AttributeXML;
+             yield return DateCreated;
+             yield return ProductGUID;
+             yield return CreatedOn;
+             yield return CreatedBy;
+             yield return ModifiedOn;
+             yield return ModifiedBy;
+             yield return (byte)(Deleted ? 1 : 0 );
         }
-        public IEnumerator GetItems(String value) {
-             yield return value;
+            public Type GetPropertyType(int i) {
+            switch (i) {
+                case 0 : return typeof(Int32);
+                case 1 : return typeof(String);
+                case 2 : return typeof(Int32);
+                case 3 : return typeof(Int32);
+                case 4 : return typeof(String);
+                case 5 : return typeof(Decimal);
+                case 6 : return typeof(Int16);
+                case 7 : return typeof(Int16);
+                case 8 : return typeof(Int16);
+                case 9 : return typeof(Boolean);
+                case 10 : return typeof(String);
+                case 11 : return typeof(DateTime);
+                case 12 : return typeof(Guid);
+                case 13 : return typeof(DateTime);
+                case 14 : return typeof(String);
+                case 15 : return typeof(DateTime);
+                case 16 : return typeof(String);
+                case 17 : return typeof(Boolean);
+                default: return null;
+            }
         }
-        public IEnumerator GetItems(Decimal value) {
-             yield return value;
+        public object GetDefault(Type t) {
+             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
-        public IEnumerator GetItems(Int16 value) {
-             yield return value;
-        }
-        public IEnumerator GetItems(Boolean value) {
-             yield return value;
-        }
-        public IEnumerator GetItems(DateTime value) {
-             yield return value;
-        }
-        public IEnumerator GetItems(Guid value) {
-             yield return value;
+        public T GetDefaultGeneric<T>() {
+              return default(T);
         }
     }
     

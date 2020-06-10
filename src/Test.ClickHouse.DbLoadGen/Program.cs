@@ -24,9 +24,11 @@ namespace Test.ClickHouse.DbLoadGen {
 
         public String GetReaderValueExp(Int32 index)
         {
+            // проверка на булен, потому что в кх нет булена, надо переводить в инт
+            // но это надо делать не здесь, а при запихнутии в кх
             return (IsCanNull ? ($"reader.IsDBNull({index}) ? " + 
                 (CType != "String" ? $"({CType}?)" : String.Empty) + 
-                " null : ") : String.Empty) + 
+                " null : ") : String.Empty) + //(CType == "Boolean" ? $"reader.GetInt16({index})" :
                 $"reader.Get{CType}({index})";
         }
 
@@ -195,6 +197,8 @@ namespace Test.ClickHouse.DbLoadGen {
                 //                case "blob":
                 //                    return "Byte[]";
                 case "bit":
+                    return "UInt8";
+                case "boolean":
                     return "UInt8";
                 case "datetime":
                     return "DateTime";
@@ -455,39 +459,109 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine($"public {table.CName}(IDataReader reader) {{");
             writer.Indent++;
 
-            List<String> typesList = new List<String>();
+         //  List<Type> typesList = new List<Type>();
             for (int i = 0; i < table.Properties.Count; i++)
             {
                 var property = table.Properties[i];
+             
                 writer.WriteLine($"{property.CName} = { property.GetReaderValueExp(i) };");
-                if (!typesList.Contains(property.CType))
-                {
-                    typesList.Add(property.CType);
-                }
+                //if (!typesList.Contains(property.GetType()))
+                //{
+                //    typesList.Add(property.GetType());
+                //}
             }
             writer.Indent--;
             writer.WriteLine("}");
             writer.WriteLine();
             writer.WriteLine("public IEnumerator GetEnumerator() {");
             writer.Indent++;
-            foreach (var property in table.Properties)
-            {
-                writer.WriteLine($"if ({property.CName} == null) return null; return GetItems({property.CName} );");
-            }
+            writer.WriteLine("int i = 0;");
+            writer.WriteLine($"foreach (var property in GetItems()) {{");
+            writer.Indent++;           
+            writer.WriteLine($"if (property != null) yield return property; else yield return GetDefault(GetPropertyType(i));  ");
+            writer.WriteLine("i++;");
+            writer.Indent--;
+            writer.WriteLine("}");
             writer.Indent--;
             writer.WriteLine("}");
 
 
-            foreach (var el in typesList)
+            writer.WriteLine($"public IEnumerable GetItems() {{");
+           
+            writer.Indent++;
+
+            foreach (var el in table.Properties)
             {
-                writer.WriteLine($"public IEnumerator GetItems({el} value) {{");
+                if(el.CType == "Boolean")
+                {                   
+                    writer.WriteLine($" yield return (byte)({el.CName} ? 1 : 0 );");
+                }
+              
+                else
+                writer.WriteLine($" yield return {el.CName};");
+            }
+
+            writer.Indent--;
+            writer.WriteLine("}");
+
+
+           
+            writer.Indent++;
+            writer.WriteLine($"public Type GetPropertyType(int i) {{");
+            writer.WriteLine($"switch (i) {{");
+            writer.Indent++;
+            for(int i = 0; i < table.Properties.Count; i++)
+            {
+                writer.WriteLine($"case {i} : return typeof({table.Properties.ElementAt(i).CType});");
+            }
+
+            writer.WriteLine($"default: return null;");
+
+            writer.Indent--;
+            writer.WriteLine("}");
+
+            writer.Indent--;
+            writer.WriteLine("}");
+
+
+        //    foreach (var el in typesList)
+         //   {
+                writer.WriteLine($"public object GetDefault(Type t) {{");
                 writer.Indent++;
-                writer.WriteLine($" yield return value;");
+                writer.WriteLine($" return this.GetType().GetMethod(\"GetDefaultGeneric\").MakeGenericMethod(t).Invoke(this,null);");
                 writer.Indent--;
                 writer.WriteLine("}");
-            }
-                    
-                    
+        //    }
+
+            writer.WriteLine($"public T GetDefaultGeneric<T>() {{");
+            writer.Indent++;
+            writer.WriteLine($"  return default(T);");
+            writer.Indent--;
+            writer.WriteLine("}");
+
+
+
+
+
+            //foreach (var property in table.Properties)
+            //{
+            //    writer.WriteLine($"if ({property.CName} != null) return GetItems({property.CName}); else return null; ");
+            //    //   writer.WriteLine($" yield return {property.CName};");
+            //}
+            //writer.Indent--;
+            //writer.WriteLine("}");
+
+
+            //foreach (var el in typesList)
+            //{
+            //    writer.WriteLine($"public IEnumerator GetItems({el} value) {{");
+            //    writer.Indent++;
+            //    writer.WriteLine($" yield return value;");
+            //    writer.Indent--;
+            //    writer.WriteLine("}");
+            //}
+
+
             writer.Indent--;
             writer.WriteLine("}");
 
@@ -495,7 +569,7 @@ namespace Test.ClickHouse.DbLoadGen {
 
         }
 
-        static void GenTableProperty(IndentedTextWriter writer, Property property) {     ///////////// УБРАЛА CAN NULL а потом вернула
+        static void GenTableProperty(IndentedTextWriter writer, Property property) {     ///////////// УБРАЛА CAN NULL а потом вернула и опять убарала и вернула
             writer.WriteLine($"public {property.CType}{(property.CType != "String" && property.IsCanNull? "?": String.Empty)} {property.CName} {{ get; set; }}");
         }
 
