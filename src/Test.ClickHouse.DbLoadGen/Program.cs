@@ -171,11 +171,11 @@ namespace Test.ClickHouse.DbLoadGen {
    
         static String GetInsertString(Table  table)
         {
-            var str = "insert into Nothwind.`" + table.DbName + "` (" + table.Properties.ElementAt(0).DbName;
+            var str = $"insert into Northwind.`{table.DbName}` ({ table.Properties[0].DbName}";
 
             for (int i = 1; i < table.Properties.Count; i++)
             {
-                str += ", " + table.Properties.ElementAt(i).DbName;
+                str += ", " + table.Properties[i].DbName;
             }
 
             str += ") values @bulk";
@@ -187,7 +187,19 @@ namespace Test.ClickHouse.DbLoadGen {
         {
             return dbname.Replace(" ", String.Empty).Replace("_", String.Empty);
         }
-        static String GetClickHouseType(String dbtype)
+
+        static String GetClickHouseTypeExt(Property property)
+        {
+            var dbType = GetClickHouseType(property.DbType);
+            if (property.IsCanNull)
+                return $"Nullable({dbType})";
+            else
+                return dbType;
+                    
+
+
+        }
+            static String GetClickHouseType(String dbtype)
         {
             dbtype = dbtype.ToLower().Trim();
             switch (dbtype)
@@ -309,9 +321,9 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine($"public void DoReload(ClickHouseConnection clickHouseConnection) {{");
 
             writer.WriteLine("var cmd = clickHouseConnection.CreateCommand();");
-            writer.WriteLine($"cmd.CommandText = " +'"' + "drop database if exists Nothwind" + '"' + ";");
+            writer.WriteLine($"cmd.CommandText = \"drop database if exists Northwind\";");
             writer.WriteLine("cmd.ExecuteReader();");
-            writer.WriteLine($"cmd.CommandText = " + '"' + "create database Nothwind" + '"' + ";");
+            writer.WriteLine($"cmd.CommandText = \"create database Northwind\";");
             writer.WriteLine("cmd.ExecuteReader();");
             foreach (var table in tables)
             {
@@ -357,7 +369,7 @@ namespace Test.ClickHouse.DbLoadGen {
                 {
                     String str = el.CName ;
                     stringLens.Add(str);
-                    writer.WriteLine("int " + str + "Len;");
+                    writer.WriteLine($"int {str}Len;");
                 }
 
             writer.WriteLine($"public {table.CName}List() {{ }}");
@@ -399,8 +411,8 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.Indent++;
             writer.WriteLine("if (this.Count == 0) return;");
             writer.WriteLine("var command = clickHouseConnection.CreateCommand();");
-            writer.WriteLine("command.CommandText = " + '"' + GetInsertString(table) + '"' + ";");
-            writer.WriteLine("command.Parameters.Add(new ClickHouseParameter { ParameterName = " + '"' + "bulk" + '"' + ", Value = this });");
+            writer.WriteLine($"command.CommandText = \"{GetInsertString(table)}\";");
+            writer.WriteLine("command.Parameters.Add(new ClickHouseParameter { ParameterName = \"bulk\", Value = this });");
             writer.WriteLine("command.ExecuteNonQuery();");
             writer.Indent--;
 
@@ -412,20 +424,22 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.Indent++;
 
             writer.WriteLine("var command = clickHouseConnection.CreateCommand();");
-            writer.WriteLine($"command.CommandText = \"create table Nothwind.`{table.DbName}` (\"");
+            writer.WriteLine($"command.CommandText = \"create table Northwind.`{table.DbName}` (\"");
             writer.Indent++;
 
             
             for (int i = 0; i < table.Properties.Count; i++)
             {
-                if(i != table.Properties.Count - 1)
-                     writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {GetClickHouseType(table.Properties.ElementAt(i).DbType)}," + '"');
+                writer.Write($"+ \"{table.Properties[i].DbName} {GetClickHouseTypeExt(table.Properties[i])}");
+                if (i != table.Properties.Count - 1)
+                    writer.WriteLine(", \"");
                 else
-                    writer.WriteLine("+ " + '"' + $"{table.Properties.ElementAt(i).DbName} {GetClickHouseType(table.Properties.ElementAt(i).DbType)})" + '"');
+                    writer.WriteLine(")\"");
+             
             }
             writer.Indent--;
-            writer.WriteLine("+" + '"' + $" ENGINE = MergeTree " + '"');
-            writer.WriteLine("+" + '"' + $"Order by ({GetPrimaryKey(table)})" + '"' + ";");
+            writer.WriteLine($"+ \"Engine = MergeTree \"");
+            writer.WriteLine($"+ \"Order by ({GetPrimaryKey(table)})\";");
 
 
             writer.WriteLine("command.ExecuteNonQuery();");
@@ -486,24 +500,19 @@ namespace Test.ClickHouse.DbLoadGen {
             writer.WriteLine("}");
 
 
-            writer.WriteLine($"public IEnumerable GetItems() {{");
-           
+            writer.WriteLine($"public IEnumerable GetItems() {{");           
             writer.Indent++;
-
             foreach (var el in table.Properties)
             {
                 if(el.CType == "Boolean")
                 {                   
                     writer.WriteLine($" yield return (byte)({el.CName} ? 1 : 0 );");
-                }
-              
+                }              
                 else
                 writer.WriteLine($" yield return {el.CName};");
             }
-
             writer.Indent--;
             writer.WriteLine("}");
-
 
            
             writer.Indent++;
@@ -528,14 +537,14 @@ namespace Test.ClickHouse.DbLoadGen {
          //   {
                 writer.WriteLine($"public object GetDefault(Type t) {{");
                 writer.Indent++;
-                writer.WriteLine($" return this.GetType().GetMethod(\"GetDefaultGeneric\").MakeGenericMethod(t).Invoke(this,null);");
+                writer.WriteLine($"return this.GetType().GetMethod(\"GetDefaultGeneric\").MakeGenericMethod(t).Invoke(this,null);");
                 writer.Indent--;
                 writer.WriteLine("}");
         //    }
 
             writer.WriteLine($"public T GetDefaultGeneric<T>() {{");
             writer.Indent++;
-            writer.WriteLine($"  return default(T);");
+            writer.WriteLine($"return default(T);");
             writer.Indent--;
             writer.WriteLine("}");
 

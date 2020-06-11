@@ -13,7 +13,7 @@ namespace Test
     {
         public static void Main(string[] args)
         {
-            CreateDatabase();
+            //CreateDatabase();
             new TestRunner(args, System.Reflection.Assembly.GetEntryAssembly()).RunTests();
         }
 
@@ -21,26 +21,41 @@ namespace Test
         {
             return new ClickHouseQueryProvider(
                 "Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
-                "ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";"+
-                "DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"localhost\";Database=\"Northwind\";Port=\"32769\";MaxCompressBufferSize=\"0\";" +
-                "MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";"+
+                "ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";" +
+                "DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"10.200.101.163\";Database=\"Northwind\";Port=\"9000\";MaxCompressBufferSize=\"0\";" +
+                "MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";" +
                 "Extremes=\"False\";MaxThreads=\"0\";MaxExecutionTime=\"0\";MaxBlockSize=\"0\";MaxRowsToGroupBy=\"0\";" +
-                "User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";"+
+                "User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";" +
                 "MaxBytesBeforeExternalSort=\"0\"",
-            //"Server=localhost;user id='root';password='mypwd';Database=Northwind", 
+                //"Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
+                //"ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";"+
+                //"DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"localhost\";Database=\"Northwind\";Port=\"32769\";MaxCompressBufferSize=\"0\";" +
+                //"MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";"+
+                //"Extremes=\"False\";MaxThreads=\"0\";MaxExecutionTime=\"0\";MaxBlockSize=\"0\";MaxRowsToGroupBy=\"0\";" +
+                //"User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";"+
+                //"MaxBytesBeforeExternalSort=\"0\"",
+                //"Server=localhost;user id='root';password='mypwd';Database=Northwind", 
                 new AttributeMapping(typeof(Test.NorthwindWithAttributes)));
         }
 
         private static DbEntityProvider CreateNorthwindProviderZero()
         {
             return new ClickHouseQueryProvider(
-                "Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
-                "ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";"+
-                "DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"localhost\";Port=\"32769\";MaxCompressBufferSize=\"0\";" +
-                "MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";"+
+                  "Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
+                "ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";" +
+                "DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"10.200.101.163\";Database=\"Northwind\";Port=\"9000\";MaxCompressBufferSize=\"0\";" +
+                "MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";" +
                 "Extremes=\"False\";MaxThreads=\"0\";MaxExecutionTime=\"0\";MaxBlockSize=\"0\";MaxRowsToGroupBy=\"0\";" +
-                "User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";"+
+                "User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";" +
                 "MaxBytesBeforeExternalSort=\"0\"",
+                //"Async=\"False\";BufferSize=\"4096\";A
+                //"Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
+                //"ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";"+
+                //"DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"localhost\";Port=\"32769\";MaxCompressBufferSize=\"0\";" +
+                //"MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";"+
+                //"Extremes=\"False\";MaxThreads=\"0\";MaxExecutionTime=\"0\";MaxBlockSize=\"0\";MaxRowsToGroupBy=\"0\";" +
+                //"User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";"+
+                //"MaxBytesBeforeExternalSort=\"0\"",
                 //"Server=localhost;user id='root';password='mypwd';Database=Northwind", 
                 new AttributeMapping(typeof(Test.NorthwindWithAttributes)));
         }
@@ -63,8 +78,8 @@ namespace Test
         {
 
             public NorthwindMappingTests() {
-                Setup(new String [0]);
-                CreateDatabase();
+              //  Setup(new String [0]);
+              //  CreateDatabase();
             }
 
             protected override DbEntityProvider CreateProvider() {
@@ -72,7 +87,7 @@ namespace Test
             }
 
             public void Dispose() {
-                Teardown();
+                //Teardown();
             }
 
         }
@@ -80,8 +95,8 @@ namespace Test
         public class NorthwindTranslationTests : Test.NorthwindTranslationTests, IDisposable
         {
             public NorthwindTranslationTests() {
-                CreateDatabase();
-                Setup(new String [0]);
+               // CreateDatabase();
+                // Setup(new String [0]);
 
             }
 
@@ -90,7 +105,7 @@ namespace Test
                 return CreateNorthwindProvider();
             }
             public void Dispose() {
-                Teardown();
+                //Teardown();
             }
         }
 
@@ -106,6 +121,11 @@ namespace Test
                 // difference in collation (mysql is matching "A" and "Å" but the others are not)
                 var custs = db.Customers.Where(c => c.Country == "USA" || c.City.StartsWith("A")).Select(c => new { c.Country, c.City }).ToList();
                 Assert.Equal(15, custs.Count);
+            }
+
+            public override string GetBaseLineFilePath()
+            {
+                return @"D:\Share\Users\IQToolkit\src\Test.ClickHouse\bin\Debug\netcoreapp2.1\NorthwindTranslation_ClickHouseQueryProvider";
             }
         }
 

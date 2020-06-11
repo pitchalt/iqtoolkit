@@ -1,0 +1,730 @@
+NorthwindExecutionTests
+TestOr Failed
+Assert failure - expected: 15 actual: 0
+
+TestStringCompareToNE Failed
+Assert failure - value not expected: 
+
+TestStringCompare Failed
+Sequence contains no elements
+
+TestStringCompareLT Failed
+Assert failure - value not expected: 
+
+TestStringCompareLE Failed
+Assert failure - value not expected: 
+
+TestStringCompareGT Failed
+Assert failure - value not expected: 
+
+TestStringCompareGE Failed
+Assert failure - value not expected: 
+
+TestStringCompareEQ Failed
+Assert failure - value not expected: 
+
+TestStringCompareNE Failed
+Assert failure - value not expected: 
+
+TestIntCompareTo Failed
+Sequence contains no elements
+
+TestDecimalCompare Failed
+Sequence contains no elements
+
+TestDecimalAdd Failed
+Sequence contains no elements
+
+TestDecimalSubtract Failed
+Sequence contains no elements
+
+TestDecimalMultiply Failed
+Sequence contains no elements
+
+TestDecimalDivide Failed
+Sequence contains no elements
+
+TestDecimalNegate Failed
+Sequence contains no elements
+
+TestDecimalRoundDefault Failed
+Sequence contains no elements
+
+TestDecimalTruncate Failed
+The method 'Truncate' is not supported
+
+TestDecimalLT Failed
+Assert failure - value not expected: 
+
+TestIntLessThan Failed
+Assert failure - value not expected: 
+
+TestIntLessThanOrEqual Failed
+Assert failure - value not expected: 
+
+TestIntGreaterThan Failed
+Assert failure - value not expected: 
+
+TestIntGreaterThanOrEqual Failed
+Sequence contains no elements
+
+TestIntEqual Failed
+Assert failure - value not expected: 
+
+TestIntNotEqual Failed
+Assert failure - value not expected: 
+
+TestIntAdd Failed
+Sequence contains no elements
+
+TestIntSubtract Failed
+Sequence contains no elements
+
+TestIntMultiply Failed
+Sequence contains no elements
+
+TestIntDivide Failed
+Sequence contains no elements
+
+TestIntModulo Failed
+Sequence contains no elements
+
+TestIntLeftShift Failed
+DB::Exception: Syntax error: failed at position 72 (line 1, col 72): < 3))
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Expected one of: COLUMNS, CAST, NULL, multiplicative expression, additive expression, case, function, array, parenthesized expression, SELECT subquery, identifier, compound identifier, asterisk, qualified asterisk, COLUMNS matcher, CAST expression, SUBSTRING expression, TRIM expression, LEFT expression, RIGHT expression, EXTRACT expression, DATE_ADD expression, DATE_DIFF expression, number, string literal, literal, substitution, element of expression, SUBSTRING, LEFT, RIGHT, EXTRACT, DATEADD, DATE_ADD, TIMESTAMPADD, TIMESTAMP_ADD, DATESUB, DATE_SUB, TIMESTAMPSUB, TIMESTAMP_SUB, INTERVAL, LTRIM, RTRIM, TRIM, DATEDIFF, DATE_DIFF, TIMESTAMPDIFF, TIMESTAMP_DIFF, list of elements, array element expression, tuple element expression, unary minus expression, INTERVAL operator expression, BETWEEN expression, CASE, string concatenation expression, list, delimited by binary operators, list, delimited by operator of variable arity, expression with prefix unary operator
+
+TestIntRightShift Failed
+DB::Exception: Syntax error: failed at position 74 (line 1, col 74): > 2))
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Expected one of: COLUMNS, CAST, NULL, multiplicative expression, additive expression, case, function, array, parenthesized expression, SELECT subquery, identifier, compound identifier, asterisk, qualified asterisk, COLUMNS matcher, CAST expression, SUBSTRING expression, TRIM expression, LEFT expression, RIGHT expression, EXTRACT expression, DATE_ADD expression, DATE_DIFF expression, number, string literal, literal, substitution, element of expression, SUBSTRING, LEFT, RIGHT, EXTRACT, DATEADD, DATE_ADD, TIMESTAMPADD, TIMESTAMP_ADD, DATESUB, DATE_SUB, TIMESTAMPSUB, TIMESTAMP_SUB, INTERVAL, LTRIM, RTRIM, TRIM, DATEDIFF, DATE_DIFF, TIMESTAMPDIFF, TIMESTAMP_DIFF, list of elements, array element expression, tuple element expression, unary minus expression, INTERVAL operator expression, BETWEEN expression, CASE, string concatenation expression, list, delimited by binary operators, list, delimited by operator of variable arity, expression with prefix unary operator
+
+TestIntBitwiseAnd Failed
+DB::Exception: Syntax error: failed at position 71 (line 1, col 71): & 3))
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestIntBitwiseOr Failed
+DB::Exception: Syntax error: failed at position 73 (line 1, col 73): | 3))
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Pipe symbol could only occur in || operator
+
+TestIntBitwiseExclusiveOr Failed
+DB::Exception: Syntax error: failed at position 72 (line 1, col 72): & ~1) | (~(CASE WHEN (t0."CustomerID" = 'ALFKI') THEN 1 ELSE 1 END) & 1)))
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestIntBitwiseNot Failed
+DB::Exception: Syntax error: failed at position 12 (line 1, col 12): ~(CASE WHEN (t0."CustomerID" = 'ALFKI') THEN -1 ELSE -1 END))
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestIntNegate Failed
+Sequence contains no elements
+
+TestAnd Failed
+Assert failure - expected: 2 actual: 0
+
+TestOr Failed
+Assert failure - expected: 15 actual: 0
+
+TestNot Failed
+Assert failure - expected: 78 actual: 0
+
+TestEqualLiteralNull Failed
+Sequence contains no elements
+
+TestEqualLiteralNullReversed Failed
+Sequence contains no elements
+
+TestNotEqualLiteralNull Failed
+Sequence contains no elements
+
+TestNotEqualLiteralNullReversed Failed
+Sequence contains no elements
+
+TestRelationshipEqualNull Failed
+Sequence contains no elements
+
+TestRelationshipEqualNullReversed Failed
+Sequence contains no elements
+
+TestRelationshipNotEqualNull Failed
+Sequence contains no elements
+
+TestRelationshipNotEqualNullReversed Failed
+Sequence contains no elements
+
+TestConditionalResultsArePredicates Failed
+Sequence contains no elements
+
+TestConditionalWithInvalidCase Failed
+DB::Exception: Syntax error: failed at position 54 (line 2, col 10): 0
+  FROM "Orders" AS t1
+  WHERE (t1."CustomerID" = t0."CustomerID")
+  )) THEN 1 ELSE 0 END AS "c0"
+FROM "Customers" AS t0. Expected one of: AND, OR, alias, token, AS, NOT, BETWEEN, LIKE, IS, NOT LIKE, IN, NOT IN, GLOBAL IN, GLOBAL NOT IN, Comma, Dot, Arrow, QuestionMark
+
+TestSelectManyJoined Failed
+Assert failure - expected: 830 actual: 0
+
+TestSelectManyJoinedDefaultIfEmpty Failed
+Assert failure - expected: 832 actual: 0
+
+TestAssociationInWhere Failed
+Assert failure - expected: 14 actual: 0
+
+TestAssociationInWhereDuplicate Failed
+Sequence contains no elements
+
+TestAssociationInWhereDeep Failed
+Assert failure - expected: 10 actual: 0
+
+TestAssocationInSelectDeep Failed
+Assert failure - expected: 2155 actual: 0
+
+TestAssociationInSelect Failed
+Assert failure - expected: 6 actual: 0
+
+TestAssociationInSelectDuplicate Failed
+Assert failure - expected: 6 actual: 0
+
+TestAssociationInSelectAndWhereDuplicate Failed
+Assert failure - expected: 108 actual: 0
+
+TestCustomersIncludeOrders Failed
+Assert failure - expected: 1 actual: 0
+
+TestCustomersIncludeOrdersAndDetails Failed
+Assert failure - expected: 1 actual: 0
+
+TestCustomersIncludeOrdersViaConstructorOnly Failed
+Assert failure - expected: 1 actual: 0
+
+TestCustomersIncludeOrdersWhere Failed
+DB::Exception: Syntax error: failed at position 172 (line 4, col 62): & 1) = 0))
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestCustomersIncludeOrdersDeferred Failed
+Assert failure - expected: 1 actual: 0
+
+TestCustomersAssociateOrders Failed
+DB::Exception: Syntax error: failed at position 134 (line 4, col 65): & 1) = 0))
+  ) AS "c0"
+FROM "Customers" AS t0
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestCustomersIncludeThenAssociateOrders Failed
+DB::Exception: Syntax error: failed at position 172 (line 4, col 62): & 1) = 0))
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestCustomersAssociateThenIncludeOrders Failed
+DB::Exception: Syntax error: failed at position 172 (line 4, col 62): & 1) = 0))
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestOrdersIncludeDetailsWithGroupBy Failed
+Assert failure - expected: 1 actual: 0
+
+TestCustomersApplyFilter Failed
+Assert failure - expected: 6 actual: 0
+
+TestCustomersApplyComputedFilter Failed
+Assert failure - expected: 6 actual: 0
+
+TestCustomersApplyFilterTwice Failed
+Assert failure - expected: 6 actual: 0
+
+TestCustomersApplyOrder Failed
+Assert failure - expected: 6 actual: 0
+
+TestCustomersApplyOrderAndAssociateOrders Failed
+DB::Exception: Syntax error: failed at position 215 (line 4, col 105): & 1) = 0))
+WHERE (t0."CustomerID" = 'ALFKI'). Unrecognized token
+
+TestOrdersIncludeDetailsWithFirst Failed
+Sequence contains no elements
+
+TestReverseTakeReverse Failed
+Assert failure - expected: 5 actual: 0
+
+TestReverseWhereTakeReverse Failed
+Assert failure - expected: 5 actual: 0
+
+TestLast Failed
+Sequence contains no elements
+
+TestLastPredicate Failed
+Sequence contains no elements
+
+TestWhereLast Failed
+Sequence contains no elements
+
+TestLastOrDefault Failed
+Assert failure - value not expected: 
+
+TestLastOrDefaultPredicate Failed
+Assert failure - value not expected: 
+
+TestWhereLastOrDefault Failed
+Assert failure - value not expected: 
+
+TestSinglePredicate Failed
+Sequence contains no elements
+
+TestWhereSingle Failed
+Sequence contains no elements
+
+TestSingleOrDefaultFails Failed
+Assert Failure - expected: exception of type 'Exception'  actual: no exception.
+
+TestSingleOrDefaultPredicate Failed
+Assert failure - value not expected: 
+
+TestWhereSingleOrDefault Failed
+Assert failure - value not expected: 
+
+TestAnyTopLevel Failed
+Assert failure - expected: True actual: False
+
+TestAnyWithSubquery Failed
+DB::Exception: Syntax error: failed at position 146 (line 4, col 10): 0
+  FROM "Orders" AS t1
+  WHERE ((t1."CustomerID" = t0."CustomerID") AND (t1."CustomerID" = 'ALFKI'))
+  ). Expected one of: AND, OR, alias, token, AS, NOT, BETWEEN, LIKE, IS, NOT LIKE, IN, NOT IN, GLOBAL IN, GLOBAL NOT IN, Comma, Dot, Arrow, QuestionMark
+
+TestAnyWithSubqueryNoPredicate Failed
+DB::Exception: Syntax error: failed at position 146 (line 4, col 10): 0
+  FROM "Orders" AS t1
+  WHERE (t1."CustomerID" = t0."CustomerID")
+  ). Expected one of: AND, OR, alias, token, AS, NOT, BETWEEN, LIKE, IS, NOT LIKE, IN, NOT IN, GLOBAL IN, GLOBAL NOT IN, Comma, Dot, Arrow, QuestionMark
+
+TestAnyWithLocalCollection Failed
+Assert failure - expected: 2 actual: 0
+
+TestAllWithSubquery Failed
+DB::Exception: Syntax error: failed at position 150 (line 4, col 10): 0
+  FROM "Orders" AS t1
+  WHERE ((t1."CustomerID" = t0."CustomerID") AND NOT (t1."CustomerID" = 'ALFKI'))
+  ). Expected one of: AND, OR, alias, token, AS, NOT, BETWEEN, LIKE, IS, NOT LIKE, IN, NOT IN, GLOBAL IN, GLOBAL NOT IN, Comma, Dot, Arrow, QuestionMark
+
+TestAllTopLevel Failed
+Assert failure - expected: True actual: False
+
+TestContainsWithSubquery Failed
+Assert failure - expected: 89 actual: 0
+
+TestContainsWithLocalCollection Failed
+Assert failure - expected: 2 actual: 0
+
+TestContainsTopLevel Failed
+Assert failure - expected: True actual: False
+
+TestSkipTake Failed
+Assert failure - expected: 10 actual: 0
+
+TestDistinctSkipTake Failed
+Assert failure - expected: 10 actual: 0
+
+TestCoalesce Failed
+Assert failure - expected: 6 actual: 0
+
+TestCoalesce2 Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringLength Failed
+Assert failure - expected: 9 actual: 0
+
+TestStringStartsWithLiteral Failed
+Assert failure - expected: 12 actual: 0
+
+TestStringStartsWithColumn Failed
+DB::Exception: Functions 'like' and 'match' don't support non-constant needle argument
+
+TestStringEndsWithLiteral Failed
+Assert failure - expected: 9 actual: 0
+
+TestStringEndsWithColumn Failed
+DB::Exception: Functions 'like' and 'match' don't support non-constant needle argument
+
+TestStringContainsColumn Failed
+Assert failure - expected: 91 actual: 0
+
+TestStringConcatImplicit2Args Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringConcatExplicit2Args Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringConcatExplicit3Args Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringConcatExplicitNArgs Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringIsNullOrEmpty Failed
+Assert failure - expected: 6 actual: 0
+
+TestStringToUpper Failed
+Sequence contains no elements
+
+TestStringToLower Failed
+Sequence contains no elements
+
+TestStringSubstring Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringSubstringNoLength Failed
+Assert failure - expected: 1 actual: 0
+
+TestStringIndexOf Failed
+The method 'IndexOf' is not supported
+
+TestStringIndexOfChar Failed
+The method 'IndexOf' is not supported
+
+TestStringIndexOfWithStart Failed
+The method 'IndexOf' is not supported
+
+TestStringTrim Failed
+Sequence contains no elements
+
+TestDateTimeConstructYMD Failed
+DB::Exception: Illegal column UInt8 of argument of function concat
+
+TestDateTimeConstructYMDHMS Failed
+DB::Exception: Illegal column UInt16 of argument of function concat
+
+TestDateTimeDay Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeMonth Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeYear Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeHour Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeMinute Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeSecond Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeDayOfWeek Failed
+DB::Exception: Unknown function STRFTIME. Maybe you meant: ['toTime']
+
+TestDateTimeAddYears Failed
+The method 'AddYears' is not supported
+
+TestDateTimeAddMonths Failed
+The method 'AddMonths' is not supported
+
+TestDateTimeAddDays Failed
+The method 'AddDays' is not supported
+
+TestDateTimeAddHours Failed
+The method 'AddHours' is not supported
+
+TestDateTimeAddMinutes Failed
+The method 'AddMinutes' is not supported
+
+TestDateTimeAddSeconds Failed
+The method 'AddSeconds' is not supported
+
+TestMathAbs Failed
+Sequence contains no elements
+
+TestMathAtan Failed
+Sequence contains no elements
+
+TestMathCos Failed
+Sequence contains no elements
+
+TestMathSin Failed
+Sequence contains no elements
+
+TestMathTan Failed
+Sequence contains no elements
+
+TestMathExp Failed
+Sequence contains no elements
+
+TestMathLog Failed
+Sequence contains no elements
+
+TestMathSqrt Failed
+Sequence contains no elements
+
+TestMathPow Failed
+Sequence contains no elements
+
+TestMathRoundDefault Failed
+Sequence contains no elements
+
+TestMathFloor Failed
+The method 'Floor' is not supported
+
+TestDecimalFloor Failed
+The method 'Floor' is not supported
+
+TestMathTruncate Failed
+The method 'Truncate' is not supported
+
+TestStringCompareTo Failed
+Sequence contains no elements
+
+TestStringCompareToLT Failed
+Assert failure - value not expected: 
+
+TestStringCompareToLE Failed
+Assert failure - value not expected: 
+
+TestStringCompareToGT Failed
+Assert failure - value not expected: 
+
+TestStringCompareToGE Failed
+Assert failure - value not expected: 
+
+TestStringCompareToEQ Failed
+Assert failure - value not expected: 
+
+TestCompiledQueryCount Failed
+Sequence contains no elements
+
+TestWhere Failed
+Assert failure - expected: 6 actual: 0
+
+TestWhereTrue Failed
+Assert failure - expected: 91 actual: 0
+
+TestCompareEntityEqual Failed
+Assert failure - expected: 1 actual: 0
+
+TestCompareEntityNotEqual Failed
+Assert failure - expected: 90 actual: 0
+
+TestCompareConstructedEqual Failed
+Assert failure - expected: 6 actual: 0
+
+TestCompareConstructedMultiValueEqual Failed
+Assert failure - expected: 6 actual: 0
+
+TestCompareConstructedMultiValueNotEqual Failed
+Assert failure - expected: 85 actual: 0
+
+TestSelectScalar Failed
+Assert failure - expected: 6 actual: 0
+
+TestSelectAnonymousOne Failed
+Assert failure - expected: 6 actual: 0
+
+TestSelectAnonymousTwo Failed
+Assert failure - expected: 6 actual: 0
+
+TestSelectCustomerTable Failed
+Assert failure - expected: 91 actual: 0
+
+TestSelectAnonymousWithObject Failed
+Assert failure - expected: 6 actual: 0
+
+TestSelectAnonymousLiteral Failed
+Assert failure - expected: 6 actual: 0
+
+TestSelectConstantInt Failed
+Assert failure - expected: 91 actual: 0
+
+TestSelectConstantNullString Failed
+Assert failure - expected: 91 actual: 0
+
+TestSelectLocal Failed
+Assert failure - expected: 91 actual: 0
+
+TestSelectNestedCollection Failed
+Assert failure - expected: 1 actual: 0
+
+TestSelectNestedCollectionInAnonymousType Failed
+Assert failure - expected: 1 actual: 0
+
+TestJoinCustomerOrders Failed
+Assert failure - expected: 6 actual: 0
+
+TestJoinMultiKey Failed
+Assert failure - expected: 6 actual: 0
+
+TestJoinIntoCustomersOrdersCount Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestJoinIntoDefaultIfEmpty Failed
+Assert failure - expected: 1 actual: 0
+
+TestMultipleJoinsWithJoinConditionsInWhere Failed
+Assert failure - expected: 12 actual: 0
+
+TestMultipleJoinsWithMissingJoinCondition Failed
+Assert failure - expected: 12930 actual: 0
+
+TestOrderBy Failed
+Assert failure - expected: 91 actual: 0
+
+TestOrderByOrderBy Failed
+Assert failure - expected: 91 actual: 0
+
+TestOrderByThenBy Failed
+Assert failure - expected: 91 actual: 0
+
+TestOrderByDescending Failed
+Assert failure - expected: 91 actual: 0
+
+TestOrderByDescendingThenBy Failed
+Assert failure - expected: 91 actual: 0
+
+TestOrderByDescendingThenByDescending Failed
+Assert failure - expected: 91 actual: 0
+
+TestCountProperty Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestGroupBy Failed
+Assert failure - expected: 69 actual: 0
+
+TestGroupByOne Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupBySelectMany Failed
+DB::Exception: Invalid expression for JOIN ON. Expected equals expression, got (isNull(t1.City) AND isNull(City)) OR (t1.City = City). Supported syntax: JOIN ON Expr([table.]column, ...) = Expr([table.]column, ...) [AND Expr([table.]column, ...) = Expr([table.]column, ...) ...]
+
+TestGroupBySum Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByCount Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByLongCount Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupBySumMinMaxAvg Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByWithResultSelector Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByWithElementSelectorSum Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByWithElementSelector Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByWithElementSelectorSumMax Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByWithAnonymousElement Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByWithTwoPartKey Failed
+Assert failure - expected: 6 actual: 0
+
+TestGroupByWithCountInWhere Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestOrderByGroupBy Failed
+Assert failure - expected: 1 actual: 0
+
+TestOrderByGroupBySelectMany Failed
+DB::Exception: Invalid expression for JOIN ON. Expected equals expression, got (isNull(t1.CustomerID) AND isNull(CustomerID)) OR (t1.CustomerID = CustomerID). Supported syntax: JOIN ON Expr([table.]column, ...) = Expr([table.]column, ...) [AND Expr([table.]column, ...) = Expr([table.]column, ...) ...]
+
+TestSumWithNoArg Failed
+Sequence contains no elements
+
+TestSumWithArg Failed
+Sequence contains no elements
+
+TestCountWithNoPredicate Failed
+Sequence contains no elements
+
+TestCountWithPredicate Failed
+Sequence contains no elements
+
+TestDistinctNoDupes Failed
+Assert failure - expected: 91 actual: 0
+
+TestDistinctScalar Failed
+Assert failure - expected: 69 actual: 0
+
+TestDistinctWithCase Failed
+Assert failure - expected: 2 actual: 0
+
+TestDistinctOrderBy Failed
+Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+
+TestDistinctGroupBy Failed
+Assert failure - expected: 1 actual: 0
+
+TestGroupByDistinct Failed
+Assert failure - expected: 1 actual: 0
+
+TestDistinctCount Failed
+Sequence contains no elements
+
+TestSelectDistinctCount Failed
+Sequence contains no elements
+
+TestSelectSelectDistinctCount Failed
+Sequence contains no elements
+
+TestDistinctCountPredicate Failed
+Sequence contains no elements
+
+TestDistinctSumWithArg Failed
+Sequence contains no elements
+
+TestSelectDistinctSum Failed
+Sequence contains no elements
+
+TestTake Failed
+Assert failure - expected: 5 actual: 0
+
+TestTakeDistinct Failed
+Assert failure - expected: 1 actual: 0
+
+TestDistinctTake Failed
+Assert failure - expected: 5 actual: 0
+
+TestDistinctTakeCount Failed
+Sequence contains no elements
+
+TestTakeDistinctCount Failed
+Sequence contains no elements
+
+TestFirst Failed
+Sequence contains no elements
+
+TestFirstPredicate Failed
+Sequence contains no elements
+
+TestWhereFirst Failed
+Sequence contains no elements
+
+TestFirstOrDefault Failed
+Assert failure - value not expected: 
+
+TestFirstOrDefaultPredicate Failed
+Assert failure - value not expected: 
+
+TestWhereFirstOrDefault Failed
+Assert failure - value not expected: 
+
+TestReverse Failed
+Assert failure - expected: 91 actual: 0
+
+TestReverseReverse Failed
+Assert failure - expected: 91 actual: 0
+
+TestReverseWhereReverse Failed
+Assert failure - expected: 6 actual: 0
+
+14 Passed
+  0 Skipped
+    231 Failed

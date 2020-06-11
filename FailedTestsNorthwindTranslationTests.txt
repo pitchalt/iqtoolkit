@@ -1,0 +1,28 @@
+NorthwindTranslationTests
+TestMathCeiling Failed
+The method 'Ceiling' is not supported
+
+TestMathFloor Failed
+The method 'Floor' is not supported
+
+TestMathTruncate Failed
+The method 'Truncate' is not supported
+
+TestDecimalTruncate Failed
+The method 'Truncate' is not supported
+
+TestDecimalCeiling Failed
+The method 'Ceiling' is not supported
+
+TestDecimalFloor Failed
+The method 'Floor' is not supported
+
+TestStringIndexOf Failed
+The method 'IndexOf' is not supported
+
+TestStringIndexOfChar Failed
+The method 'IndexOf' is not supported
+
+243 Passed
+  0 Skipped
+    8 Failed

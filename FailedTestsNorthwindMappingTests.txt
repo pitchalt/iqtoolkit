@@ -1,0 +1,100 @@
+NorthwindMappingTests
+TestBasicMapping_AttributesOnEntity Failed
+Assert failure - expected: 91 actual: 0
+
+TestBasicMapping_AttributesOnEntity_RuntimeType Failed
+Assert failure - expected: 91 actual: 0
+
+TestBasicMapping_AttributesOnContext Failed
+Assert failure - expected: 91 actual: 0
+
+TestBasicMapping_AttributesOnContext_TableNameInferred Failed
+Assert failure - expected: 91 actual: 0
+
+TestBasicMapping_AttributesOnContext_RuntimeType Failed
+Assert failure - expected: 91 actual: 0
+
+TestBasicMapping_XmlMapped Failed
+Assert failure - expected: 91 actual: 0
+
+TestBasicMapping_XmlMapped_RuntimeType Failed
+Assert failure - expected: 91 actual: 0
+
+TestAssociation_AttributesOnEntity_Orders Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestAssociation_AttributesOnEntity_Customer Failed
+Assert failure - expected: 25 actual: 0
+
+TestAssociation_AttributesOnEntity_DifferentKeys_Orders Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestAssociation_AttributesOnEntity_DifferenteKeys_Customer Failed
+Assert failure - expected: 25 actual: 0
+
+TestAssociation_AttributesOnContext_Orders Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestAssociation_AttributesOnContext_Customer Failed
+Assert failure - expected: 25 actual: 0
+
+TestAssociation_XmlMapping_Orders Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestAssociation_XmlMapping_Customer Failed
+Assert failure - expected: 25 actual: 0
+
+TestAssociation_XmlMapping_DifferentKeys_Orders Failed
+DB::Exception: Missing columns: 't0.CustomerID' while processing query: 'SELECT COUNT() FROM Orders AS t1 WHERE CustomerID = t0.CustomerID', required columns: 'CustomerID' 't0.CustomerID', source columns: 'ShipRegion' 'ShipPostalCode' 'ShipCity' 'ShipName' 'Freight' 'ShipAddress' 'ShippedDate' 'RequiredDate' 'OrderID' 'OrderDate' 'EmployeeID' 'ShipVia' 'ShipCountry' 'CustomerID'
+
+TestAssociation_XmlMapping_DifferenteKeys_Customer Failed
+Assert failure - expected: 25 actual: 0
+
+TestNestedEntity_AttributesDistributed Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesDistributed_NoNestedEntity Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesDistributed_MultipleNestedEntities Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesDistributed_DeeplyNested Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesAtRoot Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesAtRoot_PartialPath Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesAtRoot_MultipleNestedEntities Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesAtRoot_DeeplyNested Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesOnContext Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_AttributesOnContext_DeeplyNested Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_XmlMapped Failed
+Assert failure - expected: 9 actual: 0
+
+TestNestedEntity_XmlMapped_DeeplyNested Failed
+Assert failure - expected: 9 actual: 0
+
+TestMultiTable_AttributesOnEntity Failed
+Assert failure - expected: 20 actual: 0
+
+TestMultiTable_AttributesOnContext Failed
+Assert failure - expected: 20 actual: 0
+
+TestMultiTable_XmlMapped Failed
+Assert failure - expected: 20 actual: 0
+
+0 Passed
+  0 Skipped
+    32 Failed

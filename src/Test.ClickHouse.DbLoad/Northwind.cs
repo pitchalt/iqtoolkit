@@ -78,9 +78,9 @@ namespace Test.ClickHouse.DbLoad {
         
         public void DoReload(ClickHouseConnection clickHouseConnection) {
         var cmd = clickHouseConnection.CreateCommand();
-        cmd.CommandText = "drop database if exists Nothwind";
+        cmd.CommandText = "drop database if exists Northwind";
         cmd.ExecuteReader();
-        cmd.CommandText = "create database Nothwind";
+        cmd.CommandText = "create database Northwind";
         cmd.ExecuteReader();
             var _CustomerDemographicsList = CustomerDemographicsList;
             _CustomerDemographicsList.CreateTable(clickHouseConnection);
@@ -188,17 +188,17 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`CustomerDemographics` (CustomerTypeID) values @bulk";
+            command.CommandText = "insert into Northwind.`CustomerDemographics` (CustomerTypeID) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`CustomerDemographics` ("
+            command.CommandText = "create table Northwind.`CustomerDemographics` ("
                 + "CustomerTypeID String)"
-            +" ENGINE = MergeTree "
-            +"Order by (CustomerTypeID)";
+            + "Engine = MergeTree "
+            + "Order by (CustomerTypeID)";
             command.ExecuteNonQuery();
         }
         
@@ -265,18 +265,18 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Region` (RegionID, RegionDescription) values @bulk";
+            command.CommandText = "insert into Northwind.`Region` (RegionID, RegionDescription) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Region` ("
-                + "RegionID Int32,"
+            command.CommandText = "create table Northwind.`Region` ("
+                + "RegionID Int32, "
                 + "RegionDescription String)"
-            +" ENGINE = MergeTree "
-            +"Order by (RegionID)";
+            + "Engine = MergeTree "
+            + "Order by (RegionID)";
             command.ExecuteNonQuery();
         }
         
@@ -426,32 +426,32 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`TextEntry` (contentID, contentGUID, title, contentName, content, iconPath, dateExpires, lastEditedBy, externalLink, status, listOrder, callOut, createdOn, createdBy, modifiedOn, modifiedBy) values @bulk";
+            command.CommandText = "insert into Northwind.`TextEntry` (contentID, contentGUID, title, contentName, content, iconPath, dateExpires, lastEditedBy, externalLink, status, listOrder, callOut, createdOn, createdBy, modifiedOn, modifiedBy) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`TextEntry` ("
-                + "contentID Int32,"
-                + "contentGUID UUID,"
-                + "title String,"
-                + "contentName String,"
-                + "content String,"
-                + "iconPath String,"
-                + "dateExpires DateTime,"
-                + "lastEditedBy String,"
-                + "externalLink String,"
-                + "status String,"
-                + "listOrder Int32,"
-                + "callOut String,"
-                + "createdOn DateTime,"
-                + "createdBy String,"
-                + "modifiedOn DateTime,"
-                + "modifiedBy String)"
-            +" ENGINE = MergeTree "
-            +"Order by (contentID)";
+            command.CommandText = "create table Northwind.`TextEntry` ("
+                + "contentID Int32, "
+                + "contentGUID UUID, "
+                + "title Nullable(String), "
+                + "contentName String, "
+                + "content Nullable(String), "
+                + "iconPath Nullable(String), "
+                + "dateExpires Nullable(DateTime), "
+                + "lastEditedBy Nullable(String), "
+                + "externalLink Nullable(String), "
+                + "status Nullable(String), "
+                + "listOrder Int32, "
+                + "callOut Nullable(String), "
+                + "createdOn Nullable(DateTime), "
+                + "createdBy Nullable(String), "
+                + "modifiedOn Nullable(DateTime), "
+                + "modifiedBy Nullable(String))"
+            + "Engine = MergeTree "
+            + "Order by (contentID)";
             command.ExecuteNonQuery();
         }
         
@@ -611,33 +611,33 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Employees` (EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, ReportsTo, PhotoPath, Deleted) values @bulk";
+            command.CommandText = "insert into Northwind.`Employees` (EmployeeID, LastName, FirstName, Title, TitleOfCourtesy, BirthDate, HireDate, Address, City, Region, PostalCode, Country, HomePhone, Extension, ReportsTo, PhotoPath, Deleted) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Employees` ("
-                + "EmployeeID Int32,"
-                + "LastName String,"
-                + "FirstName String,"
-                + "Title String,"
-                + "TitleOfCourtesy String,"
-                + "BirthDate DateTime,"
-                + "HireDate DateTime,"
-                + "Address String,"
-                + "City String,"
-                + "Region String,"
-                + "PostalCode String,"
-                + "Country String,"
-                + "HomePhone String,"
-                + "Extension String,"
-                + "ReportsTo Int32,"
-                + "PhotoPath String,"
+            command.CommandText = "create table Northwind.`Employees` ("
+                + "EmployeeID Int32, "
+                + "LastName String, "
+                + "FirstName String, "
+                + "Title Nullable(String), "
+                + "TitleOfCourtesy Nullable(String), "
+                + "BirthDate Nullable(DateTime), "
+                + "HireDate Nullable(DateTime), "
+                + "Address Nullable(String), "
+                + "City Nullable(String), "
+                + "Region Nullable(String), "
+                + "PostalCode Nullable(String), "
+                + "Country Nullable(String), "
+                + "HomePhone Nullable(String), "
+                + "Extension Nullable(String), "
+                + "ReportsTo Nullable(Int32), "
+                + "PhotoPath Nullable(String), "
                 + "Deleted UInt8)"
-            +" ENGINE = MergeTree "
-            +"Order by (EmployeeID)";
+            + "Engine = MergeTree "
+            + "Order by (EmployeeID)";
             command.ExecuteNonQuery();
         }
         
@@ -704,18 +704,18 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Categories` (CategoryID, CategoryName) values @bulk";
+            command.CommandText = "insert into Northwind.`Categories` (CategoryID, CategoryName) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Categories` ("
-                + "CategoryID Int32,"
+            command.CommandText = "create table Northwind.`Categories` ("
+                + "CategoryID Int32, "
                 + "CategoryName String)"
-            +" ENGINE = MergeTree "
-            +"Order by (CategoryID)";
+            + "Engine = MergeTree "
+            + "Order by (CategoryID)";
             command.ExecuteNonQuery();
         }
         
@@ -848,27 +848,27 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Customers` (CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values @bulk";
+            command.CommandText = "insert into Northwind.`Customers` (CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Customers` ("
-                + "CustomerID String,"
-                + "CompanyName String,"
-                + "ContactName String,"
-                + "ContactTitle String,"
-                + "Address String,"
-                + "City String,"
-                + "Region String,"
-                + "PostalCode String,"
-                + "Country String,"
-                + "Phone String,"
-                + "Fax String)"
-            +" ENGINE = MergeTree "
-            +"Order by (CustomerID)";
+            command.CommandText = "create table Northwind.`Customers` ("
+                + "CustomerID String, "
+                + "CompanyName String, "
+                + "ContactName Nullable(String), "
+                + "ContactTitle Nullable(String), "
+                + "Address Nullable(String), "
+                + "City Nullable(String), "
+                + "Region Nullable(String), "
+                + "PostalCode Nullable(String), "
+                + "Country Nullable(String), "
+                + "Phone Nullable(String), "
+                + "Fax Nullable(String))"
+            + "Engine = MergeTree "
+            + "Order by (CustomerID)";
             command.ExecuteNonQuery();
         }
         
@@ -942,19 +942,19 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Shippers` (ShipperID, CompanyName, Phone) values @bulk";
+            command.CommandText = "insert into Northwind.`Shippers` (ShipperID, CompanyName, Phone) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Shippers` ("
-                + "ShipperID Int32,"
-                + "CompanyName String,"
-                + "Phone String)"
-            +" ENGINE = MergeTree "
-            +"Order by (ShipperID)";
+            command.CommandText = "create table Northwind.`Shippers` ("
+                + "ShipperID Int32, "
+                + "CompanyName String, "
+                + "Phone Nullable(String))"
+            + "Engine = MergeTree "
+            + "Order by (ShipperID)";
             command.ExecuteNonQuery();
         }
         
@@ -1084,27 +1084,27 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Suppliers` (SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values @bulk";
+            command.CommandText = "insert into Northwind.`Suppliers` (SupplierID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Suppliers` ("
-                + "SupplierID Int32,"
-                + "CompanyName String,"
-                + "ContactName String,"
-                + "ContactTitle String,"
-                + "Address String,"
-                + "City String,"
-                + "Region String,"
-                + "PostalCode String,"
-                + "Country String,"
-                + "Phone String,"
-                + "Fax String)"
-            +" ENGINE = MergeTree "
-            +"Order by (SupplierID)";
+            command.CommandText = "create table Northwind.`Suppliers` ("
+                + "SupplierID Int32, "
+                + "CompanyName String, "
+                + "ContactName Nullable(String), "
+                + "ContactTitle Nullable(String), "
+                + "Address Nullable(String), "
+                + "City Nullable(String), "
+                + "Region Nullable(String), "
+                + "PostalCode Nullable(String), "
+                + "Country Nullable(String), "
+                + "Phone Nullable(String), "
+                + "Fax Nullable(String))"
+            + "Engine = MergeTree "
+            + "Order by (SupplierID)";
             command.ExecuteNonQuery();
         }
         
@@ -1171,18 +1171,18 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`EmployeeTerritories` (EmployeeID, TerritoryID) values @bulk";
+            command.CommandText = "insert into Northwind.`EmployeeTerritories` (EmployeeID, TerritoryID) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`EmployeeTerritories` ("
-                + "EmployeeID Int32,"
+            command.CommandText = "create table Northwind.`EmployeeTerritories` ("
+                + "EmployeeID Int32, "
                 + "TerritoryID String)"
-            +" ENGINE = MergeTree "
-            +"Order by (EmployeeID,TerritoryID)";
+            + "Engine = MergeTree "
+            + "Order by (EmployeeID,TerritoryID)";
             command.ExecuteNonQuery();
         }
         
@@ -1258,21 +1258,21 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Order Details` (OrderID, ProductID, UnitPrice, Quantity, Discount) values @bulk";
+            command.CommandText = "insert into Northwind.`Order Details` (OrderID, ProductID, UnitPrice, Quantity, Discount) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Order Details` ("
-                + "OrderID Int32,"
-                + "ProductID Int32,"
-                + "UnitPrice Decimal32(4),"
-                + "Quantity Int16,"
+            command.CommandText = "create table Northwind.`Order Details` ("
+                + "OrderID Int32, "
+                + "ProductID Int32, "
+                + "UnitPrice Decimal32(4), "
+                + "Quantity Int16, "
                 + "Discount Float64)"
-            +" ENGINE = MergeTree "
-            +"Order by (OrderID,ProductID)";
+            + "Engine = MergeTree "
+            + "Order by (OrderID,ProductID)";
             command.ExecuteNonQuery();
         }
         
@@ -1336,18 +1336,18 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Product_Category_Map` (CategoryID, ProductID) values @bulk";
+            command.CommandText = "insert into Northwind.`Product_Category_Map` (CategoryID, ProductID) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Product_Category_Map` ("
-                + "CategoryID Int32,"
+            command.CommandText = "create table Northwind.`Product_Category_Map` ("
+                + "CategoryID Int32, "
                 + "ProductID Int32)"
-            +" ENGINE = MergeTree "
-            +"Order by (CategoryID,ProductID)";
+            + "Engine = MergeTree "
+            + "Order by (CategoryID,ProductID)";
             command.ExecuteNonQuery();
         }
         
@@ -1417,18 +1417,18 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`CustomerCustomerDemo` (CustomerID, CustomerTypeID) values @bulk";
+            command.CommandText = "insert into Northwind.`CustomerCustomerDemo` (CustomerID, CustomerTypeID) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`CustomerCustomerDemo` ("
-                + "CustomerID String,"
+            command.CommandText = "create table Northwind.`CustomerCustomerDemo` ("
+                + "CustomerID String, "
                 + "CustomerTypeID String)"
-            +" ENGINE = MergeTree "
-            +"Order by (CustomerID,CustomerTypeID)";
+            + "Engine = MergeTree "
+            + "Order by (CustomerID,CustomerTypeID)";
             command.ExecuteNonQuery();
         }
         
@@ -1502,19 +1502,19 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Territories` (TerritoryID, TerritoryDescription, RegionID) values @bulk";
+            command.CommandText = "insert into Northwind.`Territories` (TerritoryID, TerritoryDescription, RegionID) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Territories` ("
-                + "TerritoryID String,"
-                + "TerritoryDescription String,"
+            command.CommandText = "create table Northwind.`Territories` ("
+                + "TerritoryID String, "
+                + "TerritoryDescription String, "
                 + "RegionID Int32)"
-            +" ENGINE = MergeTree "
-            +"Order by (TerritoryID)";
+            + "Engine = MergeTree "
+            + "Order by (TerritoryID)";
             command.ExecuteNonQuery();
         }
         
@@ -1647,30 +1647,30 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Orders` (OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) values @bulk";
+            command.CommandText = "insert into Northwind.`Orders` (OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Orders` ("
-                + "OrderID Int32,"
-                + "CustomerID String,"
-                + "EmployeeID Int32,"
-                + "OrderDate DateTime,"
-                + "RequiredDate DateTime,"
-                + "ShippedDate DateTime,"
-                + "ShipVia Int32,"
-                + "Freight Decimal32(4),"
-                + "ShipName String,"
-                + "ShipAddress String,"
-                + "ShipCity String,"
-                + "ShipRegion String,"
-                + "ShipPostalCode String,"
-                + "ShipCountry String)"
-            +" ENGINE = MergeTree "
-            +"Order by (OrderID)";
+            command.CommandText = "create table Northwind.`Orders` ("
+                + "OrderID Int32, "
+                + "CustomerID Nullable(String), "
+                + "EmployeeID Nullable(Int32), "
+                + "OrderDate Nullable(DateTime), "
+                + "RequiredDate Nullable(DateTime), "
+                + "ShippedDate Nullable(DateTime), "
+                + "ShipVia Nullable(Int32), "
+                + "Freight Nullable(Decimal32(4)), "
+                + "ShipName Nullable(String), "
+                + "ShipAddress Nullable(String), "
+                + "ShipCity Nullable(String), "
+                + "ShipRegion Nullable(String), "
+                + "ShipPostalCode Nullable(String), "
+                + "ShipCountry Nullable(String))"
+            + "Engine = MergeTree "
+            + "Order by (OrderID)";
             command.ExecuteNonQuery();
         }
         
@@ -1813,34 +1813,34 @@ namespace Test.ClickHouse.DbLoad {
         public void Reload(ClickHouseConnection clickHouseConnection) {
             if (this.Count == 0) return;
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "insert into Nothwind.`Products` (ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, AttributeXML, DateCreated, ProductGUID, CreatedOn, CreatedBy, ModifiedOn, ModifiedBy, Deleted) values @bulk";
+            command.CommandText = "insert into Northwind.`Products` (ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued, AttributeXML, DateCreated, ProductGUID, CreatedOn, CreatedBy, ModifiedOn, ModifiedBy, Deleted) values @bulk";
             command.Parameters.Add(new ClickHouseParameter { ParameterName = "bulk", Value = this });
             command.ExecuteNonQuery();
         }
         
         public void CreateTable(ClickHouseConnection clickHouseConnection) {
             var command = clickHouseConnection.CreateCommand();
-            command.CommandText = "create table Nothwind.`Products` ("
-                + "ProductID Int32,"
-                + "ProductName String,"
-                + "SupplierID Int32,"
-                + "CategoryID Int32,"
-                + "QuantityPerUnit String,"
-                + "UnitPrice Decimal32(4),"
-                + "UnitsInStock Int16,"
-                + "UnitsOnOrder Int16,"
-                + "ReorderLevel Int16,"
-                + "Discontinued UInt8,"
-                + "AttributeXML String,"
-                + "DateCreated DateTime,"
-                + "ProductGUID UUID,"
-                + "CreatedOn DateTime,"
-                + "CreatedBy String,"
-                + "ModifiedOn DateTime,"
-                + "ModifiedBy String,"
+            command.CommandText = "create table Northwind.`Products` ("
+                + "ProductID Int32, "
+                + "ProductName String, "
+                + "SupplierID Nullable(Int32), "
+                + "CategoryID Nullable(Int32), "
+                + "QuantityPerUnit Nullable(String), "
+                + "UnitPrice Nullable(Decimal32(4)), "
+                + "UnitsInStock Nullable(Int16), "
+                + "UnitsOnOrder Nullable(Int16), "
+                + "ReorderLevel Nullable(Int16), "
+                + "Discontinued UInt8, "
+                + "AttributeXML Nullable(String), "
+                + "DateCreated Nullable(DateTime), "
+                + "ProductGUID Nullable(UUID), "
+                + "CreatedOn DateTime, "
+                + "CreatedBy Nullable(String), "
+                + "ModifiedOn DateTime, "
+                + "ModifiedBy Nullable(String), "
                 + "Deleted UInt8)"
-            +" ENGINE = MergeTree "
-            +"Order by (ProductID)";
+            + "Engine = MergeTree "
+            + "Order by (ProductID)";
             command.ExecuteNonQuery();
         }
         

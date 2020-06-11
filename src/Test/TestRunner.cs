@@ -171,29 +171,41 @@ namespace Test
             public void RunTests()
             {
                 Console.WriteLine(testType.Name);
+                
 
                 Setup();
-
-                try
+                using (StreamWriter file = new StreamWriter(@"D:\Share\Users\IQToolkit\FailedTests" + $"{testType.Name}.txt"))
                 {
-                    foreach (var testMethod in testMethods)
+                    file.WriteLine(testType.Name);
+                    try
                     {
-                        RunTest(testMethod);
-                    }
-                }
-                finally
-                {
-                    var color = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("{0} Passed", this.passed);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("  {0} Skipped", this.skipped);
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("  {0} Failed", this.failed);
-                    Console.ForegroundColor = color;
-                    Console.WriteLine();
 
-                    Teardown();
+                        foreach (var testMethod in testMethods)
+                        {
+                            RunTest(testMethod, file);
+                        }
+
+
+                    }
+                    finally
+                    {
+                        var color = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("{0} Passed", this.passed);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("  {0} Skipped", this.skipped);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("  {0} Failed", this.failed);
+                        Console.ForegroundColor = color;
+                        Console.WriteLine();
+
+
+                        file.WriteLine("{0} Passed", this.passed);
+                        file.WriteLine("  {0} Skipped", this.skipped);
+                        file.WriteLine("    {0} Failed", this.failed);
+
+                        Teardown();
+                    }
                 }
             }
 
@@ -237,7 +249,7 @@ namespace Test
                 }
             }
 
-            private void RunTest(MethodInfo testMethod)
+            private void RunTest(MethodInfo testMethod, StreamWriter file)
             {
                 var color = Console.ForegroundColor;
 
@@ -284,6 +296,10 @@ namespace Test
                     Console.WriteLine(e.Message);
                     Console.ForegroundColor = color;
 
+                    file.WriteLine("{0} Failed", testMethod.Name);
+                    file.WriteLine(e.Message);
+                    file.WriteLine();
+
                     if (this.runner.verbose)
                     {
                         Console.WriteLine(e.StackTrace);
@@ -292,6 +308,8 @@ namespace Test
                 finally
                 {
                     Console.ForegroundColor = color;
+
+              
 
                     if (this.runner.verbose)
                     {
