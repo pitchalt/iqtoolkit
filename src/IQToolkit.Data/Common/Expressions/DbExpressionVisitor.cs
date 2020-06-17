@@ -132,6 +132,7 @@ namespace IQToolkit.Data.Common
                 || isReverse != select.IsReverse
                 )
             {
+                var me = new SelectExpression(select.Alias, columns, from, where, orderBy, groupBy, isDistinct, skip, take, isReverse);
                 return new SelectExpression(select.Alias, columns, from, where, orderBy, groupBy, isDistinct, skip, take, isReverse);
             }
             return select;

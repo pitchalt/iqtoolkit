@@ -1284,7 +1284,7 @@ namespace Test
             Assert.Equal(Math.Truncate(3.6), six);
             Assert.Equal(Math.Truncate(-3.4), neg4);
         }
-
+          
         public void TestStringCompareTo()
         {
             var lt = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => c.City.CompareTo("Seattle"));

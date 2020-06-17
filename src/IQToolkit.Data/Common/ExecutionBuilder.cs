@@ -233,6 +233,7 @@ namespace IQToolkit.Data.Common
             string commandText = this.linguist.Format(projection.Select);
             ReadOnlyCollection<NamedValueExpression> namedValues = NamedValueGatherer.Gather(projection.Select);
             QueryCommand command = new QueryCommand(commandText, namedValues.Select(v => new QueryParameter(v.Name, v.Type, v.QueryType)));
+            var me = namedValues.Select(v => new QueryParameter(v.Name, v.Type, v.QueryType));
             Expression[] values = namedValues.Select(v => Expression.Convert(this.Visit(v.Value), typeof(object))).ToArray();
 
             return this.ExecuteProjection(projection, okayToDefer, command, values);

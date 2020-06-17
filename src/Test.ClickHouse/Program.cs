@@ -125,7 +125,7 @@ namespace Test
 
             public override string GetBaseLineFilePath()
             {
-                return @"D:\Share\Users\IQToolkit\src\Test.ClickHouse\bin\Debug\netcoreapp2.1\NorthwindTranslation_ClickHouseQueryProvider";
+                return "NorthwindTranslation_" + this.GetProvider().GetType().Name;
             }
         }
 

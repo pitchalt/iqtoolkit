@@ -346,6 +346,7 @@ namespace IQToolkit.Data
                 var freader = new DbFieldReader(this, reader);
                 try
                 {
+
                     while (reader.Read())
                     {
                         yield return fnProjector(freader);

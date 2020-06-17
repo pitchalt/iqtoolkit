@@ -9,6 +9,7 @@ using ClickHouse.Ado;
 namespace IQToolkit.Data.ClickHouse
 {
     using IQToolkit.Data.Common;
+    using System.Collections.Generic;
 
     /// <summary>
     /// A <see cref="DbEntityProvider"/> for MySql databases
@@ -78,6 +79,41 @@ namespace IQToolkit.Data.ClickHouse
                 }
 
                 p.Value = value ?? DBNull.Value;
+            }
+
+            public override IEnumerable<T> Execute<T>(QueryCommand command, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
+            {
+                return base.Execute(command, fnProjector, entity, paramValues);
+            }
+
+            protected override IEnumerable<T> Project<T>(IDataReader reader, Func<FieldReader, T> fnProjector, MappingEntity entity, bool closeReader)
+            {
+                var freader = new DbFieldReader(this, reader);
+                try
+                {
+                    do
+                    {
+                        while (reader.Read())
+                        {
+                            yield return fnProjector(freader);
+                        }
+
+                    }
+                    while (reader.NextResult());
+                    
+                }
+                finally
+                {
+                    if (closeReader)
+                    {
+                        ((IDataReader)reader).Close();
+                    }
+                }
+            }
+
+            public override IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
+            {
+                return base.ExecuteDeferred(query, fnProjector, entity, paramValues);
             }
         }
 

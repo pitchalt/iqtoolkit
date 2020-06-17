@@ -90,7 +90,8 @@ namespace IQToolkit.Data.ClickHouse
 
             public override string Format(Expression expression)
             {
-                return ClickHouseFormatter.Format(expression);
+                var query = ClickHouseFormatter.Format(expression);
+                return query;
             }
         }
 

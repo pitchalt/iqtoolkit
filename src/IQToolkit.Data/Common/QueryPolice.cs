@@ -89,7 +89,10 @@ namespace IQToolkit.Data.Common
         /// <param name="provider">An <see cref="Expression"/> the references the current <see cref="EntityProvider"/>.</param>
         public virtual Expression BuildExecutionPlan(Expression query, Expression provider)
         {
-            return ExecutionBuilder.Build(this.Translator.Linguist, this.Policy, query, provider);
+            var me = ExecutionBuilder.Build(this.Translator.Linguist, this.Policy, query, provider);
+            return me;
+
+
         }
     }
 }

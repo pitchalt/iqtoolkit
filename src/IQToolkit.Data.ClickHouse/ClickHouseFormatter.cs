@@ -424,29 +424,58 @@ namespace IQToolkit.Data.ClickHouse
             }
             else if (!m.Method.IsStatic && m.Method.Name == "CompareTo" && m.Method.ReturnType == typeof(int) && m.Arguments.Count == 1)
             {
-                this.Write("(CASE WHEN ");
+
+
+                this.Write("caseWithoutExpression(");
                 this.Visit(m.Object);
                 this.Write(" = ");
                 this.Visit(m.Arguments[0]);
-                this.Write(" THEN 0 WHEN ");
+                this.Write(", 0, ");
                 this.Visit(m.Object);
                 this.Write(" < ");
                 this.Visit(m.Arguments[0]);
-                this.Write(" THEN -1 ELSE 1 END)");
+                this.Write(", -1, 1)");
                 return m;
+
+                //select OrderID, caseWithoutExpression(OrderID = 1, 11, OrderID = 2, 12, 0) from temp_table
+
+
+                //this.Write("(CASE WHEN ");
+                //this.Visit(m.Object);
+                //this.Write(" = ");
+                //this.Visit(m.Arguments[0]);
+                //this.Write(" THEN 0 WHEN ");
+                //this.Visit(m.Object);
+                //this.Write(" < ");
+                //this.Visit(m.Arguments[0]);
+                //this.Write(" THEN -1 ELSE 1 END)");
+                //return m;
             }
             else if (m.Method.IsStatic && m.Method.Name == "Compare" && m.Method.ReturnType == typeof(int) && m.Arguments.Count == 2)
             {
-                this.Write("(CASE WHEN ");
+                this.Write("caseWithoutExpression( ");
                 this.Visit(m.Arguments[0]);
                 this.Write(" = ");
                 this.Visit(m.Arguments[1]);
-                this.Write(" THEN 0 WHEN ");
+                this.Write(", 0, ");
                 this.Visit(m.Arguments[0]);
                 this.Write(" < ");
                 this.Visit(m.Arguments[1]);
-                this.Write(" THEN -1 ELSE 1 END)");
+                this.Write(", -1, 1))");
                 return m;
+
+                ////select OrderID, caseWithoutExpression(OrderID = 1, 11, OrderID = 2, 12, 0) from temp_table
+
+                //this.Write("(CASE WHEN ");
+                //this.Visit(m.Arguments[0]);
+                //this.Write(" = ");
+                //this.Visit(m.Arguments[1]);
+                //this.Write(" THEN 0 WHEN ");
+                //this.Visit(m.Arguments[0]);
+                //this.Write(" < ");
+                //this.Visit(m.Arguments[1]);
+                //this.Write(" THEN -1 ELSE 1 END)");
+                //return m;
             }
             return base.VisitMethodCall(m);
         }
