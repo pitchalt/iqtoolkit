@@ -1480,9 +1480,9 @@ namespace Test
         [ExcludeProvider("SQLite")]
         public void TestDecimalTruncate()
         {
-            // The difference between floor and truncate is how negatives are handled.  Truncate drops the decimals, 
-            // therefore a truncated negative often has a more positive value than non-truncated (never has a less positive),
-            // so Truncate(-3.4) is -3.0 and Truncate(3.4) is 3.0.
+            //// The difference between floor and truncate is how negatives are handled.  Truncate drops the decimals, 
+            //// therefore a truncated negative often has a more positive value than non-truncated (never has a less positive),
+            //// so Truncate(-3.4) is -3.0 and Truncate(3.4) is 3.0.
             var four = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => decimal.Truncate((c.CustomerID == "ALFKI") ? 3.4m : 3.4m));
             var six = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => Math.Truncate((c.CustomerID == "ALFKI") ? 3.6m : 3.6m));
             var neg4 = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => Math.Truncate((c.CustomerID == "ALFKI") ? -3.4m : -3.4m));

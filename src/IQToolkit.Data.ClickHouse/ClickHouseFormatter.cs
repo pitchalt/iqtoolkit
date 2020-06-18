@@ -461,7 +461,7 @@ namespace IQToolkit.Data.ClickHouse
                 this.Visit(m.Arguments[0]);
                 this.Write(" < ");
                 this.Visit(m.Arguments[1]);
-                this.Write(", -1, 1))");
+                this.Write(", -1, 1)");
                 return m;
 
                 ////select OrderID, caseWithoutExpression(OrderID = 1, 11, OrderID = 2, 12, 0) from temp_table
@@ -522,6 +522,29 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write("))");
                 return b;
             }
+            /// ВНИМАНИЕ!!!!
+            // ЗДЕСЬ НАЧИНАЕТСЯ КАКАЯ-ТО ХЕРНЯ
+            // БУДЬТЕ ВНИМАТЕЛЬНЕЙ
+            else if (b.NodeType == ExpressionType.LeftShift)
+            {                
+                this.Write("bitShiftLeft(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(" )");
+                return b;
+            }
+
+            else if (b.NodeType == ExpressionType.RightShift)
+            {
+                this.Write("bitShiftRight(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(" )");
+                return b;
+            }
+
             return base.VisitBinary(b);
         }
 
@@ -543,24 +566,48 @@ namespace IQToolkit.Data.ClickHouse
             {
                 if (nex.Arguments.Count == 3)
                 {
+
                     this.Write("(");
                     this.Visit(nex.Arguments[0]);
-                    this.Write(" || '-' || (CASE WHEN ");
+                    this.Write(" || '-' || (caseWithoutExpression(");
                     this.Visit(nex.Arguments[1]);
-                    this.Write(" < 10 THEN '0' || ");
+                    this.Write(" < 10, '0' || ");
                     this.Visit(nex.Arguments[1]);
                     this.Write(" ELSE ");
                     this.Visit(nex.Arguments[1]);
                     this.Write(" END)");
-                    this.Write(" || '-' || (CASE WHEN ");
+                    this.Write(" || '-' || (caseWithoutExpression( ");
                     this.Visit(nex.Arguments[2]);
-                    this.Write(" < 10 THEN '0' || ");
+                    this.Write(" < 10, '0' || ");
                     this.Visit(nex.Arguments[2]);
-                    this.Write(" ELSE ");
+                    this.Write(" , ");
                     this.Visit(nex.Arguments[2]);
-                    this.Write(" END)");                                        
+                    this.Write(")");
                     this.Write(")");
                     return nex;
+
+
+                    //this.Write("(");
+                    //this.Visit(nex.Arguments[0]);
+                    //this.Write(" || '-' || (CASE WHEN ");
+                    //this.Visit(nex.Arguments[1]);
+                    //this.Write(" < 10 THEN '0' || ");
+                    //this.Visit(nex.Arguments[1]);
+                    //this.Write(" ELSE ");
+                    //this.Visit(nex.Arguments[1]);
+                    //this.Write(" END)");
+                    //this.Write(" || '-' || (CASE WHEN ");
+                    //this.Visit(nex.Arguments[2]);
+                    //this.Write(" < 10 THEN '0' || ");
+                    //this.Visit(nex.Arguments[2]);
+                    //this.Write(" ELSE ");
+                    //this.Visit(nex.Arguments[2]);
+                    //this.Write(" END)");
+                    //this.Write(")");
+                    //return nex;
+
+
+
                 }
                 else if (nex.Arguments.Count == 6)
                 {
@@ -587,10 +634,17 @@ namespace IQToolkit.Data.ClickHouse
         {
             if (IsPredicate(expr))
             {
-                this.Write("CASE WHEN (");
+                //this.Write("CASE WHEN (");
+                //this.Visit(expr);
+                //this.Write(") THEN 1 ELSE 0 END");
+                //return expr;
+
+
+                this.Write("if(");
                 this.Visit(expr);
-                this.Write(") THEN 1 ELSE 0 END");
+                this.Write(", 1, 0)");
                 return expr;
+
             }
             return base.VisitValue(expr);
         }
@@ -599,38 +653,72 @@ namespace IQToolkit.Data.ClickHouse
         {
             if (this.IsPredicate(c.Test))
             {
-                this.Write("(CASE WHEN ");
+
+                this.Write("(if");
                 this.VisitPredicate(c.Test);
-                this.Write(" THEN ");
+                this.Write(", ");
                 this.VisitValue(c.IfTrue);
                 Expression ifFalse = c.IfFalse;
                 while (ifFalse != null && ifFalse.NodeType == ExpressionType.Conditional)
                 {
                     ConditionalExpression fc = (ConditionalExpression)ifFalse;
-                    this.Write(" WHEN ");
+                    this.Write(", ");
                     this.VisitPredicate(fc.Test);
-                    this.Write(" THEN ");
+                    this.Write(", ");
                     this.VisitValue(fc.IfTrue);
                     ifFalse = fc.IfFalse;
                 }
                 if (ifFalse != null)
                 {
-                    this.Write(" ELSE ");
+                    this.Write(", ");
                     this.VisitValue(ifFalse);
                 }
-                this.Write(" END)");
+                this.Write(")");
+
+
+                //this.Write("(CASE WHEN ");
+                //this.VisitPredicate(c.Test);
+                //this.Write(" THEN ");
+                //this.VisitValue(c.IfTrue);
+                //Expression ifFalse = c.IfFalse;
+                //while (ifFalse != null && ifFalse.NodeType == ExpressionType.Conditional)
+                //{
+                //    ConditionalExpression fc = (ConditionalExpression)ifFalse;
+                //    this.Write(" WHEN ");
+                //    this.VisitPredicate(fc.Test);
+                //    this.Write(" THEN ");
+                //    this.VisitValue(fc.IfTrue);
+                //    ifFalse = fc.IfFalse;
+                //}
+                //if (ifFalse != null)
+                //{
+                //    this.Write(" ELSE ");
+                //    this.VisitValue(ifFalse);
+                //}
+                //this.Write(" END)");
             }
             else
             {
-                this.Write("(CASE ");
+                //this.Write("(CASE ");
+                //this.VisitValue(c.Test);
+                //this.Write(" WHEN 0 THEN ");
+                //this.VisitValue(c.IfFalse);
+                //this.Write(" ELSE ");
+                //this.VisitValue(c.IfTrue);
+                //this.Write(" END)");
+
+
+                this.Write("(if( ");
                 this.VisitValue(c.Test);
-                this.Write(" WHEN 0 THEN ");
+                this.Write(", 0, ");
                 this.VisitValue(c.IfFalse);
-                this.Write(" ELSE ");
+                this.Write(", ");
                 this.VisitValue(c.IfTrue);
-                this.Write(" END)");
+                this.Write(")");
             }
             return c;
         }
+
+     
     }
 }

@@ -1,4 +1,0 @@
-NorthwindExecutionTests
-1 Passed
-  0 Skipped
-    0 Failed

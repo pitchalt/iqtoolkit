@@ -1,4 +1,0 @@
-NorthwindMappingTests
-32 Passed
-  0 Skipped
-    0 Failed
