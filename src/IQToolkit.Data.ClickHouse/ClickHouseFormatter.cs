@@ -414,6 +414,11 @@ namespace IQToolkit.Data.ClickHouse
                             return m;
                         }
                         break;
+                    case "Truncate":
+                        this.Write("floor(");
+                        this.Visit(m.Arguments[0]);
+                        this.Write(")");
+                        return m;
                 }
             }
             if (m.Method.Name == "ToString")
@@ -453,7 +458,7 @@ namespace IQToolkit.Data.ClickHouse
             }
             else if (m.Method.IsStatic && m.Method.Name == "Compare" && m.Method.ReturnType == typeof(int) && m.Arguments.Count == 2)
             {
-                this.Write("caseWithoutExpression( ");
+                this.Write("caseWithoutExpression(");
                 this.Visit(m.Arguments[0]);
                 this.Write(" = ");
                 this.Visit(m.Arguments[1]);
@@ -479,6 +484,61 @@ namespace IQToolkit.Data.ClickHouse
             }
             return base.VisitMethodCall(m);
         }
+
+
+        protected override Expression VisitUnary(UnaryExpression u)
+        {
+            string op = this.GetOperator(u);
+            switch (u.NodeType)
+            {
+                case ExpressionType.Not:
+                    if (u.Operand is IsNullExpression)
+                    {
+                        this.Visit(((IsNullExpression)u.Operand).Expression);
+                        this.Write(" IS NOT NULL");
+                    }
+                    else if (IsBoolean(u.Operand.Type) || op.Length > 1)
+                    {
+                        this.Write("bitNot(");                        
+                        this.Visit(u.Operand);
+                        this.Write(")");
+                    }
+                    else
+                    {
+                        this.Write("bitNot(");
+                        this.Visit(u.Operand);
+                        this.Write(")");
+                    }
+                    break;
+                case ExpressionType.Negate:
+                case ExpressionType.NegateChecked:
+                    this.Write(op);
+                    this.VisitValue(u.Operand);
+                    break;
+                case ExpressionType.UnaryPlus:
+                    this.VisitValue(u.Operand);
+                    break;
+                case ExpressionType.Convert:
+                    // ignore conversions for now
+                    this.Visit(u.Operand);
+                    break;
+                default:
+                    if (this.ForDebug)
+                    {
+                        this.Write(string.Format("?{0}?", u.NodeType));
+                        this.Write("(");
+                        this.Visit(u.Operand);
+                        this.Write(")");
+                        return u;
+                    }
+                    else
+                    {
+                        throw new NotSupportedException(string.Format("The unary operator '{0}' is not supported", u.NodeType));
+                    }
+            }
+            return u;
+        }
+
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
@@ -510,16 +570,11 @@ namespace IQToolkit.Data.ClickHouse
             }
             else if (b.NodeType == ExpressionType.ExclusiveOr)
             {
-                // SQLite does not have XOR (^).. Use translation:  ((A & ~B) | (~A & B))
-                this.Write("((");
+                this.Write("bitXor(");
                 this.VisitValue(b.Left);
-                this.Write(" & ~");
+                this.Write(", ");
                 this.VisitValue(b.Right);
-                this.Write(") | (~");
-                this.VisitValue(b.Left);
-                this.Write(" & ");
-                this.VisitValue(b.Right);
-                this.Write("))");
+                this.Write(" )");
                 return b;
             }
             /// ВНИМАНИЕ!!!!
@@ -544,6 +599,28 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write(" )");
                 return b;
             }
+
+            else if (b.NodeType == ExpressionType.And)
+            {
+                this.Write("bitAnd(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(" )");
+                return b;
+            }
+
+            else if (b.NodeType == ExpressionType.Or)
+            {
+                this.Write("bitOr(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(" )");
+                return b;
+            }
+          
+        
 
             return base.VisitBinary(b);
         }
@@ -654,7 +731,7 @@ namespace IQToolkit.Data.ClickHouse
             if (this.IsPredicate(c.Test))
             {
 
-                this.Write("(if");
+                this.Write("if(");
                 this.VisitPredicate(c.Test);
                 this.Write(", ");
                 this.VisitValue(c.IfTrue);
