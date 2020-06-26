@@ -676,38 +676,38 @@ namespace IQToolkit.Data.Common
             {
                 return default(String);
             }
-            return this.GetString(ordinal);
-            //while (true)
-            //{
-            //    switch (typeCodes[ordinal])
-            //    {
-            //        case TypeCode.Empty:
-            //            typeCodes[ordinal] = TypeHelper.GetTypeCode(this.GetFieldType(ordinal));
-            //            continue;
-            //        case TypeCode.Byte:
-            //            return this.GetByte(ordinal).ToString();
-            //        case TypeCode.Int16:
-            //            return this.GetInt16(ordinal).ToString();
-            //        case TypeCode.Int32:
-            //            return this.GetInt32(ordinal).ToString();
-            //        case TypeCode.Int64:
-            //            return this.GetInt64(ordinal).ToString();
-            //        case TypeCode.Double:
-            //            return this.GetDouble(ordinal).ToString();
-            //        case TypeCode.Single:
-            //            return this.GetSingle(ordinal).ToString();
-            //        case TypeCode.Decimal:
-            //            return this.GetDecimal(ordinal).ToString();
-            //        case TypeCode.DateTime:
-            //            return this.GetDateTime(ordinal).ToString();
-            //        case tcGuid:
-            //            return this.GetGuid(ordinal).ToString();
-            //        case TypeCode.String:
-            //            return this.GetString(ordinal);
-            //        default:
-            //            return this.GetValue<String>(ordinal);
-            //    }
-            //}
+           // return this.GetString(ordinal);
+            while (true)
+            {
+                switch (typeCodes[ordinal])
+                {
+                    case TypeCode.Empty:
+                        typeCodes[ordinal] = TypeHelper.GetTypeCode(this.GetFieldType(ordinal));
+                        continue;
+                    case TypeCode.Byte:
+                        return this.GetByte(ordinal).ToString();
+                    case TypeCode.Int16:
+                        return this.GetInt16(ordinal).ToString();
+                    case TypeCode.Int32:
+                        return this.GetInt32(ordinal).ToString();
+                    case TypeCode.Int64:
+                        return this.GetInt64(ordinal).ToString();
+                    case TypeCode.Double:
+                        return this.GetDouble(ordinal).ToString();
+                    case TypeCode.Single:
+                        return this.GetSingle(ordinal).ToString();
+                    case TypeCode.Decimal:
+                        return this.GetDecimal(ordinal).ToString();
+                    case TypeCode.DateTime:
+                        return this.GetDateTime(ordinal).ToString();
+                    case tcGuid:
+                        return this.GetGuid(ordinal).ToString();
+                    case TypeCode.String:
+                        return this.GetString(ordinal);
+                    default:
+                        return this.GetValue<String>(ordinal);
+                }
+            }
         }
 
         public Byte[] ReadByteArray(int ordinal)

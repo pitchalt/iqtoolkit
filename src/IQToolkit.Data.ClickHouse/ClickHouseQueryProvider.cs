@@ -23,6 +23,7 @@ namespace IQToolkit.Data.ClickHouse
             : base(connection, ClickHouseLanguage.Default, mapping, policy)
         {
         }
+            
 
         /// <summary>
         /// Constructs a <see cref="MySqlQueryProvider"/>

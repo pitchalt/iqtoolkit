@@ -1,25 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit", "IQToolkit\IQToolkit.csproj", "{0DA62A7C-3B40-456F-A4B2-B3E19ED4080E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IQToolkit", "IQToolkit\IQToolkit.csproj", "{0DA62A7C-3B40-456F-A4B2-B3E19ED4080E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{2ADFCEBE-90BA-4841-9F5B-7321F65A4D13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{2ADFCEBE-90BA-4841-9F5B-7321F65A4D13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.SqlServerCe", "IQToolkit.Data.SqlServerCe\IQToolkit.Data.SqlServerCe.csproj", "{A7C0C2B6-4680-4F61-A062-C785BD4F92A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.Access", "IQToolkit.Data.Access\IQToolkit.Data.Access.csproj", "{C7388C7B-4CC9-4F1D-AF36-6D4F6575AD04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.SqlClient", "IQToolkit.Data.SqlClient\IQToolkit.Data.SqlClient.csproj", "{3F003957-1B67-440B-BAFE-C2B32886A429}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IQToolkit.Data.SqlClient", "IQToolkit.Data.SqlClient\IQToolkit.Data.SqlClient.csproj", "{3F003957-1B67-440B-BAFE-C2B32886A429}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.MySqlClient", "IQToolkit.Data.MySqlClient\IQToolkit.Data.MySqlClient.csproj", "{5450EE6F-92F0-4F1F-B99F-5649A4E445FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.SQLite", "IQToolkit.Data.Sqlite\IQToolkit.Data.SQLite.csproj", "{E008624B-2344-420A-A514-4B2AD89906EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IQToolkit.Data.SQLite", "IQToolkit.Data.Sqlite\IQToolkit.Data.SQLite.csproj", "{E008624B-2344-420A-A514-4B2AD89906EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data", "IQToolkit.Data\IQToolkit.Data.csproj", "{3A356510-9C25-4A94-87B9-EEB31B6A1303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IQToolkit.Data", "IQToolkit.Data\IQToolkit.Data.csproj", "{3A356510-9C25-4A94-87B9-EEB31B6A1303}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SQLite", "Test.SQLite\Test.SQLite.csproj", "{144539D3-A4E1-4BB4-9782-0EEA838D547D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SQLite", "Test.SQLite\Test.SQLite.csproj", "{144539D3-A4E1-4BB4-9782-0EEA838D547D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3010DB9D-56B4-4328-96CA-49DBB0354743} = {3010DB9D-56B4-4328-96CA-49DBB0354743}
 	EndProjectSection
@@ -54,19 +54,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{E1DAF8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlServerCe", "SqlServerCe", "{FB782D31-AA47-457F-A584-2ED7E81B148F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Common", "Test.Common\Test.Common.csproj", "{3010DB9D-56B4-4328-96CA-49DBB0354743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Common", "Test.Common\Test.Common.csproj", "{3010DB9D-56B4-4328-96CA-49DBB0354743}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.Ado", "IQToolkit.Data.Ado\IQToolkit.Data.Ado.csproj", "{130854D0-8529-49E1-8E56-8E7F64DA3399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IQToolkit.Data.Ado", "IQToolkit.Data.Ado\IQToolkit.Data.Ado.csproj", "{130854D0-8529-49E1-8E56-8E7F64DA3399}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClickHouse", "ClickHouse", "{1F74E07F-4075-465E-8387-26A7CE978446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQToolkit.Data.ClickHouse", "IQToolkit.Data.ClickHouse\IQToolkit.Data.ClickHouse.csproj", "{2F1660D1-4768-4A9F-BA42-0E078C345A9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IQToolkit.Data.ClickHouse", "IQToolkit.Data.ClickHouse\IQToolkit.Data.ClickHouse.csproj", "{2F1660D1-4768-4A9F-BA42-0E078C345A9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.ClickHouse", "Test.ClickHouse\Test.ClickHouse.csproj", "{6377C841-F631-40DF-9073-3E4B1A1D2C2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ClickHouse", "Test.ClickHouse\Test.ClickHouse.csproj", "{6377C841-F631-40DF-9073-3E4B1A1D2C2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.ClickHouse.DbLoadGen", "Test.ClickHouse.DbLoadGen\Test.ClickHouse.DbLoadGen.csproj", "{92FC7560-6EAA-46E3-8D8C-8D0BAD3E2D98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ClickHouse.DbLoadGen", "Test.ClickHouse.DbLoadGen\Test.ClickHouse.DbLoadGen.csproj", "{92FC7560-6EAA-46E3-8D8C-8D0BAD3E2D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.ClickHouse.DbLoad", "Test.ClickHouse.DbLoad\Test.ClickHouse.DbLoad.csproj", "{9577F724-BD31-4729-B580-8DDE82C02223}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ClickHouse.DbLoad", "Test.ClickHouse.DbLoad\Test.ClickHouse.DbLoad.csproj", "{9577F724-BD31-4729-B580-8DDE82C02223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotForm", "Pivot3\PivotForm.csproj", "{5E2D3F1E-4246-4558-9269-C621963F28DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -150,6 +152,10 @@ Global
 		{9577F724-BD31-4729-B580-8DDE82C02223}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9577F724-BD31-4729-B580-8DDE82C02223}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9577F724-BD31-4729-B580-8DDE82C02223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2D3F1E-4246-4558-9269-C621963F28DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2D3F1E-4246-4558-9269-C621963F28DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2D3F1E-4246-4558-9269-C621963F28DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2D3F1E-4246-4558-9269-C621963F28DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

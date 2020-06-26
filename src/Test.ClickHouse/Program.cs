@@ -58,6 +58,7 @@ namespace Test
                 //"MaxBytesBeforeExternalSort=\"0\"",
                 //"Server=localhost;user id='root';password='mypwd';Database=Northwind", 
                 new AttributeMapping(typeof(Test.NorthwindWithAttributes)));
+         
         }
 
         public static void CreateDatabase() {
@@ -120,9 +121,9 @@ namespace Test
             {
                 // difference in collation (mysql is matching "A" and "Å" but the others are not)
               //  var custs = db.Customers.Where(c => c.Country == "USA").Select(c => c).ToList();
-                var custs = db.Customers.Where(c => c.Country == "USA").Select(c => c).Count();
-                //     var custs = db.Customers.Where(c => c.Country == "USA" || c.City.StartsWith("A")).Select(c => new { c.Country, c.City }).ToList();
-                Assert.Equal(13, custs);
+            //    var custs = db.Customers.Where(c => c.Country == "USA").Select(c => c).Count();
+                //    var custs = db.Customers.Where(c => c.Country == "USA" || c.City.StartsWith("A")).Select(c => new { c.Country, c.City }).ToList();
+            //    Assert.Equal(13, custs);
             }
 
             public override string GetBaseLineFilePath()
