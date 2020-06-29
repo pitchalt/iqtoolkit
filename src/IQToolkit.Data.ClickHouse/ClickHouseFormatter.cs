@@ -577,7 +577,7 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write(" )");
                 return b;
             }
-            /// ВНИМАНИЕ!!!!
+            // ВНИМАНИЕ!!!!
             // ЗДЕСЬ НАЧИНАЕТСЯ КАКАЯ-ТО ХЕРНЯ
             // БУДЬТЕ ВНИМАТЕЛЬНЕЙ
             else if (b.NodeType == ExpressionType.LeftShift)
@@ -599,29 +599,7 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write(" )");
                 return b;
             }
-
-            else if (b.NodeType == ExpressionType.And)
-            {
-                this.Write("bitAnd(");
-                this.VisitValue(b.Left);
-                this.Write(", ");
-                this.VisitValue(b.Right);
-                this.Write(" )");
-                return b;
-            }
-
-            else if (b.NodeType == ExpressionType.Or)
-            {
-                this.Write("bitOr(");
-                this.VisitValue(b.Left);
-                this.Write(", ");
-                this.VisitValue(b.Right);
-                this.Write(" )");
-                return b;
-            }
-          
-        
-
+         
             return base.VisitBinary(b);
         }
 
