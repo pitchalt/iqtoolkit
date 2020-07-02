@@ -211,14 +211,28 @@ namespace Test
             Assert.Equal(6, list.Count);
         }
 
+        //ошибка вложенного where
+        //join работает, не работают нулебл стринг (или анонимные типы)
+        // хотя может и неправильно формирует запрос
+        // в других тестах join нормально работает, я скопировала запрос в клиент кх, выдает такую же ошибку
+        // переписывает join как вложенный select, но это вроде работает
+        // короче хрен знает
         public void TestJoinIntoCustomersOrdersCount()
         {
-            var list = (
+             var list = (
                 from c in db.Customers
                 where c.CustomerID == "ALFKI"
                 join o in db.Orders on c.CustomerID equals o.CustomerID into ords
                 select new { cust = c, ords = ords.Count() }
                 ).ToList();
+         
+       /*  var list = (
+             from c in db.Customers
+             where c.CustomerID == "ALFKI"
+             join o in db.Orders on c.CustomerID equals o.CustomerID into ords
+             select new { cust = c }
+         ).ToList()*/;
+         
             Assert.Equal(1, list.Count);
             Assert.Equal(6, list[0].ords);
         }
@@ -340,9 +354,34 @@ namespace Test
             Assert.Equal(true, Enumerable.SequenceEqual(list, sorted));
         }
 
+        //ошибка вложенного where
+        // тут какая-то херня с шаблонами типа Customers as t0, где-то проходит, где-то нет, исправила результрующий запрос, в клиенте он прошел
+        /* было
+         * SELECT t0."City", t0."CompanyName", t0."ContactName", t0."Country", t0."CustomerID", t0."Phone"
+FROM "Customers" AS t0
+WHERE ((
+  SELECT COUNT(*)
+  FROM "Orders" AS t1
+  WHERE (t1."CustomerID" = t0."CustomerID")
+  ) > 0)
+  
+  стало
+  SELECT t0."City", t0."CompanyName", t0."ContactName", t0."Country", t0."CustomerID", t0."Phone"
+FROM "Customers" AS t0
+WHERE ((
+  SELECT COUNT(*)
+  FROM "Orders" AS t1
+  WHERE (t1."CustomerID" = "CustomerID")
+  ) > 0)
+         *
+         * буквально в последнем условии t1 убрала
+         * и в прошлых тестах с join тоже так было
+         * ну вообщем хер знает
+         */
         public void TestCountProperty()
         {
-            var list = db.Customers.Where(c => c.Orders.Count > 0).ToList();
+              var list = db.Customers.Where(c => c.Orders.Count > 0).ToList();
+         //   var list = db.Customers.Where(c => c.City == "London").ToList();
             Assert.Equal(89, list.Count);
         }
 
@@ -359,6 +398,7 @@ namespace Test
             Assert.Equal(6, list[0].Count());
         }
 
+        //ошибка синтаксиса в условии where нельзя проверять is null
         public void TestGroupBySelectMany()
         {
             var list = db.Customers.GroupBy(c => c.City).SelectMany(g => g).ToList();
@@ -452,7 +492,7 @@ namespace Test
             var list = db.Orders.Where(o => o.CustomerID == "ALFKI").GroupBy(o => new { o.CustomerID, o.OrderDate }).Select(g => g.Sum(o => (o.CustomerID == "ALFKI" ? 1 : 1))).ToList();
             Assert.Equal(6, list.Count);
         }
-
+        // ошибка вложенного where 
         public void TestGroupByWithCountInWhere()
         {
             var list = db.Customers.Where(a => a.Orders.Count() > 15).GroupBy(a => a.City).ToList();
@@ -469,6 +509,7 @@ namespace Test
             Assert.Equal(true, Enumerable.SequenceEqual(grp, sorted));
         }
 
+        // ошибка с условием where is null
         public void TestOrderByGroupBySelectMany()
         {
             var list = db.Orders.Where(o => o.CustomerID == "ALFKI").OrderBy(o => o.OrderID).GroupBy(o => o.CustomerID).SelectMany(g => g).ToList();
@@ -523,7 +564,7 @@ namespace Test
 #if false
         public void TestOrderByDistinct()
         {
-             ordering doesn't make sense here: Distinct operator is not guaranteed to retain ordering.
+           //  ordering doesn't make sense here: Distinct operator is not guaranteed to retain ordering.
             var list = db.Customers.Where(c => c.City.StartsWith("P")).OrderBy(c => c.City).Select(c => c.City).Distinct().ToList();
             var sorted = list.OrderBy(x => x).ToList();
             Assert.Equal(list[0], sorted[0]);
@@ -815,12 +856,13 @@ namespace Test
             Assert.Equal(true, any);
         }
 
+        // ошибка вложенного where
         public void TestAnyWithSubquery()
         {
             var list = db.Customers.Where(c => c.Orders.Any(o => o.CustomerID == "ALFKI")).ToList();
             Assert.Equal(1, list.Count);
         }
-
+        // ошибка вложенного where
         public void TestAnyWithSubqueryNoPredicate()
         {
            //  customers with at least one order
@@ -836,9 +878,11 @@ namespace Test
             Assert.Equal(2, list.Count);
         }
 
+        // ошибка вложенного where и не почему-то ставит в запрос not exists и not
+        // в querbinder
         public void TestAllWithSubquery()
         {
-            var list = db.Customers.Where(c => c.Orders.All(o => o.CustomerID == "ALFKI")).ToList();
+              var list = db.Customers.Where(c => c.Orders.All(o => o.CustomerID == "ALFKI")).ToList();
           //   includes customers w/ no orders
             Assert.Equal(3, list.Count);
         }
@@ -934,19 +978,21 @@ namespace Test
             var list = db.Customers.Where(c => c.ContactName.StartsWith("M")).ToList();
             Assert.Equal(12, list.Count);
         }
-
+       
+        
         public void TestStringStartsWithColumn()
         {
             var list = db.Customers.Where(c => c.ContactName.StartsWith(c.ContactName)).ToList();
             Assert.Equal(91, list.Count);
         }
 
+       
         public void TestStringEndsWithLiteral()
         {
             var list = db.Customers.Where(c => c.ContactName.EndsWith("s")).ToList();
             Assert.Equal(9, list.Count);
         }
-
+        
         public void TestStringEndsWithColumn()
         {
             var list = db.Customers.Where(c => c.ContactName.EndsWith(c.ContactName)).ToList();
@@ -1022,27 +1068,28 @@ namespace Test
             Assert.Equal("Seattle", list[0].City);
         }
 
+       
         [ExcludeProvider("SQLite")] //  no equivalent function
         public void TestStringIndexOf()
         {
             var n = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => c.ContactName.IndexOf("ar"));
             Assert.Equal(1, n);
         }
-
+       
         [ExcludeProvider("SQLite")]  // no equivalent function
         public void TestStringIndexOfChar()
         {
             var n = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => c.ContactName.IndexOf('r'));
             Assert.Equal(2, n);
         }
-
+       
         [ExcludeProvider("SQLite")]//  no equivalent function
         public void TestStringIndexOfWithStart()
         {
             var n = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => c.ContactName.IndexOf("a", 3));
             Assert.Equal(4, n);
         }
-
+        
         public void TestStringTrim()
         {
             var notrim = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => ("  " + c.City + " "));
@@ -1050,7 +1097,9 @@ namespace Test
             Assert.NotEqual(notrim, trim);
             Assert.Equal(notrim.Trim(), trim);
         }
-
+            
+        // ошибка не собрал запрос
+        // полная чушь
         [ExcludeProvider("SQLite")]  // no function to help build correct string representation
         [ExcludeProvider("MySql")]  //  MySQL returns datetime as binary after combination of MAX and CONVERT
         public void TestDateTimeConstructYMD()
@@ -1063,7 +1112,7 @@ namespace Test
             Assert.Equal(0, dt.Minute);
             Assert.Equal(0, dt.Second);
         }
-
+        // ошибка не собрал запрос
         [ExcludeProvider("SQLite")] //  no function to help build correct string representation
         [ExcludeProvider("MySql")]  //  MySQL returns datetime as binary after combination of MAX and CONVERT
         public void TestDateTimeConstructYMDHMS()
@@ -1076,24 +1125,25 @@ namespace Test
             Assert.Equal(5, dt.Minute);
             Assert.Equal(6, dt.Second);
         }
-
+        // ошибка не собрал запрос
         public void TestDateTimeDay()
         {
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Day);
             Assert.Equal(25, v);
         }
-
+        // ошибка не собрал запрос
         public void TestDateTimeMonth()
         {
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Month);
             Assert.Equal(8, v);
         }
-
+        // ошибка не собрал запрос
         public void TestDateTimeYear()
         {
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Year);
             Assert.Equal(1997, v);
         }
+        // ошибка не собрал запрос
 
         [ExcludeProvider("SQLite")]  //  not able to test via construction
         public void TestDateTimeHour()
@@ -1101,6 +1151,7 @@ namespace Test
             var hour = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => new DateTime((c.CustomerID == "ALFKI") ? 1997 : 1997, 7, 4, 3, 5, 6).Hour);
             Assert.Equal(3, hour);
         }
+        // ошибка не собрал запрос
 
         [ExcludeProvider("SQLite")]  //  not able to test via construction
         public void TestDateTimeMinute()
@@ -1108,6 +1159,7 @@ namespace Test
             var minute = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => new DateTime((c.CustomerID == "ALFKI") ? 1997 : 1997, 7, 4, 3, 5, 6).Minute);
             Assert.Equal(5, minute);
         }
+        // ошибка не собрал запрос
 
         [ExcludeProvider("SQLite")]   // not able to test via construction
         public void TestDateTimeSecond()
@@ -1115,6 +1167,7 @@ namespace Test
             var second = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => new DateTime((c.CustomerID == "ALFKI") ? 1997 : 1997, 7, 4, 3, 5, 6).Second);
             Assert.Equal(6, second);
         }
+        // ошибка не собрал запрос
 
         public void TestDateTimeDayOfWeek()
         {
@@ -1122,6 +1175,7 @@ namespace Test
             Assert.Equal(DayOfWeek.Monday, dow);
         }
 
+        // ошибка не поддерживает 
         [ExcludeProvider("SQLite")]
         public void TestDateTimeAddYears()
         {
@@ -1129,6 +1183,7 @@ namespace Test
             Assert.NotEqual(null, od);
         }
 
+        // ошибка не поддерживает 
         [ExcludeProvider("SQLite")]
         public void TestDateTimeAddMonths()
         {
@@ -1255,6 +1310,7 @@ namespace Test
             Assert.Equal(4.0, six);
         }
 
+        // ошибка не реализован
         [ExcludeProvider("Access")]
         [ExcludeProvider("SQLite")]
         public void TestMathFloor()
@@ -1268,7 +1324,7 @@ namespace Test
             Assert.Equal(Math.Floor(3.6), six);
             Assert.Equal(Math.Floor(-3.4), nfour);
         }
-
+        // ошибка не реализован
         [ExcludeProvider("Access")]
         [ExcludeProvider("SQLite")]
         public void TestDecimalFloor()
@@ -1280,7 +1336,7 @@ namespace Test
             Assert.Equal(decimal.Floor(3.6m), six);
             Assert.Equal(decimal.Floor(-3.4m), nfour);
         }
-
+        // ошибка не реализован
         [ExcludeProvider("SQLite")]
         public void TestMathTruncate()
         {
@@ -1487,6 +1543,7 @@ namespace Test
             Assert.Equal(4.0m, six);
         }
 
+        // ошибка не реализован
         [ExcludeProvider("SQLite")]
         public void TestDecimalTruncate()
         {
@@ -1602,24 +1659,25 @@ namespace Test
             Assert.Equal(8, eight);
         }
 
+        // ошибка не собрался 
         public void TestIntBitwiseAnd()
         {
             var band = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => ((c.CustomerID == "ALFKI") ? 6 : 6) & 3);
             Assert.Equal(2, band);
         }
-
+        // ошибка не собрался 
         public void TestIntBitwiseOr()
         {
             var eleven = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => ((c.CustomerID == "ALFKI") ? 10 : 10) | 3);
             Assert.Equal(11, eleven);
         }
-
+        // ошибка не собрался 
         public void TestIntBitwiseExclusiveOr()
         {
             var zero = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => ((c.CustomerID == "ALFKI") ? 1 : 1) ^ 1);
             Assert.Equal(0, zero);
         }
-
+        // ошибка не собрался 
         public void TestIntBitwiseNot()
         {
             var bneg = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => ~((c.CustomerID == "ALFKI") ? -1 : -1));
@@ -1716,12 +1774,14 @@ namespace Test
             Assert.Equal(830, n);
         }
 
+        // ошибка что-то новенькое с нулебл
         public void TestConditionalResultsArePredicates()
         {
             bool value = db.Orders.Where(c => c.CustomerID == "ALFKI").Max(c => (c.CustomerID == "ALFKI" ? string.Compare(c.CustomerID, "POTATO") < 0 : string.Compare(c.CustomerID, "POTATO") > 0));
             Assert.Equal(true, value);
         }
 
+        // ошибка опять с влоэженным wherе
         public void TestConditionalWithInvalidCase()
         {
             bool? hasOrders = null;
@@ -1806,7 +1866,7 @@ namespace Test
             var result = q.ToList();
         }
 
-        
+        // ошибка is null в условии
         public void TestAssociationInGroupByDeep()
         {
             var q = from od in db.OrderDetails
@@ -1890,6 +1950,7 @@ namespace Test
             Assert.Equal(6, custs[0].Orders.Count);
         }
 
+        // ошибка не собрался
         public void TestCustomersIncludeOrdersWhere()
         {
             var policy = new EntityPolicy();
@@ -1914,6 +1975,7 @@ namespace Test
             Assert.Equal(6, custs[0].Orders.Count);
         }
 
+        // ошибка не собрался
         public void TestCustomersAssociateOrders()
         {
             var policy = new EntityPolicy();
@@ -1926,6 +1988,7 @@ namespace Test
             Assert.Equal(3, custs[0].FilteredOrdersCount);
         }
 
+        // ошибка не собрался
         public void TestCustomersIncludeThenAssociateOrders()
         {
             var policy = new EntityPolicy();
@@ -1939,6 +2002,7 @@ namespace Test
             Assert.Equal(3, custs[0].Orders.Count);
         }
 
+        // ошибка не собрался
         public void TestCustomersAssociateThenIncludeOrders()
         {
             var policy = new EntityPolicy();
@@ -2012,6 +2076,7 @@ namespace Test
             Assert.Equal(true, Enumerable.SequenceEqual(list, sorted));
         }
 
+        // ошибка не собрался
         public void TestCustomersApplyOrderAndAssociateOrders()
         {
             var policy = new EntityPolicy();

@@ -188,19 +188,59 @@ namespace IQToolkit.Data.ClickHouse
             {
                 switch (m.Method.Name)
                 {
-                //+
+                    case "IndexOf":
+
+                        if (m.Arguments.Count == 1)
+                        {
+                            this.Write("position(");
+                            this.Visit(m.Object);
+                            this.Write(", " );
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" ) -1");
+                        }
+                        else  if (m.Arguments.Count == 2)
+                        {
+                            this.Write("position( substring(");
+                            this.Visit(m.Object);
+                            this.Write(", " );
+                            this.Visit(m.Arguments[1]);
+                            this.Write(", length(");
+                            this.Visit(m.Object);
+                            this.Write(")-");
+                            this.Visit(m.Arguments[1]);
+                            this.Write("+1),");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(") -1 + ");
+                            this.Visit(m.Arguments[1]);
+                            this.Write("-1 ");
+                            //position(substring("ContactName", n,length("ContactName") -n + 1), 'a') -1 + n 
+                        }
+                        else  throw new Exception("that indexof in not supported, update VisitMethodCall in ClickHouseFormatter");
+
+                        return m;
+
+                    //+
                     case "StartsWith":
-                        this.Write("like(");
+                       
+                        this.Write("startsWith(");
+                        this.Visit(m.Object);
+                        this.Write(", " );
+                        this.Visit(m.Arguments[0]);
+                        this.Write(" )");
+                        return m;
+                        
+                        /*this.Write("like(");
                         this.Visit(m.Object);
                         this.Write(", " );
                         this.Visit(m.Arguments[0]);
                         this.Write(" || '%')");
                         return m;
+                    */
                 //+
                     case "EndsWith":
-                        this.Write("like(");
+                        this.Write("endsWith(");
                         this.Visit(m.Object);
-                        this.Write(", '%' || ");
+                        this.Write(", ");
                         this.Visit(m.Arguments[0]);
                         this.Write(")");
                         return m;
@@ -414,11 +454,11 @@ namespace IQToolkit.Data.ClickHouse
                             return m;
                         }
                         break;
-                    case "Truncate":
+                  /*  case "Truncate":
                         this.Write("floor(");
                         this.Visit(m.Arguments[0]);
                         this.Write(")");
-                        return m;
+                        return m;*/
                 }
             }
             if (m.Method.Name == "ToString")
@@ -485,7 +525,7 @@ namespace IQToolkit.Data.ClickHouse
             return base.VisitMethodCall(m);
         }
 
-
+/*
         protected override Expression VisitUnary(UnaryExpression u)
         {
             string op = this.GetOperator(u);
@@ -538,7 +578,7 @@ namespace IQToolkit.Data.ClickHouse
             }
             return u;
         }
-
+*/
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
@@ -568,15 +608,7 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write(")");
                 return b;
             }
-            else if (b.NodeType == ExpressionType.ExclusiveOr)
-            {
-                this.Write("bitXor(");
-                this.VisitValue(b.Left);
-                this.Write(", ");
-                this.VisitValue(b.Right);
-                this.Write(" )");
-                return b;
-            }
+          
             // ВНИМАНИЕ!!!!
             // ЗДЕСЬ НАЧИНАЕТСЯ КАКАЯ-ТО ХЕРНЯ
             // БУДЬТЕ ВНИМАТЕЛЬНЕЙ
