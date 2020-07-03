@@ -1097,9 +1097,7 @@ WHERE ((
             Assert.NotEqual(notrim, trim);
             Assert.Equal(notrim.Trim(), trim);
         }
-            
-        // ошибка не собрал запрос
-        // полная чушь
+       
         [ExcludeProvider("SQLite")]  // no function to help build correct string representation
         [ExcludeProvider("MySql")]  //  MySQL returns datetime as binary after combination of MAX and CONVERT
         public void TestDateTimeConstructYMD()

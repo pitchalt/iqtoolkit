@@ -1,0 +1,7 @@
+NorthwindExecutionTests
+TestDateTimeConstructYMDHMS Failed
+Assert failure - expected: 4 actual: 3
+
+0 Passed
+  0 Skipped
+    1 Failed

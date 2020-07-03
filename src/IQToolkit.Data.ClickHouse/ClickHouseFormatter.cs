@@ -651,69 +651,71 @@ namespace IQToolkit.Data.ClickHouse
         {
             if (nex.Constructor.DeclaringType == typeof(DateTime))
             {
-                if (nex.Arguments.Count == 3)
+                if (nex.Arguments[0].NodeType == ExpressionType.Conditional)
                 {
 
-                    this.Write("(");
-                    this.Visit(nex.Arguments[0]);
-                    this.Write(" || '-' || (caseWithoutExpression(");
-                    this.Visit(nex.Arguments[1]);
-                    this.Write(" < 10, '0' || ");
-                    this.Visit(nex.Arguments[1]);
-                    this.Write(" ELSE ");
-                    this.Visit(nex.Arguments[1]);
-                    this.Write(" END)");
-                    this.Write(" || '-' || (caseWithoutExpression( ");
-                    this.Visit(nex.Arguments[2]);
-                    this.Write(" < 10, '0' || ");
-                    this.Visit(nex.Arguments[2]);
-                    this.Write(" , ");
-                    this.Visit(nex.Arguments[2]);
-                    this.Write(")");
-                    this.Write(")");
-                    return nex;
+                    if (nex.Arguments.Count == 3)
+                    {
+                        this.Write("toDateTime(concat(toString(");
+                        this.Visit(nex.Arguments[0]);
+                        this.Write("), '-', toString(");
+                        this.Write(nex.Arguments[1]);
+                        this.Write("), '-', toString(");
+                        this.Write(nex.Arguments[2]);
+                        this.Write(") ))");
+                        return nex;
+                    }
+                    else if (nex.Arguments.Count == 6)
+                    {
+                        this.Write("parseDateTimeBestEffort(concat(toString(");
+                        this.Visit(nex.Arguments[0]);
+                        this.Write("), '-', toString(");
+                        this.Write(nex.Arguments[1]);
+                        this.Write("), '-', toString(");
+                        this.Write(nex.Arguments[2]);
+                        this.Write("), ' ', toString(");
+                        this.Write(nex.Arguments[3]);
+                        this.Write("), ':', toString(");
+                        this.Write(nex.Arguments[4]);
+                        this.Write("), ':', toString(");
+                        this.Write(nex.Arguments[5]);
+                        this.Write(") ))");
+                        return nex;
 
-
-                    //this.Write("(");
-                    //this.Visit(nex.Arguments[0]);
-                    //this.Write(" || '-' || (CASE WHEN ");
-                    //this.Visit(nex.Arguments[1]);
-                    //this.Write(" < 10 THEN '0' || ");
-                    //this.Visit(nex.Arguments[1]);
-                    //this.Write(" ELSE ");
-                    //this.Visit(nex.Arguments[1]);
-                    //this.Write(" END)");
-                    //this.Write(" || '-' || (CASE WHEN ");
-                    //this.Visit(nex.Arguments[2]);
-                    //this.Write(" < 10 THEN '0' || ");
-                    //this.Visit(nex.Arguments[2]);
-                    //this.Write(" ELSE ");
-                    //this.Visit(nex.Arguments[2]);
-                    //this.Write(" END)");
-                    //this.Write(")");
-                    //return nex;
-
-
-
-                }
-                else if (nex.Arguments.Count == 6)
-                {
-                    this.Write("(");
-                    this.Visit(nex.Arguments[0]);
-                    this.Write(" || '-' || ");
-                    this.Visit(nex.Arguments[1]);
-                    this.Write(" || '-' || ");
-                    this.Visit(nex.Arguments[2]);
-                    this.Write(" || ' ' || ");
-                    this.Visit(nex.Arguments[3]);
-                    this.Write(" || ':' || ");
-                    this.Visit(nex.Arguments[4]);
-                    this.Write(" || ':' || ");
-                    this.Visit(nex.Arguments[5]);
-                    this.Write(")");
-                    return nex;
+                    }
                 }
             }
+
+            /*
+             * select Max(toDate(concat(toString(if((t0."CustomerID" = 'ALFKI'), 1977, 1977)),'-0', toString(7), '-0', toString(6) ) ))
+             * FROM "Customers" AS t0
+             * WHERE (t0."CustomerID" = 'ALFKI')                     * 
+             */
+
+
+            else
+            {
+                        this.Write("(");
+                        this.Visit(nex.Arguments[0]);
+                        this.Write(" || '-' || (caseWithoutExpression(");
+                        this.Visit(nex.Arguments[1]);
+                        this.Write(" < 10, '0' || ");
+                        this.Visit(nex.Arguments[1]);
+                        this.Write(" ELSE ");
+                        this.Visit(nex.Arguments[1]);
+                        this.Write(" END)");
+                        this.Write(" || '-' || (caseWithoutExpression( ");
+                        this.Visit(nex.Arguments[2]);
+                        this.Write(" < 10, '0' || ");
+                        this.Visit(nex.Arguments[2]);
+                        this.Write(" , ");
+                        this.Visit(nex.Arguments[2]);
+                        this.Write(")");
+                        this.Write(")");
+                        return nex;
+            }
+         
+            
             return base.VisitNew(nex);
         }
 

@@ -19,7 +19,7 @@ namespace Test
 
         private static DbEntityProvider CreateNorthwindProvider()
         {
-            return new ClickHouseQueryProvider(
+            var provider = new ClickHouseQueryProvider(
                 "Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
                 "ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";" +
                 "DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"10.200.101.163\";Database=\"Northwind\";Port=\"9000\";MaxCompressBufferSize=\"0\";" +
@@ -36,6 +36,8 @@ namespace Test
                 //"MaxBytesBeforeExternalSort=\"0\"",
                 //"Server=localhost;user id='root';password='mypwd';Database=Northwind", 
                 new AttributeMapping(typeof(Test.NorthwindWithAttributes)));
+            provider.Log = System.Console.Out;
+            return provider;
         }
 
         private static DbEntityProvider CreateNorthwindProviderZero()
