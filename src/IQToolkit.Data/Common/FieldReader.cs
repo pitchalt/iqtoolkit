@@ -676,13 +676,17 @@ namespace IQToolkit.Data.Common
             {
                 return default(String);
             }
-           // return this.GetString(ordinal);
             while (true)
             {
                 switch (typeCodes[ordinal])
                 {
                     case TypeCode.Empty:
-                        typeCodes[ordinal] = TypeHelper.GetTypeCode(this.GetFieldType(ordinal));
+                        try {
+                            typeCodes[ordinal] = TypeHelper.GetTypeCode(this.GetFieldType(ordinal));
+                        }
+                        catch (ArgumentException e) {
+                            typeCodes[ordinal] = TypeHelper.GetTypeCode(typeof(String));
+                        }
                         continue;
                     case TypeCode.Byte:
                         return this.GetByte(ordinal).ToString();
