@@ -133,47 +133,47 @@ namespace IQToolkit.Data.ClickHouse
                 switch (m.Member.Name)
                 {
                     case "Day":
-                        this.Write("STRFTIME('%d', ");
+                        this.Write("toDayOfMonth(toDateTime(");
                         this.Visit(m.Expression);
-                        this.Write(")");
+                        this.Write("))");
                         return m;
                     case "Month":
-                        this.Write("STRFTIME('%m', ");
+                        this.Write("toMonth(toDateTime( ");
                         this.Visit(m.Expression);
-                        this.Write(")");
+                        this.Write("))");
                         return m;
                     case "Year":
-                        this.Write("STRFTIME('%Y', ");
+                        this.Write("toYear(toDateTime(");
                         this.Visit(m.Expression);
-                        this.Write(")");
+                        this.Write("))");
                         return m;
                     case "Hour":
-                        this.Write("STRFTIME('%H', ");
+                        this.Write("toHour(toDateTime(");
                         this.Visit(m.Expression);
-                        this.Write(")");
+                        this.Write("))");
                         return m;
                     case "Minute":
-                        this.Write("STRFTIME('%M', ");
+                        this.Write("toMinute(toDateTime(");
                         this.Visit(m.Expression);
-                        this.Write(")");
+                        this.Write("))");
                         return m;
                     case "Second":
-                        this.Write("STRFTIME('%S', ");
+                        this.Write("toSecond(toDateTime(");
+                        this.Visit(m.Expression);
+                        this.Write("))");
+                        return m;
+                  /*  case "Millisecond":
+                        this.Write("toDateTime('%f', ");
                         this.Visit(m.Expression);
                         this.Write(")");
-                        return m;
-                    case "Millisecond":
-                        this.Write("STRFTIME('%f', ");
-                        this.Visit(m.Expression);
-                        this.Write(")");
-                        return m;
+                        return m;*/
                     case "DayOfWeek":
-                        this.Write("STRFTIME('%w', ");
+                        this.Write("toDayOfWeek(toDateTime(");
                         this.Visit(m.Expression);
-                        this.Write(")");
+                        this.Write("))");
                         return m;
                     case "DayOfYear":
-                        this.Write("(STRFTIME('%j', ");
+                        this.Write("toDayOfYear(toDateTime(");
                         this.Visit(m.Expression);
                         this.Write(") - 1)");
                         return m;
@@ -228,14 +228,7 @@ namespace IQToolkit.Data.ClickHouse
                         this.Visit(m.Arguments[0]);
                         this.Write(" )");
                         return m;
-                        
-                        /*this.Write("like(");
-                        this.Visit(m.Object);
-                        this.Write(", " );
-                        this.Visit(m.Arguments[0]);
-                        this.Write(" || '%')");
-                        return m;
-                    */
+                       
                 //+
                     case "EndsWith":
                         this.Write("endsWith(");
@@ -484,17 +477,6 @@ namespace IQToolkit.Data.ClickHouse
 
                 //select OrderID, caseWithoutExpression(OrderID = 1, 11, OrderID = 2, 12, 0) from temp_table
 
-
-                //this.Write("(CASE WHEN ");
-                //this.Visit(m.Object);
-                //this.Write(" = ");
-                //this.Visit(m.Arguments[0]);
-                //this.Write(" THEN 0 WHEN ");
-                //this.Visit(m.Object);
-                //this.Write(" < ");
-                //this.Visit(m.Arguments[0]);
-                //this.Write(" THEN -1 ELSE 1 END)");
-                //return m;
             }
             else if (m.Method.IsStatic && m.Method.Name == "Compare" && m.Method.ReturnType == typeof(int) && m.Arguments.Count == 2)
             {
@@ -511,16 +493,6 @@ namespace IQToolkit.Data.ClickHouse
 
                 ////select OrderID, caseWithoutExpression(OrderID = 1, 11, OrderID = 2, 12, 0) from temp_table
 
-                //this.Write("(CASE WHEN ");
-                //this.Visit(m.Arguments[0]);
-                //this.Write(" = ");
-                //this.Visit(m.Arguments[1]);
-                //this.Write(" THEN 0 WHEN ");
-                //this.Visit(m.Arguments[0]);
-                //this.Write(" < ");
-                //this.Visit(m.Arguments[1]);
-                //this.Write(" THEN -1 ELSE 1 END)");
-                //return m;
             }
             return base.VisitMethodCall(m);
         }
@@ -608,10 +580,6 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write(")");
                 return b;
             }
-          
-            // ВНИМАНИЕ!!!!
-            // ЗДЕСЬ НАЧИНАЕТСЯ КАКАЯ-ТО ХЕРНЯ
-            // БУДЬТЕ ВНИМАТЕЛЬНЕЙ
             else if (b.NodeType == ExpressionType.LeftShift)
             {                
                 this.Write("bitShiftLeft(");
@@ -656,13 +624,13 @@ namespace IQToolkit.Data.ClickHouse
 
                     if (nex.Arguments.Count == 3)
                     {
-                        this.Write("toDateTime(concat(toString(");
+                        this.Write("parseDateTimeBestEffort(concat(toString(");
                         this.Visit(nex.Arguments[0]);
                         this.Write("), '-', toString(");
                         this.Write(nex.Arguments[1]);
                         this.Write("), '-', toString(");
                         this.Write(nex.Arguments[2]);
-                        this.Write(") ))");
+                        this.Write("), 'T00:00:00.000Z' ))");
                         return nex;
                     }
                     else if (nex.Arguments.Count == 6)
@@ -673,13 +641,13 @@ namespace IQToolkit.Data.ClickHouse
                         this.Write(nex.Arguments[1]);
                         this.Write("), '-', toString(");
                         this.Write(nex.Arguments[2]);
-                        this.Write("), ' ', toString(");
+                        this.Write("), 'T', toString(");
                         this.Write(nex.Arguments[3]);
                         this.Write("), ':', toString(");
                         this.Write(nex.Arguments[4]);
                         this.Write("), ':', toString(");
                         this.Write(nex.Arguments[5]);
-                        this.Write(") ))");
+                        this.Write("),'.000Z' ))");
                         return nex;
 
                     }
@@ -723,12 +691,6 @@ namespace IQToolkit.Data.ClickHouse
         {
             if (IsPredicate(expr))
             {
-                //this.Write("CASE WHEN (");
-                //this.Visit(expr);
-                //this.Write(") THEN 1 ELSE 0 END");
-                //return expr;
-
-
                 this.Write("if(");
                 this.Visit(expr);
                 this.Write(", 1, 0)");
@@ -764,39 +726,9 @@ namespace IQToolkit.Data.ClickHouse
                 }
                 this.Write(")");
 
-
-                //this.Write("(CASE WHEN ");
-                //this.VisitPredicate(c.Test);
-                //this.Write(" THEN ");
-                //this.VisitValue(c.IfTrue);
-                //Expression ifFalse = c.IfFalse;
-                //while (ifFalse != null && ifFalse.NodeType == ExpressionType.Conditional)
-                //{
-                //    ConditionalExpression fc = (ConditionalExpression)ifFalse;
-                //    this.Write(" WHEN ");
-                //    this.VisitPredicate(fc.Test);
-                //    this.Write(" THEN ");
-                //    this.VisitValue(fc.IfTrue);
-                //    ifFalse = fc.IfFalse;
-                //}
-                //if (ifFalse != null)
-                //{
-                //    this.Write(" ELSE ");
-                //    this.VisitValue(ifFalse);
-                //}
-                //this.Write(" END)");
             }
             else
             {
-                //this.Write("(CASE ");
-                //this.VisitValue(c.Test);
-                //this.Write(" WHEN 0 THEN ");
-                //this.VisitValue(c.IfFalse);
-                //this.Write(" ELSE ");
-                //this.VisitValue(c.IfTrue);
-                //this.Write(" END)");
-
-
                 this.Write("(if( ");
                 this.VisitValue(c.Test);
                 this.Write(", 0, ");

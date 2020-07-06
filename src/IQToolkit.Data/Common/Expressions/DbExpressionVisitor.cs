@@ -71,7 +71,7 @@ namespace IQToolkit.Data.Common
                 case DbExpressionType.Entity:
                     return this.VisitEntity((EntityExpression)exp);
                 default:
-                    return base.Visit(exp);
+                     return base.Visit(exp);
             }
         }
 

@@ -1110,7 +1110,7 @@ WHERE ((
             Assert.Equal(0, dt.Minute);
             Assert.Equal(0, dt.Second);
         }
-        // ошибка не собрал запрос
+       
         [ExcludeProvider("SQLite")] //  no function to help build correct string representation
         [ExcludeProvider("MySql")]  //  MySQL returns datetime as binary after combination of MAX and CONVERT
         public void TestDateTimeConstructYMDHMS()
@@ -1123,19 +1123,19 @@ WHERE ((
             Assert.Equal(5, dt.Minute);
             Assert.Equal(6, dt.Second);
         }
-        // ошибка не собрал запрос
+        
         public void TestDateTimeDay()
         {
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Day);
             Assert.Equal(25, v);
         }
-        // ошибка не собрал запрос
+        
         public void TestDateTimeMonth()
         {
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Month);
             Assert.Equal(8, v);
         }
-        // ошибка не собрал запрос
+        
         public void TestDateTimeYear()
         {
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Year);

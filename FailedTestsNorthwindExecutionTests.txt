@@ -1,6 +1,6 @@
 NorthwindExecutionTests
-TestDateTimeConstructYMDHMS Failed
-Assert failure - expected: 4 actual: 3
+TestDateTimeDay Failed
+Assert failure - expected: 25 actual: 0
 
 0 Passed
   0 Skipped

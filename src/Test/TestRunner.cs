@@ -184,8 +184,6 @@ namespace Test
                         {
                             RunTest(testMethod, file);
                         }
-
-
                     }
                     finally
                     {
