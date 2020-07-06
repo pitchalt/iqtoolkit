@@ -43,6 +43,22 @@ namespace IQToolkit.Data.ClickHouse
             return new Executor(this);
         }
 
+        public class ClickHouseFieldReader : DbFieldReader {
+
+//            private static _BlockGet;
+            private ClickHouseDataReader _Reader;
+
+            protected override Type GetFieldType(Int32 ordinal) {
+//                _Reader.GetFieldType()
+                return base.GetFieldType(ordinal);
+            }
+
+            public ClickHouseFieldReader(QueryExecutor executor, IDataReader reader) : base(executor, reader) {
+                _Reader = (ClickHouseDataReader)reader; 
+                //typeof(ClickHouseDataReader).Pro
+            }
+        }
+
         new class Executor : DbEntityProvider.Executor
         {
             ClickHouseQueryProvider provider;
@@ -89,7 +105,7 @@ namespace IQToolkit.Data.ClickHouse
 
             protected override IEnumerable<T> Project<T>(IDataReader reader, Func<FieldReader, T> fnProjector, MappingEntity entity, bool closeReader)
             {
-                var freader = new DbFieldReader(this, reader);
+                var freader = new ClickHouseFieldReader(this, reader);
                 try
                 {
                     do

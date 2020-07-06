@@ -174,7 +174,7 @@ namespace Test
                 
 
                 Setup();
-                using (StreamWriter file = new StreamWriter(@"D:\Share\Users\IQToolkit\FailedTests" + $"{testType.Name}.txt"))
+                using (StreamWriter file = new StreamWriter($"{testType.Name}.txt"))
                 {
                     file.WriteLine(testType.Name);
                     try
