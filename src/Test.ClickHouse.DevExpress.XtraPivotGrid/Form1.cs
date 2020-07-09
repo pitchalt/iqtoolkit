@@ -21,14 +21,7 @@ namespace PivotForm
             
             ClickHouseQueryProvider provider =// new ClickHouseQueryProvider(CreateConnection(), null, null);
 
-            new ClickHouseQueryProvider(
-                "Async=\"False\";BufferSize=\"4096\";ApacheBufferSize=\"0\";SocketTimeout=\"1000\";" +
-                "ConnectionTimeout=\"1000\";DataTransferTimeout=\"1000\";KeepAliveTimeout=\"1000\";TimeToLiveMillis=\"0\";" +
-                "DefaultMaxPerRoute=\"0\";MaxTotal=\"0\";Host=\"10.200.101.163\";Database=\"Northwind\";Port=\"9000\";MaxCompressBufferSize=\"0\";" +
-                "MaxParallelReplicas=\"0\";Priority=\"0\";Compress=\"True\";CheckCompressedHash=\"True\";Decompress=\"False\";" +
-                "Extremes=\"False\";MaxThreads=\"0\";MaxExecutionTime=\"0\";MaxBlockSize=\"0\";MaxRowsToGroupBy=\"0\";" +
-                "User=\"default\";Password=\"\";DistributedAggregationMemoryEfficient=\"False\";MaxBytesBeforeExternalGroupBy=\"0\";" +
-                "MaxBytesBeforeExternalSort=\"0\"", null, null);
+            new ClickHouseQueryProvider(CreateConnection(), null, null);
             col = new lineorder_flat_collection(provider);
             //     var query = (IQueryable<lineorder_flat>)
             //     from lineOrder in flat_Collection.FlatCollection
