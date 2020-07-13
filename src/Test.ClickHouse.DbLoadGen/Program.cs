@@ -109,14 +109,10 @@ namespace Test.ClickHouse.DbLoadGen {
         {
             var cname = GetCName(tablename);
             var table = new Table(cname, tablename);
-              if (cname == "CustomerCustomerDemo" || cname == "Product_Category_Map" || cname == "EmployeeTerritories")
-            //    {
-   //        if (cname == "OrderDetails")
+              if (cname == "CustomerCustomerDemo" || cname == "Product_Category_Map" || cname == "EmployeeTerritories")          
                 Console.WriteLine(sql);
-            //     }
+            
 
-             
-            //  Неправильно, создается куча групп для значений, потом переделаю
             List<String> primaryKeys = new List<String>();
             foreach (var field in sql.Split('\n'))
             {
@@ -124,9 +120,6 @@ namespace Test.ClickHouse.DbLoadGen {
                 var matchPrimaryKey = PrimaryKeyExpr.Match(field);
                 if (matchPrimaryKey.Success)
                 {
-
-                    //var memes = matchPrimaryKey.Groups["1"].Value;
-
                     foreach (var el in matchPrimaryKey.Groups)
                     {                        
                         primaryKeys.Add(el.ToString());

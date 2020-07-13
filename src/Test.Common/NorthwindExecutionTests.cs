@@ -1141,15 +1141,14 @@ WHERE ((
             var v = db.Orders.Where(o => o.OrderDate == new DateTime(1997, 8, 25)).Take(1).Max(o => o.OrderDate.Year);
             Assert.Equal(1997, v);
         }
-        // ошибка не собрал запрос
 
         [ExcludeProvider("SQLite")]  //  not able to test via construction
         public void TestDateTimeHour()
         {
             var hour = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => new DateTime((c.CustomerID == "ALFKI") ? 1997 : 1997, 7, 4, 3, 5, 6).Hour);
+          
             Assert.Equal(3, hour);
         }
-        // ошибка не собрал запрос
 
         [ExcludeProvider("SQLite")]  //  not able to test via construction
         public void TestDateTimeMinute()
@@ -1157,7 +1156,6 @@ WHERE ((
             var minute = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => new DateTime((c.CustomerID == "ALFKI") ? 1997 : 1997, 7, 4, 3, 5, 6).Minute);
             Assert.Equal(5, minute);
         }
-        // ошибка не собрал запрос
 
         [ExcludeProvider("SQLite")]   // not able to test via construction
         public void TestDateTimeSecond()
@@ -1165,7 +1163,6 @@ WHERE ((
             var second = db.Customers.Where(c => c.CustomerID == "ALFKI").Max(c => new DateTime((c.CustomerID == "ALFKI") ? 1997 : 1997, 7, 4, 3, 5, 6).Second);
             Assert.Equal(6, second);
         }
-        // ошибка не собрал запрос
 
         public void TestDateTimeDayOfWeek()
         {
@@ -1173,7 +1170,6 @@ WHERE ((
             Assert.Equal(DayOfWeek.Monday, dow);
         }
 
-        // ошибка не поддерживает 
         [ExcludeProvider("SQLite")]
         public void TestDateTimeAddYears()
         {
@@ -1181,7 +1177,6 @@ WHERE ((
             Assert.NotEqual(null, od);
         }
 
-        // ошибка не поддерживает 
         [ExcludeProvider("SQLite")]
         public void TestDateTimeAddMonths()
         {
@@ -1308,7 +1303,6 @@ WHERE ((
             Assert.Equal(4.0, six);
         }
 
-        // ошибка не реализован
         [ExcludeProvider("Access")]
         [ExcludeProvider("SQLite")]
         public void TestMathFloor()
@@ -1322,7 +1316,7 @@ WHERE ((
             Assert.Equal(Math.Floor(3.6), six);
             Assert.Equal(Math.Floor(-3.4), nfour);
         }
-        // ошибка не реализован
+
         [ExcludeProvider("Access")]
         [ExcludeProvider("SQLite")]
         public void TestDecimalFloor()
@@ -1334,7 +1328,6 @@ WHERE ((
             Assert.Equal(decimal.Floor(3.6m), six);
             Assert.Equal(decimal.Floor(-3.4m), nfour);
         }
-        // ошибка не реализован
         [ExcludeProvider("SQLite")]
         public void TestMathTruncate()
         {
@@ -1358,7 +1351,7 @@ WHERE ((
             Assert.Equal(1, gt);
             Assert.Equal(0, eq);
         }
-
+        // ошибка нулебл стринг
         public void TestStringCompareToLT()
         {
             var cmpLT = db.Customers.Where(c => c.CustomerID == "ALFKI").SingleOrDefault(c => c.City.CompareTo("Seattle") < 0);
@@ -1541,7 +1534,6 @@ WHERE ((
             Assert.Equal(4.0m, six);
         }
 
-        // ошибка не реализован
         [ExcludeProvider("SQLite")]
         public void TestDecimalTruncate()
         {
@@ -1657,7 +1649,7 @@ WHERE ((
             Assert.Equal(8, eight);
         }
 
-        // ошибка не собрался 
+        // ошибка не собрался с битовыми функциями вообще чет не понятно
         public void TestIntBitwiseAnd()
         {
             var band = db.Customers.Where(c => c.CustomerID == "ALFKI").Sum(c => ((c.CustomerID == "ALFKI") ? 6 : 6) & 3);

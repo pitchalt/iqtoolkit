@@ -162,11 +162,11 @@ namespace IQToolkit.Data.ClickHouse
                         this.Visit(m.Expression);
                         this.Write("))");
                         return m;
-                  /*  case "Millisecond":
-                        this.Write("toDateTime('%f', ");
-                        this.Visit(m.Expression);
-                        this.Write(")");
-                        return m;*/
+                    /*  case "Millisecond":
+                          this.Write("toDateTime('%f', ");
+                          this.Visit(m.Expression);
+                          this.Write(")");
+                          return m;*/
                     case "DayOfWeek":
                         this.Write("toDayOfWeek(toDateTime(");
                         this.Visit(m.Expression);
@@ -194,15 +194,15 @@ namespace IQToolkit.Data.ClickHouse
                         {
                             this.Write("position(");
                             this.Visit(m.Object);
-                            this.Write(", " );
+                            this.Write(", ");
                             this.Visit(m.Arguments[0]);
                             this.Write(" ) -1");
                         }
-                        else  if (m.Arguments.Count == 2)
+                        else if (m.Arguments.Count == 2)
                         {
                             this.Write("position( substring(");
                             this.Visit(m.Object);
-                            this.Write(", " );
+                            this.Write(", ");
                             this.Visit(m.Arguments[1]);
                             this.Write(", length(");
                             this.Visit(m.Object);
@@ -215,21 +215,21 @@ namespace IQToolkit.Data.ClickHouse
                             this.Write("-1 ");
                             //position(substring("ContactName", n,length("ContactName") -n + 1), 'a') -1 + n 
                         }
-                        else  throw new Exception("that indexof in not supported, update VisitMethodCall in ClickHouseFormatter");
+                        else throw new Exception("that indexof in not supported, update VisitMethodCall in ClickHouseFormatter");
 
                         return m;
 
                     //+
                     case "StartsWith":
-                       
+
                         this.Write("startsWith(");
                         this.Visit(m.Object);
-                        this.Write(", " );
+                        this.Write(", ");
                         this.Visit(m.Arguments[0]);
                         this.Write(" )");
                         return m;
-                       
-                //+
+
+                    //+
                     case "EndsWith":
                         this.Write("endsWith(");
                         this.Visit(m.Object);
@@ -237,7 +237,7 @@ namespace IQToolkit.Data.ClickHouse
                         this.Visit(m.Arguments[0]);
                         this.Write(")");
                         return m;
-                //+
+                    //+
                     case "Contains":
                         this.Write("position(");
                         this.Visit(m.Object);
@@ -345,6 +345,69 @@ namespace IQToolkit.Data.ClickHouse
                             return m;
                         }
                         break;
+
+                    case "AddYears":
+                        if (m.Object.Type == typeof(DateTime))
+                        {
+                            this.Visit(m.Object);
+                            this.Write(" + interval ");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" year");
+                            return m;
+                        }
+                        break;
+
+                    case "AddMonths":
+                        if (m.Object.Type == typeof(DateTime))
+                        {
+                            this.Visit(m.Object);
+                            this.Write(" + interval ");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" month");
+                            return m;
+                        }
+                        break;
+
+                    case "AddDays":
+                        if (m.Object.Type == typeof(DateTime))
+                        {
+                            this.Visit(m.Object);
+                            this.Write(" + interval ");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" day");
+                            return m;
+                        }
+                        break;
+                    case "AddHours":
+                        if (m.Object.Type == typeof(DateTime))
+                        {
+                            this.Visit(m.Object);
+                            this.Write(" + interval ");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" hour");
+                            return m;
+                        }
+                        break;
+                    case "AddMinutes":
+                        if (m.Object.Type == typeof(DateTime))
+                        {
+                            this.Visit(m.Object);
+                            this.Write(" + interval ");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" minute");
+                            return m;
+                        }
+                        break;
+                    case "AddSeconds":
+                        if (m.Object.Type == typeof(DateTime))
+                        {
+                            this.Visit(m.Object);
+                            this.Write(" + interval ");
+                            this.Visit(m.Arguments[0]);
+                            this.Write(" second");
+                            return m;
+                        }
+                        break;
                 }
             }
             else if (m.Method.DeclaringType == typeof(Decimal))
@@ -387,6 +450,16 @@ namespace IQToolkit.Data.ClickHouse
                             return m;
                         }
                         break;
+                    case "Floor":
+                        this.Write("floor(");
+                        this.Visit(m.Arguments[0]);
+                        this.Write(")");
+                        return m;
+                    case "Truncate":
+                        this.Write("truncate(");
+                        this.Visit(m.Arguments[0]);
+                        this.Write(")");
+                        return m;
                 }
             }
             else if (m.Method.DeclaringType == typeof(Math))
@@ -447,11 +520,17 @@ namespace IQToolkit.Data.ClickHouse
                             return m;
                         }
                         break;
-                  /*  case "Truncate":
+                    case "Floor":
                         this.Write("floor(");
                         this.Visit(m.Arguments[0]);
                         this.Write(")");
-                        return m;*/
+                        return m;
+                    case "Truncate":
+                        this.Write("truncate(");
+                        this.Visit(m.Arguments[0]);
+                        this.Write(")");
+                        return m;
+
                 }
             }
             if (m.Method.Name == "ToString")
@@ -496,8 +575,6 @@ namespace IQToolkit.Data.ClickHouse
             }
             return base.VisitMethodCall(m);
         }
-
-/*
         protected override Expression VisitUnary(UnaryExpression u)
         {
             string op = this.GetOperator(u);
@@ -511,9 +588,9 @@ namespace IQToolkit.Data.ClickHouse
                     }
                     else if (IsBoolean(u.Operand.Type) || op.Length > 1)
                     {
-                        this.Write("bitNot(");                        
-                        this.Visit(u.Operand);
-                        this.Write(")");
+                        this.Write(op);
+                        this.Write(" ");
+                        this.VisitPredicate(u.Operand);
                     }
                     else
                     {
@@ -550,7 +627,6 @@ namespace IQToolkit.Data.ClickHouse
             }
             return u;
         }
-*/
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
@@ -581,7 +657,7 @@ namespace IQToolkit.Data.ClickHouse
                 return b;
             }
             else if (b.NodeType == ExpressionType.LeftShift)
-            {                
+            {
                 this.Write("bitShiftLeft(");
                 this.VisitValue(b.Left);
                 this.Write(", ");
@@ -599,7 +675,36 @@ namespace IQToolkit.Data.ClickHouse
                 this.Write(" )");
                 return b;
             }
-         
+            else if (b.NodeType == ExpressionType.And && (!this.IsBoolean(b.Left.Type)))
+            {
+                this.Write("bitAnd(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(") ");
+                return b;
+            }
+            else if (b.NodeType == ExpressionType.Or && (!this.IsBoolean(b.Left.Type)))
+            {
+                this.Write("bitOr(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(") ");
+                return b;
+            }
+            else if (b.NodeType == ExpressionType.ExclusiveOr && (!this.IsBoolean(b.Left.Type)))
+            {
+                this.Write("bitXor(");
+                this.VisitValue(b.Left);
+                this.Write(", ");
+                this.VisitValue(b.Right);
+                this.Write(") ");
+                return b;
+            }
+
+
+
             return base.VisitBinary(b);
         }
 
@@ -630,7 +735,7 @@ namespace IQToolkit.Data.ClickHouse
                         this.Write(nex.Arguments[1]);
                         this.Write("), '-', toString(");
                         this.Write(nex.Arguments[2]);
-                        this.Write("), 'T00:00:00.000Z' ))");
+                        this.Write("), ' 00:00:00.Z' ))");
                         return nex;
                     }
                     else if (nex.Arguments.Count == 6)
@@ -647,7 +752,7 @@ namespace IQToolkit.Data.ClickHouse
                         this.Write(nex.Arguments[4]);
                         this.Write("), ':', toString(");
                         this.Write(nex.Arguments[5]);
-                        this.Write("),'.000Z' ))");
+                        this.Write("), '.Z'))");
                         return nex;
 
                     }
@@ -663,27 +768,27 @@ namespace IQToolkit.Data.ClickHouse
 
             else
             {
-                        this.Write("(");
-                        this.Visit(nex.Arguments[0]);
-                        this.Write(" || '-' || (caseWithoutExpression(");
-                        this.Visit(nex.Arguments[1]);
-                        this.Write(" < 10, '0' || ");
-                        this.Visit(nex.Arguments[1]);
-                        this.Write(" ELSE ");
-                        this.Visit(nex.Arguments[1]);
-                        this.Write(" END)");
-                        this.Write(" || '-' || (caseWithoutExpression( ");
-                        this.Visit(nex.Arguments[2]);
-                        this.Write(" < 10, '0' || ");
-                        this.Visit(nex.Arguments[2]);
-                        this.Write(" , ");
-                        this.Visit(nex.Arguments[2]);
-                        this.Write(")");
-                        this.Write(")");
-                        return nex;
+                this.Write("(");
+                this.Visit(nex.Arguments[0]);
+                this.Write(" || '-' || (caseWithoutExpression(");
+                this.Visit(nex.Arguments[1]);
+                this.Write(" < 10, '0' || ");
+                this.Visit(nex.Arguments[1]);
+                this.Write(" ELSE ");
+                this.Visit(nex.Arguments[1]);
+                this.Write(" END)");
+                this.Write(" || '-' || (caseWithoutExpression( ");
+                this.Visit(nex.Arguments[2]);
+                this.Write(" < 10, '0' || ");
+                this.Visit(nex.Arguments[2]);
+                this.Write(" , ");
+                this.Visit(nex.Arguments[2]);
+                this.Write(")");
+                this.Write(")");
+                return nex;
             }
-         
-            
+
+
             return base.VisitNew(nex);
         }
 
@@ -740,6 +845,6 @@ namespace IQToolkit.Data.ClickHouse
             return c;
         }
 
-     
+
     }
 }

@@ -174,12 +174,11 @@ namespace Test
                 
 
                 Setup();
-                using (StreamWriter file = new StreamWriter($"{testType.Name}.txt"))
+                using (StreamWriter file = new StreamWriter($"Failed{testType.Name}3.txt"))
                 {
                     file.WriteLine(testType.Name);
                     try
                     {
-
                         foreach (var testMethod in testMethods)
                         {
                             RunTest(testMethod, file);
@@ -272,6 +271,7 @@ namespace Test
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("  {0} Succeeded", testMethod.Name);
                         }
+
                     }
                     else
                     {
@@ -283,6 +283,14 @@ namespace Test
                             Console.WriteLine("  {0} Skipped", testMethod.Name);
                         }
                     }
+
+                    file.WriteLine("{0} Passes", testMethod.Name);
+                    file.WriteLine();
+
+
+
+
+
                 }
                 catch (Exception e)
                 {

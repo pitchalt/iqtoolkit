@@ -81,8 +81,8 @@ namespace IQToolkit.Data.ClickHouse
                 {
                     sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
                 }
-
-//                var p = ((ClickHouseCommand)command).Parameters.Add(parameter.Name, ToMySqlDbType(sqlType.SqlType), sqlType.Length);
+              
+                //                var p = ((ClickHouseCommand)command).Parameters.Add(parameter.Name, ToMySqlDbType(sqlType.SqlType), sqlType.Length);
                 var p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
                 
                 if (sqlType.Precision != 0)

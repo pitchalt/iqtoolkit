@@ -1,7 +1,0 @@
-NorthwindExecutionTests
-TestDateTimeDay Failed
-Assert failure - expected: 25 actual: 0
-
-0 Passed
-  0 Skipped
-    1 Failed

@@ -160,10 +160,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -237,10 +237,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -371,10 +371,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -550,10 +550,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -676,10 +676,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -790,10 +790,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -911,10 +911,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1029,10 +1029,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1143,10 +1143,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1233,10 +1233,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1311,10 +1311,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1386,10 +1386,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1471,10 +1471,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1601,10 +1601,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
@@ -1773,10 +1773,10 @@ namespace Test.ClickHouse.DbLoad {
             }
         }
         public object GetDefault(Type t) {
-             return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
+            return this.GetType().GetMethod("GetDefaultGeneric").MakeGenericMethod(t).Invoke(this,null);
         }
         public T GetDefaultGeneric<T>() {
-              return default(T);
+            return default(T);
         }
     }
     
