@@ -4,4 +4,14 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DevExpress.Blazor" Version="20.1.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="Pages\PivotView.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+    </ItemGroup>
+
 </Project>
