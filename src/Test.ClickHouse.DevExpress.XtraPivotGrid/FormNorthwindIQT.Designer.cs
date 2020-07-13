@@ -26,27 +26,22 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.pivotGridControl1 = new DevExpress.XtraPivotGrid.PivotGridControl();
             this.linqServerModeSource1 = new DevExpress.Data.Linq.LinqServerModeSource();
             this.fieldOrderID1 = new DevExpress.XtraPivotGrid.PivotGridField();
             this.fieldProductID1 = new DevExpress.XtraPivotGrid.PivotGridField();
             this.fieldQuantity1 = new DevExpress.XtraPivotGrid.PivotGridField();
             this.fieldUnitPrice1 = new DevExpress.XtraPivotGrid.PivotGridField();
-            ((System.ComponentModel.ISupportInitialize)(this.pivotGridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.linqServerModeSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.pivotGridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.linqServerModeSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // pivotGridControl1
             // 
             this.pivotGridControl1.DataSource = this.linqServerModeSource1;
             this.pivotGridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pivotGridControl1.Fields.AddRange(new DevExpress.XtraPivotGrid.PivotGridField[] {
-            this.fieldOrderID1,
-            this.fieldProductID1,
-            this.fieldQuantity1,
-            this.fieldUnitPrice1});
+            this.pivotGridControl1.Fields.AddRange(new DevExpress.XtraPivotGrid.PivotGridField[] {this.fieldOrderID1, this.fieldProductID1, this.fieldQuantity1, this.fieldUnitPrice1});
             this.pivotGridControl1.Location = new System.Drawing.Point(0, 0);
             this.pivotGridControl1.Name = "pivotGridControl1";
             this.pivotGridControl1.Size = new System.Drawing.Size(632, 278);
@@ -87,29 +82,28 @@
             this.fieldUnitPrice1.FieldName = "UnitPrice";
             this.fieldUnitPrice1.Name = "fieldUnitPrice1";
             // 
-            // FormNorthwindXpo
+            // FormNorthwindIQT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(632, 278);
             this.Controls.Add(this.pivotGridControl1);
-            this.Name = "FormNorthwindXpo";
+            this.Name = "FormNorthwindIQT";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pivotGridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.linqServerModeSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.pivotGridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.linqServerModeSource1)).EndInit();
             this.ResumeLayout(false);
-
         }
 
-        #endregion
-
-        private DevExpress.XtraPivotGrid.PivotGridControl pivotGridControl1;
-        private DevExpress.Data.Linq.LinqServerModeSource linqServerModeSource1;
         private DevExpress.XtraPivotGrid.PivotGridField fieldOrderID1;
         private DevExpress.XtraPivotGrid.PivotGridField fieldProductID1;
         private DevExpress.XtraPivotGrid.PivotGridField fieldQuantity1;
         private DevExpress.XtraPivotGrid.PivotGridField fieldUnitPrice1;
+        private DevExpress.Data.Linq.LinqServerModeSource linqServerModeSource1;
+        private DevExpress.XtraPivotGrid.PivotGridControl pivotGridControl1;
+
+        #endregion
     }
 }
 

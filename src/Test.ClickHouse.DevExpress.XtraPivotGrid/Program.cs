@@ -20,6 +20,10 @@ namespace PivotForm
         {
             var dbxpo = new NorthwindXpo();
             var dbiqt = new NorthwindIQT();
+
+            foreach (var ord in dbiqt.OrderDetail.GroupBy(x => "g0").Select(x => new {P0 = x.Sum(elem => elem.UnitPrice)})) {
+                System.Console.WriteLine(ord.P0);                
+            }
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

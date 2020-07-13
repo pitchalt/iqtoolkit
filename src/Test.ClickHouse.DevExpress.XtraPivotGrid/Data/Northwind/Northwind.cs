@@ -3,7 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using ClickHouse.Ado;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
@@ -124,6 +127,7 @@ namespace Test
         }
     }
 
+    
     public class NorthwindIQT
     {
         ClickHouseQueryProvider provider;
@@ -133,9 +137,28 @@ namespace Test
             get { return new Query<OrderDetail>(provider);}
         }
 
+        class DiagnosticWriter : TextWriter {
+            public override Encoding Encoding {
+                get { throw new NotImplementedException(); }
+            }
+
+            public override void Write(Char value) {
+                System.Diagnostics.Debug.Write(value);
+            }
+
+            public override void Write(String value) {
+                System.Diagnostics.Debug.Write(value);
+            }
+
+            public override void WriteLine(String value) {
+                System.Diagnostics.Debug.WriteLine(value);
+            }
+        }
+
         public NorthwindIQT()
         {
             provider = new ClickHouseQueryProvider(CreateConnection(), new AttributeMapping(), null);
+            provider.Log = new DiagnosticWriter();
         }
 
         public ClickHouseConnection CreateConnection()
@@ -144,6 +167,8 @@ namespace Test
 
             set.Host = "10.200.101.163";
             set.Port = 9000;
+//            set.Host = "172.16.170.2";
+//            set.Port = 32769;
             set.Compress = true;
             set.User = "default";
             set.Password = "";
