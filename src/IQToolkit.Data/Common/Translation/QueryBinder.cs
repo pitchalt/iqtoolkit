@@ -599,10 +599,12 @@ namespace IQToolkit.Data.Common
 
             // make it possible to tie aggregates back to this group-by
             NewExpression newResult = this.GetNewExpression(pc.Projector);
-            if (newResult != null && newResult.Type.GetTypeInfo().IsGenericType && newResult.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
+            if (newResult != null && newResult.Type.GetTypeInfo().IsGenericType 
+                                  && newResult.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
             {
                 Expression projectedElementSubquery = newResult.Arguments[1];
-                this.groupByMap.Add(projectedElementSubquery, info);
+                if (!this.groupByMap.ContainsKey(projectedElementSubquery))
+                    this.groupByMap.Add(projectedElementSubquery, info);
             }
 
             return new ProjectionExpression(
