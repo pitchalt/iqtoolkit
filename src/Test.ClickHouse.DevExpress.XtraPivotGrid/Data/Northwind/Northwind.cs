@@ -180,6 +180,108 @@ namespace Test
         }
     }
 
+    public class  lineorder_flat
+    {
+
+        public UInt32? LO_ORDERKEY { get; set; }
+        public UInt16? LO_LINENUMBER   { get; set; }
+        public UInt32? LO_CUSTKEY   { get; set; }
+        public UInt32? LO_PARTKEY   { get; set; }
+        public UInt32? LO_SUPPKEY   { get; set; }
+        public DateTime? LO_ORDERDATE   { get; set; }
+        public String LO_ORDERPRIORITY   { get; set; }
+        public UInt16? LO_SHIPPRIORITY  { get; set; }
+        public UInt16? LO_QUANTITY  { get; set; }
+        public UInt32? LO_EXTENDEDPRICE   { get; set; }
+        public UInt32? LO_ORDTOTALPRICE   { get; set; }
+        public UInt16? LO_DISCOUNT  { get; set; }
+        public UInt32? LO_REVENUE   { get; set; }
+        public UInt32? LO_SUPPLYCOST      { get; set; }
+        public UInt16? LO_TAX  { get; set; }
+        public DateTime? LO_COMMITDATE  { get; set; }
+        public String LO_SHIPMODE { get; set; }
+        public String C_NAME  { get; set; }
+        public String C_ADDRESS  { get; set; }
+        public String C_CITY { get; set; }
+        public String C_NATION  { get; set; }
+        public String C_REGION  { get; set; }
+        public String C_PHONE   { get; set; }
+        public String C_MKTSEGMENT  { get; set; }
+        public String S_NAME  { get; set; }
+        public String S_ADDRESS  { get; set; }
+        public String S_CITY  { get; set; }
+        public String S_NATION { get; set; }
+        public String S_REGION { get; set; }
+        public String S_PHONE  { get; set; }
+        public String P_NAME  { get; set; }
+        public String P_MFGR { get; set; }
+        public String P_CATEGORY{ get; set; }
+        public String P_BRAND { get; set; }
+        public String P_COLOR { get; set; }
+        public String P_TYPE   { get; set; }
+        public UInt16? P_SIZE  { get; set; }
+        public String P_CONTAINER { get; set; }
+    }
+
+
+    public class StarBench
+    {
+        ClickHouseQueryProvider provider;
+
+        public IQueryable<lineorder_flat> LineOrder
+        {
+            get { return new Query<lineorder_flat>(provider); }
+        }
+
+        class DiagnosticWriter : TextWriter
+        {
+            public override Encoding Encoding
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public override void Write(Char value)
+            {
+                System.Diagnostics.Debug.Write(value);
+            }
+
+            public override void Write(String value)
+            {
+                System.Diagnostics.Debug.Write(value);
+            }
+
+            public override void WriteLine(String value)
+            {
+                System.Diagnostics.Debug.WriteLine(value);
+            }
+        }
+
+        public StarBench()
+        {
+            provider = new ClickHouseQueryProvider(CreateConnection(), new AttributeMapping(), null);
+            provider.Log = new DiagnosticWriter();
+        }
+
+        public ClickHouseConnection CreateConnection()
+        {
+            ClickHouseConnectionSettings set = new ClickHouseConnectionSettings();
+
+            set.Host = "10.200.101.163";
+            set.Port = 9000;
+            //            set.Host = "172.16.170.2";
+            //            set.Port = 32769;
+            set.Compress = true;
+            set.User = "default";
+            set.Password = "";
+            set.Database = "default";
+
+            var connection = new ClickHouseConnection(set);
+            //     connection.Open();
+            return connection;
+        }
+    }
+
+
     public class Northwind
     {
         private readonly IEntityProvider provider;
