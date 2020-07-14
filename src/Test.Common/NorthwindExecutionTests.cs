@@ -1068,7 +1068,7 @@ WHERE ((
             Assert.Equal("Seattle", list[0].City);
         }
 
-       
+
         [ExcludeProvider("SQLite")] //  no equivalent function
         public void TestStringIndexOf()
         {
