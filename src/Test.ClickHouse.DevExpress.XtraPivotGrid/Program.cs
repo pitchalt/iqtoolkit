@@ -6,6 +6,7 @@ using DevExpress.UserSkins;
 using DevExpress.Skins;
 using DevExpress.LookAndFeel;
 using ClickHouse.Ado;
+using Test;
 
 namespace PivotForm
 {
@@ -17,10 +18,16 @@ namespace PivotForm
         [STAThread]
         static void Main()
         {
-           
+            var dbxpo = new NorthwindXpo();
+            var dbiqt = new NorthwindIQT();
+
+            foreach (var ord in dbiqt.OrderDetail.GroupBy(x => "g0").Select(x => new {P0 = x.Sum(elem => elem.UnitPrice)})) {
+                System.Console.WriteLine(ord.P0);                
+            }
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new FormNorthwindIQT(dbiqt));
         }
     }
 }

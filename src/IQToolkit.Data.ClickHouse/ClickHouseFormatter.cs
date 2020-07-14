@@ -181,6 +181,16 @@ namespace IQToolkit.Data.ClickHouse
             }
             return base.VisitMemberAccess(m);
         }
+        
+        protected override void WriteAggregateName(string aggregateName)
+        {
+            if (aggregateName == "Sum")
+            {
+                this.Write("sumWithOverflow");                    
+            }
+            else 
+                base.WriteAggregateName(aggregateName);
+        }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {

@@ -68,7 +68,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ClickHouse.DbLoadGen",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.ClickHouse.DbLoad", "Test.ClickHouse.DbLoad\Test.ClickHouse.DbLoad.csproj", "{9577F724-BD31-4729-B580-8DDE82C02223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotForm", "Pivot3\PivotForm.csproj", "{5E2D3F1E-4246-4558-9269-C621963F28DF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.ClickHouse.DevExpress.XtraPivotGrid", "Test.ClickHouse.DevExpress.XtraPivotGrid\Test.ClickHouse.DevExpress.XtraPivotGrid.csproj", "{5E2D3F1E-4246-4558-9269-C621963F28DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,6 +175,7 @@ Global
 		{6377C841-F631-40DF-9073-3E4B1A1D2C2F} = {1F74E07F-4075-465E-8387-26A7CE978446}
 		{92FC7560-6EAA-46E3-8D8C-8D0BAD3E2D98} = {1F74E07F-4075-465E-8387-26A7CE978446}
 		{9577F724-BD31-4729-B580-8DDE82C02223} = {1F74E07F-4075-465E-8387-26A7CE978446}
+		{5E2D3F1E-4246-4558-9269-C621963F28DF} = {1F74E07F-4075-465E-8387-26A7CE978446}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0532CF4A-F16E-4A4F-B4CA-ABE402FD7434}

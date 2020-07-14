@@ -1,0 +1,29 @@
+﻿@page "/pivotview"
+
+@using Test.ClickHouse.DevExpress.Blazor.Data
+@using global::DevExpress.Blazor
+
+@if(GridData == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <DxPivotGrid Data="@GridData">
+        <DxPivotGridField Field="@nameof(SaleInfo.Region)" SortOrder="PivotGridSortOrder.Ascending" Area="PivotGridFieldArea.Row"></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(SaleInfo.Country)" Area="PivotGridFieldArea.Row"></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(SaleInfo.City)" Area="PivotGridFieldArea.Row"></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(SaleInfo.Date)" GroupInterval="PivotGridGroupInterval.Year" Area="PivotGridFieldArea.Column" Caption="Year"></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(SaleInfo.Date)" GroupInterval="PivotGridGroupInterval.Quarter" Area="PivotGridFieldArea.Column" Caption="Quarter">
+            <HeaderTemplate>
+                    object? context;
+                @string.Format("Q{0}", context)</HeaderTemplate>
+        </DxPivotGridField>
+        <DxPivotGridField Field="@nameof(SaleInfo.Amount)" Area="PivotGridFieldArea.Data" SummaryType="PivotGridSummaryType.Sum"></DxPivotGridField>
+        <DxPivotGridField Field="@nameof(SaleInfo.OrderId)" Caption="Count" Area="PivotGridFieldArea.Data" SummaryType="PivotGridSummaryType.Count"></DxPivotGridField>
+    </DxPivotGrid>
+}
+@code { 
+    IQueryable<SaleInfo> GridData;
+
+    protected override async Task OnInitializedAsync() {
+        GridData = await Sales.Load();
+    }
+} 

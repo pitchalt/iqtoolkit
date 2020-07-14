@@ -30,8 +30,8 @@
         {
             this.pivotGridControl1 = new DevExpress.XtraPivotGrid.PivotGridControl();
             this.linqServerModeSource1 = new DevExpress.Data.Linq.LinqServerModeSource();
-            ((System.ComponentModel.ISupportInitialize)(this.pivotGridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.linqServerModeSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.pivotGridControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.linqServerModeSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // pivotGridControl1
@@ -56,16 +56,15 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pivotGridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.linqServerModeSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.pivotGridControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.linqServerModeSource1)).EndInit();
             this.ResumeLayout(false);
-
         }
 
-        #endregion
-
-        private DevExpress.XtraPivotGrid.PivotGridControl pivotGridControl1;
         private DevExpress.Data.Linq.LinqServerModeSource linqServerModeSource1;
+        private DevExpress.XtraPivotGrid.PivotGridControl pivotGridControl1;
+
+        #endregion
     }
 }
 
