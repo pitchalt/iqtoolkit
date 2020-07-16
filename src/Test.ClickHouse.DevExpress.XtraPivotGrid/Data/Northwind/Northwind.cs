@@ -189,7 +189,7 @@ namespace Test
         public UInt32? LO_PARTKEY   { get; set; }
         public UInt32? LO_SUPPKEY   { get; set; }
         public DateTime? LO_ORDERDATE   { get; set; }
-        public String LO_ORDERPRIORITY   { get; set; }
+     //   public String LO_ORDERPRIORITY   { get; set; }
         public UInt16? LO_SHIPPRIORITY  { get; set; }
         public UInt16? LO_QUANTITY  { get; set; }
         public UInt32? LO_EXTENDEDPRICE   { get; set; }
@@ -199,28 +199,28 @@ namespace Test
         public UInt32? LO_SUPPLYCOST      { get; set; }
         public UInt16? LO_TAX  { get; set; }
         public DateTime? LO_COMMITDATE  { get; set; }
-        public String LO_SHIPMODE { get; set; }
+    //    public String LO_SHIPMODE { get; set; }
         public String C_NAME  { get; set; }
         public String C_ADDRESS  { get; set; }
-        public String C_CITY { get; set; }
-        public String C_NATION  { get; set; }
-        public String C_REGION  { get; set; }
+      //  public String C_CITY { get; set; }
+     //   public String C_NATION  { get; set; }
+     //   public String C_REGION  { get; set; }
         public String C_PHONE   { get; set; }
-        public String C_MKTSEGMENT  { get; set; }
+  //      public String C_MKTSEGMENT  { get; set; }
         public String S_NAME  { get; set; }
         public String S_ADDRESS  { get; set; }
-        public String S_CITY  { get; set; }
-        public String S_NATION { get; set; }
-        public String S_REGION { get; set; }
+//        public String S_CITY  { get; set; }
+ //       public String S_NATION { get; set; }
+  //      public String S_REGION { get; set; }
         public String S_PHONE  { get; set; }
         public String P_NAME  { get; set; }
-        public String P_MFGR { get; set; }
-        public String P_CATEGORY{ get; set; }
-        public String P_BRAND { get; set; }
-        public String P_COLOR { get; set; }
-        public String P_TYPE   { get; set; }
+  //      public String P_MFGR { get; set; }
+ //       public String P_CATEGORY{ get; set; }
+ //       public String P_BRAND { get; set; }
+ //       public String P_COLOR { get; set; }
+   //     public String P_TYPE   { get; set; }
         public UInt16? P_SIZE  { get; set; }
-        public String P_CONTAINER { get; set; }
+   //     public String P_CONTAINER { get; set; }
     }
 
 

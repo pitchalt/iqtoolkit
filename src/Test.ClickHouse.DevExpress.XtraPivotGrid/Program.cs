@@ -29,7 +29,7 @@ namespace PivotForm
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new FormNorthwindIQT(dbiqt));
-            Application.Run(new FormStarBench(dbsb));
+            Application.Run(new RibbonForm1(dbsb));
 
         }
     }
