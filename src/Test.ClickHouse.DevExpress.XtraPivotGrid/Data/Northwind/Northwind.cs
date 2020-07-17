@@ -235,9 +235,14 @@ namespace Test
 
         class DiagnosticWriter : TextWriter
         {
+           
             public override Encoding Encoding
             {
                 get { throw new NotImplementedException(); }
+            }
+            public override void Write(char[] buffer)
+            {
+                System.Diagnostics.Debug.Write(buffer);
             }
 
             public override void Write(Char value)
@@ -261,6 +266,7 @@ namespace Test
             provider = new ClickHouseQueryProvider(CreateConnection(), new AttributeMapping(), null);
             provider.Log = new DiagnosticWriter();
         }
+
 
         public ClickHouseConnection CreateConnection()
         {

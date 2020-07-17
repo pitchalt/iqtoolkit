@@ -7,8 +7,8 @@
     <ProjectGuid>{5E2D3F1E-4246-4558-9269-C621963F28DF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pivot3</RootNamespace>
-    <AssemblyName>Pivot3</AssemblyName>
+    <RootNamespace>PivotFrom</RootNamespace>
+    <AssemblyName>PivotFrom</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -79,18 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Northwind\Northwind.cs" />
-    <Compile Include="DetailRibbonForm1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DetailRibbonForm1.Designer.cs">
-      <DependentUpon>DetailRibbonForm1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormStarBench.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormStarBench.Designer.cs">
-      <DependentUpon>FormStarBench.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormNorthwindIQT.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,12 +99,6 @@
     <Compile Include="RibbonForm1.Designer.cs">
       <DependentUpon>RibbonForm1.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="DetailRibbonForm1.resx">
-      <DependentUpon>DetailRibbonForm1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormStarBench.resx">
-      <DependentUpon>FormStarBench.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormNorthwindIQT.resx">
       <DependentUpon>FormNorthwindIQT.cs</DependentUpon>
     </EmbeddedResource>

@@ -7,6 +7,8 @@ using DevExpress.Skins;
 using DevExpress.LookAndFeel;
 using ClickHouse.Ado;
 using Test;
+using System.Diagnostics;
+using DevExpress.Persistent.Base;
 
 namespace PivotForm
 {
@@ -22,11 +24,12 @@ namespace PivotForm
             var dbiqt = new NorthwindIQT();
             var dbsb = new StarBench();
 
-            foreach (var ord in dbiqt.OrderDetail.GroupBy(x => "g0").Select(x => new {P0 = x.Sum(elem => elem.UnitPrice)})) {
-                System.Console.WriteLine(ord.P0);                
-            }
-            
-            Application.EnableVisualStyles();
+            //foreach (var ord in dbiqt.OrderDetail.GroupBy(x => "g0").Select(x => new {P0 = x.Sum(elem => elem.UnitPrice)})) {
+            //    System.Console.WriteLine(ord.P0);                
+            //}
+                        
+
+                Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new FormNorthwindIQT(dbiqt));
             Application.Run(new RibbonForm1(dbsb));

@@ -7,6 +7,7 @@ using System.Text;
 namespace IQToolkit.Data.ClickHouse
 {
     using IQToolkit.Data.Common;
+    using System.Reflection;
 
     public class ClickHouseTypeSystem : SqlTypeSystem
     {
@@ -129,5 +130,23 @@ namespace IQToolkit.Data.ClickHouse
             }
             return sb.ToString();
         }
+
+        // костыль !!!!
+        public override QueryType GetColumnType(Type type)
+        {
+            bool isNotNull = type.GetTypeInfo().IsValueType && !TypeHelper.IsNullableType(type);
+            type = TypeHelper.GetNonNullableType(type);
+
+            if (TypeHelper.GetTypeCode(type) == TypeCode.DateTime)
+            {
+                return NewType(SqlType.Date, isNotNull, 0, 0, 0);
+            }
+            else return base.GetColumnType(type);
+
+
+        }
     }
+
+
+
 }

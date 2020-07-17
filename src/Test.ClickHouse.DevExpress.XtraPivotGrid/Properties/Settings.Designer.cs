@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Pivot3.Properties {
+namespace PivotFrom.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

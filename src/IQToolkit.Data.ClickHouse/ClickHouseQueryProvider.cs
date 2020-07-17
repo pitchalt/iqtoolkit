@@ -81,6 +81,16 @@ namespace IQToolkit.Data.ClickHouse
                 {
                     sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
                 }
+                if (parameter.Type == typeof(DateTime?))
+                {
+                    sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
+                  //  value = ((DateTime)value).ToShortDateString();
+                   // var meme = ((DateTime)value).Date;
+                  //  var mememem = ((DateTime)value).ToShortDateString();
+                    //value = value.ToString("dd/MM/yyy");
+                    //value = ((Date)value)
+
+                }
               
                 //                var p = ((ClickHouseCommand)command).Parameters.Add(parameter.Name, ToMySqlDbType(sqlType.SqlType), sqlType.Length);
                 var p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);

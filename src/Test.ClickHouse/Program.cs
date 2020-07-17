@@ -6,6 +6,7 @@ using ClickHouse.Ado;
 using IQToolkit.Data;
 using IQToolkit.Data.ClickHouse;
 using IQToolkit.Data.Mapping;
+using System.Diagnostics;
 
 namespace Test
 {
@@ -22,10 +23,10 @@ namespace Test
             set.Database = "Northwind";
             set.User = "default";
             set.Password = "";
-            set.Host = "127.0.0.1";
-            set.Port = 32769;
-//            set.Host = "10.200.101.163";
-//            set.Port = 9000;
+         //   set.Host = "127.0.0.1";
+        //    set.Port = 32769;
+            set.Host = "10.200.101.163";
+            set.Port = 9000;
 
 
             ClickHouseConnection clickHouseConnection = new ClickHouseConnection(set);
@@ -33,6 +34,8 @@ namespace Test
             var provider = new ClickHouseQueryProvider( clickHouseConnection, 
                 new AttributeMapping(typeof(Test.NorthwindWithAttributes)));
             provider.Log = System.Console.Out;
+
+
             return provider;
         }
         

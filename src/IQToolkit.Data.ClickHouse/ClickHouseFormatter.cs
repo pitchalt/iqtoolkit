@@ -739,14 +739,23 @@ namespace IQToolkit.Data.ClickHouse
 
                     if (nex.Arguments.Count == 3)
                     {
-                        this.Write("parseDateTimeBestEffort(concat(toString(");
+                        this.Write("ToDate(concat(toString(");
                         this.Visit(nex.Arguments[0]);
                         this.Write("), '-', toString(");
                         this.Write(nex.Arguments[1]);
                         this.Write("), '-', toString(");
                         this.Write(nex.Arguments[2]);
-                        this.Write("), ' 00:00:00.Z' ))");
+                        this.Write(")))");
                         return nex;
+
+                        //this.Write("parseDateTimeBestEffort(concat(toString(");
+                        //this.Visit(nex.Arguments[0]);
+                        //this.Write("), '-', toString(");
+                        //this.Write(nex.Arguments[1]);
+                        //this.Write("), '-', toString(");
+                        //this.Write(nex.Arguments[2]);
+                        //this.Write("), ' 00:00:00.Z' ))");
+                        //return nex;
                     }
                     else if (nex.Arguments.Count == 6)
                     {
