@@ -279,7 +279,7 @@ namespace Test
             set.Compress = true;
             set.User = "default";
             set.Password = "";
-            set.Database = "default";
+            set.Database = "PivotTest";
 
             var connection = new ClickHouseConnection(set);
             //     connection.Open();

@@ -60,7 +60,6 @@
             this.fieldSNAME1 = new DevExpress.XtraPivotGrid.PivotGridField();
             this.fieldSPHONE1 = new DevExpress.XtraPivotGrid.PivotGridField();
             this.accordionControl1 = new DevExpress.XtraBars.Navigation.AccordionControl();
-            this.filteringUIContext1 = new DevExpress.Utils.Filtering.FilteringUIContext(this.components);
             this.accordionControlElement1 = new DevExpress.XtraBars.Navigation.AccordionControlElement();
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
@@ -68,14 +67,16 @@
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+            this.filteringUIContext1 = new DevExpress.Utils.Filtering.FilteringUIContext(this.components);
             this.dockManager1 = new DevExpress.XtraBars.Docking.DockManager(this.components);
             this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.barAndDockingController1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pivotGridControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.linqServerModeSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.accordionControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.filteringUIContext1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -83,7 +84,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.filteringUIContext1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
             this.SuspendLayout();
             // 
             // ribbon
@@ -151,7 +154,7 @@
             this.pivotGridControl1.Location = new System.Drawing.Point(12, 12);
             this.pivotGridControl1.MenuManager = this.ribbon;
             this.pivotGridControl1.Name = "pivotGridControl1";
-            this.pivotGridControl1.Size = new System.Drawing.Size(733, 450);
+            this.pivotGridControl1.Size = new System.Drawing.Size(733, 426);
             this.pivotGridControl1.TabIndex = 0;
             // 
             // linqServerModeSource1
@@ -327,15 +330,10 @@
             this.accordionControlElement1});
             this.accordionControl1.Location = new System.Drawing.Point(749, 12);
             this.accordionControl1.Name = "accordionControl1";
-            this.accordionControl1.Size = new System.Drawing.Size(286, 450);
+            this.accordionControl1.Size = new System.Drawing.Size(286, 426);
             this.accordionControl1.StyleController = this.layoutControl1;
             this.accordionControl1.TabIndex = 0;
             this.accordionControl1.Text = "accordionControl1";
-            // 
-            // filteringUIContext1
-            // 
-            this.filteringUIContext1.Client = this.pivotGridControl1;
-            this.filteringUIContext1.Control = this.accordionControl1;
             // 
             // accordionControlElement1
             // 
@@ -345,6 +343,7 @@
             // 
             // layoutControl1
             // 
+            this.layoutControl1.Controls.Add(this.flowLayoutPanel1);
             this.layoutControl1.Controls.Add(this.panelControl1);
             this.layoutControl1.Controls.Add(this.accordionControl1);
             this.layoutControl1.Controls.Add(this.pivotGridControl1);
@@ -361,7 +360,7 @@
             // 
             this.panelControl1.Location = new System.Drawing.Point(1039, 12);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(217, 450);
+            this.panelControl1.Size = new System.Drawing.Size(217, 426);
             this.panelControl1.TabIndex = 4;
             // 
             // Root
@@ -371,7 +370,8 @@
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1,
             this.layoutControlItem2,
-            this.layoutControlItem3});
+            this.layoutControlItem3,
+            this.layoutControlItem4});
             this.Root.Name = "Root";
             this.Root.Size = new System.Drawing.Size(1268, 474);
             this.Root.TextVisible = false;
@@ -381,7 +381,7 @@
             this.layoutControlItem1.Control = this.pivotGridControl1;
             this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(737, 454);
+            this.layoutControlItem1.Size = new System.Drawing.Size(737, 430);
             this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem1.TextVisible = false;
             // 
@@ -390,7 +390,7 @@
             this.layoutControlItem2.Control = this.accordionControl1;
             this.layoutControlItem2.Location = new System.Drawing.Point(737, 0);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(290, 454);
+            this.layoutControlItem2.Size = new System.Drawing.Size(290, 430);
             this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem2.TextVisible = false;
             // 
@@ -399,9 +399,14 @@
             this.layoutControlItem3.Control = this.panelControl1;
             this.layoutControlItem3.Location = new System.Drawing.Point(1027, 0);
             this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Size = new System.Drawing.Size(221, 454);
+            this.layoutControlItem3.Size = new System.Drawing.Size(221, 430);
             this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem3.TextVisible = false;
+            // 
+            // filteringUIContext1
+            // 
+            this.filteringUIContext1.Client = this.pivotGridControl1;
+            this.filteringUIContext1.Control = this.accordionControl1;
             // 
             // dockManager1
             // 
@@ -428,6 +433,21 @@
             this.dockPanel1_Container.Size = new System.Drawing.Size(199, 386);
             this.dockPanel1_Container.TabIndex = 0;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(108, 442);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1148, 20);
+            this.flowLayoutPanel1.TabIndex = 5;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.flowLayoutPanel1;
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 430);
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Size = new System.Drawing.Size(1248, 24);
+            this.layoutControlItem4.TextSize = new System.Drawing.Size(93, 13);
+            // 
             // RibbonForm1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -446,7 +466,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pivotGridControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.linqServerModeSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.accordionControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.filteringUIContext1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
@@ -454,7 +473,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.filteringUIContext1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -503,5 +524,7 @@
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
         private DevExpress.XtraEditors.PanelControl panelControl1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
     }
 }
