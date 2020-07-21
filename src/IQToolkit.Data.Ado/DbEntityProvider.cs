@@ -12,6 +12,7 @@ namespace IQToolkit.Data
 {
     using Common;
     using Mapping;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// The base type for <see cref="EntityProvider"/>'s that use a System.Data.<see cref="DbConnection"/>.
@@ -24,7 +25,7 @@ namespace IQToolkit.Data
 
         private int nConnectedActions = 0;
         private bool actionOpenedConnection = false;
-
+       
         /// <summary>
         /// Constructs a new <see cref="DbEntityProvider"/>
         /// </summary>

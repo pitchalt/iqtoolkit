@@ -10,6 +10,7 @@ namespace IQToolkit.Data.ClickHouse
 {
     using IQToolkit.Data.Common;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// A <see cref="DbEntityProvider"/> for MySql databases
@@ -23,7 +24,7 @@ namespace IQToolkit.Data.ClickHouse
             : base(connection, ClickHouseLanguage.Default, mapping, policy)
         {
         }
-            
+                
 
         /// <summary>
         /// Constructs a <see cref="MySqlQueryProvider"/>
@@ -152,60 +153,68 @@ namespace IQToolkit.Data.ClickHouse
             {
                 return base.ExecuteDeferred(query, fnProjector, entity, paramValues);
             }
+                     
         }
 
-//        public static MySqlDbType ToMySqlDbType(SqlType dbType)
-//        {
-//            switch (dbType)
-//            {
-//                case SqlType.BigInt:
-//                    return MySqlDbType.Int64;
-//                case SqlType.Binary:
-//                    return MySqlDbType.Binary;
-//                case SqlType.Bit:
-//                    return MySqlDbType.Bit;
-//                case SqlType.NChar:
-//                case SqlType.Char:
-//                    return MySqlDbType.Text;
-//                case SqlType.Date:
-//                    return MySqlDbType.Date;
-//                case SqlType.DateTime:
-//                case SqlType.SmallDateTime:
-//                    return MySqlDbType.DateTime;
-//                case SqlType.Decimal:
-//                    return MySqlDbType.Decimal;
-//                case SqlType.Float:
-//                    return MySqlDbType.Float;
-//                case SqlType.Image:
-//                    return MySqlDbType.LongBlob;
-//                case SqlType.Int:
-//                    return MySqlDbType.Int32;
-//                case SqlType.Money:
-//                case SqlType.SmallMoney:
-//                    return MySqlDbType.Decimal;
-//                case SqlType.NVarChar:
-//                case SqlType.VarChar:
-//                    return MySqlDbType.VarChar;
-//                case SqlType.SmallInt:
-//                    return MySqlDbType.Int16;
-//                case SqlType.NText:
-//                case SqlType.Text:
-//                    return MySqlDbType.LongText;
-//                case SqlType.Time:
-//                    return MySqlDbType.Time;
-//                case SqlType.Timestamp:
-//                    return MySqlDbType.Timestamp;
-//                case SqlType.TinyInt:
-//                    return MySqlDbType.Byte;
-//                case SqlType.UniqueIdentifier:
-//                    return MySqlDbType.Guid;
-//                case SqlType.VarBinary:
-//                    return MySqlDbType.VarBinary;
-//                case SqlType.Xml:
-//                    return MySqlDbType.Text;
-//                default:
-//                    throw new NotSupportedException(string.Format("The SQL type '{0}' is not supported", dbType));
-//            }
-//        }
+        public override object Execute(Expression expression)
+        {
+            var obj = base.Execute(expression);
+            return obj;
+
+        }
+
+        //        public static MySqlDbType ToMySqlDbType(SqlType dbType)
+        //        {
+        //            switch (dbType)
+        //            {
+        //                case SqlType.BigInt:
+        //                    return MySqlDbType.Int64;
+        //                case SqlType.Binary:
+        //                    return MySqlDbType.Binary;
+        //                case SqlType.Bit:
+        //                    return MySqlDbType.Bit;
+        //                case SqlType.NChar:
+        //                case SqlType.Char:
+        //                    return MySqlDbType.Text;
+        //                case SqlType.Date:
+        //                    return MySqlDbType.Date;
+        //                case SqlType.DateTime:
+        //                case SqlType.SmallDateTime:
+        //                    return MySqlDbType.DateTime;
+        //                case SqlType.Decimal:
+        //                    return MySqlDbType.Decimal;
+        //                case SqlType.Float:
+        //                    return MySqlDbType.Float;
+        //                case SqlType.Image:
+        //                    return MySqlDbType.LongBlob;
+        //                case SqlType.Int:
+        //                    return MySqlDbType.Int32;
+        //                case SqlType.Money:
+        //                case SqlType.SmallMoney:
+        //                    return MySqlDbType.Decimal;
+        //                case SqlType.NVarChar:
+        //                case SqlType.VarChar:
+        //                    return MySqlDbType.VarChar;
+        //                case SqlType.SmallInt:
+        //                    return MySqlDbType.Int16;
+        //                case SqlType.NText:
+        //                case SqlType.Text:
+        //                    return MySqlDbType.LongText;
+        //                case SqlType.Time:
+        //                    return MySqlDbType.Time;
+        //                case SqlType.Timestamp:
+        //                    return MySqlDbType.Timestamp;
+        //                case SqlType.TinyInt:
+        //                    return MySqlDbType.Byte;
+        //                case SqlType.UniqueIdentifier:
+        //                    return MySqlDbType.Guid;
+        //                case SqlType.VarBinary:
+        //                    return MySqlDbType.VarBinary;
+        //                case SqlType.Xml:
+        //                    return MySqlDbType.Text;
+        //                default:
+        //                    throw new NotSupportedException(string.Format("The SQL type '{0}' is not supported", dbType));
+        //            }
+        //        }
     }
 }

@@ -124,12 +124,12 @@
             this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
             this.ribbonPageGroup1});
             this.ribbonPage1.Name = "ribbonPage1";
-            this.ribbonPage1.Text = "ribbonPage1";
+            this.ribbonPage1.Text = "База данных";
             // 
             // ribbonPageGroup1
             // 
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
-            this.ribbonPageGroup1.Text = "ribbonPageGroup1";
+            this.ribbonPageGroup1.Text = "Динамическое отображение";
             // 
             // ribbonStatusBar
             // 
@@ -496,12 +496,13 @@
             // 
             this.accordionControlElement1.Expanded = true;
             this.accordionControlElement1.Name = "accordionControlElement1";
-            this.accordionControlElement1.Text = "Element1";
+            this.accordionControlElement1.Text = "Фильтры";
+            this.accordionControlElement1.Click += new System.EventHandler(this.accordionControlElement1_Click);
             // 
             // panelControl1
             // 
             this.panelControl1.Location = new System.Drawing.Point(1191, 12);
-            this.panelControl1.MaximumSize = new System.Drawing.Size(300, 0);
+            this.panelControl1.MaximumSize = new System.Drawing.Size(330, 0);
             this.panelControl1.Name = "panelControl1";
             this.panelControl1.Size = new System.Drawing.Size(300, 466);
             this.panelControl1.TabIndex = 4;
@@ -586,7 +587,7 @@
             this.Name = "RibbonForm1";
             this.Ribbon = this.ribbon;
             this.StatusBar = this.ribbonStatusBar;
-            this.Text = "RibbonForm1";
+            this.Text = "Тест Clickhouse";
             this.Load += new System.EventHandler(this.RibbonForm1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ribbon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.barAndDockingController1)).EndInit();

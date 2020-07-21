@@ -48,11 +48,11 @@ namespace PivotForm
             this.fieldLOLINENUMBER1.Caption = "Порядковый номер заказа";
             this.fieldLOLINENUMBER1.Visible = false;
             this.fieldLOORDERDATE1.Caption = "Дата заказа";
-            this.fieldLOORDERDATE1.Visible = true;
+            this.fieldLOORDERDATE1.Visible = false;
             this.fieldLOORDERKEY1.Caption = "Идентификатор заказа";
             this.fieldLOORDERKEY1.Visible = false;
             this.fieldLOORDTOTALPRICE1.Caption = "Итоговая цена заказа";
-            this.fieldLOORDTOTALPRICE1.Visible = true;
+            this.fieldLOORDTOTALPRICE1.Visible = false;
             this.fieldLOPARTKEY1.Caption = "Идентификатор партии";
             this.fieldLOPARTKEY1.Visible = false;
             this.fieldLOQUANTITY1.Caption = "Объем заказа";
@@ -82,25 +82,25 @@ namespace PivotForm
             this.fieldCMKTSEGMENT1.Caption = "Сегмент покупателя";
             this.fieldCMKTSEGMENT1.Visible = false;
             this.fieldCNATION1.Caption = "Страна покупателя";
-            this.fieldCNATION1.Visible = true;
+            this.fieldCNATION1.Visible = false;
             this.fieldPCOLOR1.Caption = "Цвет товара";
             this.fieldPCOLOR1.Visible = false;
             this.fieldPCATEGORY1.Caption = "Категория товара";
-            this.fieldPCATEGORY1.Visible = true;
+            this.fieldPCATEGORY1.Visible = false;
             this.fieldPCONTAINER1.Caption = "Контейнер товара";
             this.fieldPCONTAINER1.Visible = false;
             this.fieldPMFGR1.Caption = "Группа товара";
-            this.fieldPMFGR1.Visible = true;
+            this.fieldPMFGR1.Visible = false;
             this.fieldPTYPE1.Caption = "Тип товара";
             this.fieldPTYPE1.Visible = false;
             this.fieldCREGION1.Caption = "Регион покупателя";
-            this.fieldCREGION1.Visible = true;
+            this.fieldCREGION1.Visible = false;
             this.fieldSNATION1.Caption = "Страна поставщика";
-            this.fieldSNATION1.Visible = true;
+            this.fieldSNATION1.Visible = false;
             this.fieldSREGION1.Caption = "Регион поставщика";
-            this.fieldSREGION1.Visible = true;
+            this.fieldSREGION1.Visible = false;
             this.fieldCCITY1.Caption = "Город покупателя";
-            this.fieldCCITY1.Visible = true;
+            this.fieldCCITY1.Visible = false;
             this.fieldLOORDERPRIORITY1.Caption = "Приоритет заказа";
             this.fieldLOORDERPRIORITY1.Visible = false;
             this.fieldLOSHIPMODE1.Caption = "Способ транспортировки";
@@ -108,7 +108,7 @@ namespace PivotForm
             this.fieldPBRAND1.Caption = "Брэнд товара";
             this.fieldPBRAND1.Visible = false;
             this.fieldSCITY1.Caption = "Город поставщика";
-            this.fieldSCITY1.Visible = true;
+            this.fieldSCITY1.Visible = false;
 
 
             filteringUIContext1.FieldRetrieving += FilteringUIContext1_FieldRetrieving;
@@ -197,6 +197,11 @@ SELECT toYear(LO_ORDERDATE) AS year, S_NATION, P_CATEGORY, sum(LO_REVENUE - LO_S
         }
 
         private void ribbonStatusBar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void accordionControlElement1_Click(object sender, EventArgs e)
         {
 
         }
