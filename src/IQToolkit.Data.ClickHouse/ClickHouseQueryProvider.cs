@@ -77,6 +77,7 @@ namespace IQToolkit.Data.ClickHouse
             protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
             {
                 SqlQueryType sqlType = (SqlQueryType)parameter.QueryType;
+                IDbDataParameter p;
                 if (sqlType == null)
                 {
                     sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
@@ -91,21 +92,30 @@ namespace IQToolkit.Data.ClickHouse
                     //value = ((Date)value)
 
                 }
+                if (parameter.Type == typeof(List<string>))
+                {
+                    p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, value);
+                }
+                else
+                {
+                    p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
+
+                    if (sqlType.Precision != 0)
+                    {
+                        p.Precision = (byte)sqlType.Precision;
+                    }
+
+                    if (sqlType.Scale != 0)
+                    {
+                        p.Scale = (byte)sqlType.Scale;
+                    }
+
+                    p.Value = value ?? DBNull.Value;
+                }
+                    //                var p = ((ClickHouseCommand)command).Parameters.Add(parameter.Name, ToMySqlDbType(sqlType.SqlType), sqlType.Length);
+                    // var p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
+
               
-                //                var p = ((ClickHouseCommand)command).Parameters.Add(parameter.Name, ToMySqlDbType(sqlType.SqlType), sqlType.Length);
-                var p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
-                
-                if (sqlType.Precision != 0)
-                {
-                    p.Precision = (byte)sqlType.Precision;
-                }
-
-                if (sqlType.Scale != 0)
-                {
-                    p.Scale = (byte)sqlType.Scale;
-                }
-
-                p.Value = value ?? DBNull.Value;
             }
 
             public override IEnumerable<T> Execute<T>(QueryCommand command, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)

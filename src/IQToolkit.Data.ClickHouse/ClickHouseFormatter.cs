@@ -583,7 +583,16 @@ namespace IQToolkit.Data.ClickHouse
                 ////select OrderID, caseWithoutExpression(OrderID = 1, 11, OrderID = 2, 12, 0) from temp_table
 
             }
-            return base.VisitMethodCall(m);
+            else if (m.Method.Name == "Contains")
+            {
+                this.Write("has([");
+                this.Visit(m.Object);
+                this.Write("], ");
+                this.Visit(m.Arguments[0]);
+                this.Write(")");
+                return m;
+            }
+                return base.VisitMethodCall(m);
         }
         protected override Expression VisitUnary(UnaryExpression u)
         {
