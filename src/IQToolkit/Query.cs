@@ -57,6 +57,8 @@ namespace IQToolkit
 
             if (!typeof(IQueryable<T>).GetTypeInfo().IsAssignableFrom(expression.Type.GetTypeInfo()))
             {
+                var one1 = expression.Type.GetTypeInfo();
+                var two = typeof(IQueryable<T>).GetTypeInfo();
                 throw new ArgumentOutOfRangeException("expression");
             }
 

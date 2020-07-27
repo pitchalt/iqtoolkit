@@ -156,12 +156,6 @@ namespace IQToolkit.Data.ClickHouse
                      
         }
 
-        public override object Execute(Expression expression)
-        {
-            var obj = base.Execute(expression);
-            return obj;
-
-        }
 
         //        public static MySqlDbType ToMySqlDbType(SqlType dbType)
         //        {

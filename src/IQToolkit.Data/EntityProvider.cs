@@ -256,7 +256,6 @@ namespace IQToolkit.Data
             }
 
             var compiled = this.Compile(expression);
-           // var me = compiled();
             return compiled();
         }
 
@@ -276,8 +275,7 @@ namespace IQToolkit.Data
             else
             {
                 // compile the execution plan
-                Expression<Func<object>> efn = Expression.Lambda<Func<object>>(Expression.Convert(plan, typeof(object)));
-               // var me = efn.Compile();
+                Expression<Func<object>> efn = Expression.Lambda<Func<object>>(Expression.Convert(plan, typeof(object)));               
                 return efn.Compile();
             }
         }
@@ -307,8 +305,8 @@ namespace IQToolkit.Data
                 provider = Expression.Property(rootQueryable, typeof(IQueryable).GetTypeInfo().GetDeclaredProperty("Provider"));
             }
 
-            var me = translator.Police.BuildExecutionPlan(translation, provider);
-            return me;
+            return translator.Police.BuildExecutionPlan(translation, provider);
+            
         }
 
         /// <summary>

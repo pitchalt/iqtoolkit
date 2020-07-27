@@ -233,6 +233,8 @@ namespace Test
             get { return new Query<lineorder_flat>(provider); }
         }
 
+
+
         class DiagnosticWriter : TextWriter
         {
            

@@ -11,6 +11,7 @@ using DevExpress.XtraBars;
 using Test;
 using DevExpress.XtraPivotGrid.Customization;
 
+
 namespace PivotForm
 {
     public partial class RibbonForm1 : DevExpress.XtraBars.Ribbon.RibbonForm
@@ -22,11 +23,13 @@ namespace PivotForm
 
 
             _starBench = starBench;
-            
-            this.linqServerModeSource1.QueryableSource = _starBench.LineOrder;
+            ProviderAdapter adapter = new ProviderAdapter(_starBench.LineOrder);
+
+            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
             pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;            
             pivotGridControl1.FieldsCustomization(this.panelControl1);
 
+          
 
             DevExpress.XtraPivotGrid.PivotGridField sumfield = new DevExpress.XtraPivotGrid.PivotGridField();
           //  pivotGridControl1.Fields.Add()
