@@ -17,17 +17,9 @@ using static IQToolkit.Data.ClickHouse.ClickHouseQueryProvider;
 
 namespace PivotForm
 {
-    public class ProviderAdapter : IQueryProvider, IQueryText, IEntityProvider, IQueryExecutorFactory
+    public class ProviderAdapter : IQueryProvider, IQueryExecutorFactory
     {
-        IQueryProvider provider;
-        private readonly QueryLanguage language;
-        private readonly QueryMapping mapping;
-        private readonly QueryPolicy policy;
-        private readonly Dictionary<MappingEntity, IEntityTable> tables;
-        private QueryCache cache;
-        private TextWriter log;
-        Expression _expression;
-
+        IQueryProvider provider;    
         public ProviderAdapter(IQueryable source)
         {
             provider = source.Provider;
@@ -37,8 +29,6 @@ namespace PivotForm
             get 
             {
                 return new QueryAdapter<lineorder_flat>(this);
-               // return CreateQuery<lineorder_flat>()
-              //  return CheckRecordNumber();
             }           
         }
 
@@ -55,9 +45,7 @@ namespace PivotForm
 
         public IQueryable CreateQuery(Expression expression)
         {
-            Type elementType = TypeHelper.GetElementType(expression.Type);
-            if(_expression == null)
-            _expression = expression;
+            Type elementType = TypeHelper.GetElementType(expression.Type);          
             try
             {
                 var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
@@ -78,137 +66,37 @@ namespace PivotForm
 
         public S Execute<S>(Expression expression)
         {
-          //  var orig_query = provider.CreateQuery<S>(expression);
-         //   var new_query = orig_query.Count();
-           // var count_result = provider.Execute<S>(new_query.)
            var res = provider.Execute<S>(expression);
             return res;
         }
 
         public object Execute(Expression expression)
-        {
-            Type elementType = TypeHelper.GetElementType(expression.Type);
-            var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
-            var orig_query = this.CreateQuery<object>(expression);
-            // var new_query = orig_query.Count();
-            var new_query = TestExpr(orig_query.Expression);
-            return provider.Execute(expression);
-        }
-
-        static Expression TestExpr(Expression exp)
-        {
-            //var methods = from m in typeof(Queryable).GetMethods()
-            //              where m.Name == "Count"
-            //              select m.GetParameters().Select(p => p.ParameterType);
-
-            // .Select(t => t.IsGenericType ? t.GetGenericTypeDefinition() : t).SequenceEqual(paramTypes)
-            ///   select m;
-            //var genericArguments = exp.Getg
-
-            //    var methods = typeof(Queryable).GetMethods()
-            //                  .Where(m => m.IsGenericMethod && m.GetParameters()[0].ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-
-            //    var meme = methods.ElementAt(0);
-            ////    Type tyyyy = meme.ElementAt(0);
-            //    var typeCount = typeof(IQueryable<>);
-
-            //var countMethod = typeof(Queryable).GetMethods().Single(m => m.Name == "Count"
-            //    && m.GetGenericArguments().Length == 1
-            //    && m.MakeGenericMethod(typeof(object)).GetParameters()[0].ParameterType == typeof(Expression<Func<object>>));
-
-            //var par = Expression.Parameter()
-
-
-
-
-            var method = GetMethoDInfo();
-             // var orig_query = from 
-             //  var new_query = orig_query.Count();
-
-            //     MethodInfo countmethod = typeof(Queryable).GetMethod("Count", BindingFlags.Static | BindingFlags.Public, null, new[] { tyyyy }, null);
-            //var ttype = 
-            return Expression.Call(exp, method);
-        }
-
-        public string GetQueryText(Expression expression)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEntityTable<TEntity> GetTable<TEntity>(string entityId = null)
-        {
-            throw new NotImplementedException();
-            //IEntityTable table;
-
-            //if (!this.tables.TryGetValue(entity, out table))
-            //{
-            //    table = this.CreateTable(entity);
-            //    this.tables.Add(entity, table);
-            //}
-
-            //return table;
-        }
-
-        public static MethodInfo GetMethoDInfo()
-        {
-        var repositoryInterfaceType = typeof(Queryable);
-            foreach (var m in repositoryInterfaceType.GetMethods())
-            {
-                if (m.IsGenericMethodDefinition && m.Name == "Count")
-                {
-                    var parametres = m.GetParameters();
-                    if (parametres.Length == 2)
-                    {
-                        var firstParamType = parametres[1].ParameterType;
-                        var typepepe = parametres[0].GetType();
-                        if(firstParamType == typeof(Expression<Func<object, bool>>))
-                       // var firstName = parametres[0].Name;
-                      //  if (firstName == "source")
-                        {
-                            return m;
-                        }      
-
-                    }
-                }
-
-            }
-            throw new Exception("lol kek cheburek");
-        }
-
-        public static void LoadGeneric<S>(IQueryable<S> queryable)
-        {
-            var actualType = typeof(S);
-            IQueryable actual = queryable;
+        {     
+            var orig_query = this.CreateQuery<object>(expression);     
             
-        }
+            var count = GetCount<object>(orig_query.Expression);
+            if (count > 5000)
+                throw new Exception("too much");
 
-      //  public static IQueryable Load(IQueryable queryable)
-        //{ 
-       // }
+            return provider.Execute(expression);
+        }        
 
-        public IEntityTable GetTable(Type entityType, string entityId = null)
+        public static int GetCount<S>(Expression expression)
         {
-            throw new NotImplementedException();
-        }
+            var origType = typeof(S);
 
-        public bool CanBeEvaluatedLocally(Expression expression)
-        {
-            throw new NotImplementedException();
-        }
+            MethodCallExpression countExpression;
 
-        public bool CanBeParameter(Expression expression)
-        {
-            Type type = TypeHelper.GetNonNullableType(expression.Type);
-            switch (TypeHelper.GetTypeCode(type))
-            {
-                case TypeCode.Object:
-                    if (expression.Type == typeof(Byte[]) ||
-                        expression.Type == typeof(Char[]))
-                        return true;
-                    return false;
-                default:
-                    return true;
-            }
+            var countMethod = typeof(Queryable).GetMethods().Single(m => m.Name == "Count"   
+            && m.GetParameters().Count() == 1
+                && m.MakeGenericMethod(typeof(object)).GetParameters()[0].ParameterType == typeof(IQueryable<object>));
+
+            var resmeth = countMethod.MakeGenericMethod(new Type[] { origType });
+            countExpression = Expression.Call(null, resmeth, new Expression[] { expression});
+
+            var res = Expression.Lambda(countExpression).Compile().DynamicInvoke();      
+
+            return (int)res;
         }
 
         public QueryExecutor CreateExecutor()
@@ -243,12 +131,7 @@ namespace PivotForm
                 if (parameter.Type == typeof(DateTime?))
                 {
                     sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
-                    //  value = ((DateTime)value).ToShortDateString();
-                    // var meme = ((DateTime)value).Date;
-                    //  var mememem = ((DateTime)value).ToShortDateString();
-                    //value = value.ToString("dd/MM/yyy");
-                    //value = ((Date)value)
-
+                  
                 }
                 if (parameter.Type == typeof(List<string>))
                 {
@@ -270,10 +153,6 @@ namespace PivotForm
 
                     p.Value = value ?? DBNull.Value;
                 }
-                //                var p = ((ClickHouseCommand)command).Parameters.Add(parameter.Name, ToMySqlDbType(sqlType.SqlType), sqlType.Length);
-                // var p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
-
-
             }
 
             public override IEnumerable<T> Execute<T>(QueryCommand command, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
