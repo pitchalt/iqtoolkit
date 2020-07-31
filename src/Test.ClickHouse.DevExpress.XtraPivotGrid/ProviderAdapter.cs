@@ -14,12 +14,17 @@ using IQToolkit.Data.ClickHouse;
 using System.Data;
 using ClickHouse.Ado;
 using static IQToolkit.Data.ClickHouse.ClickHouseQueryProvider;
+using System.Windows.Forms;
 
 namespace PivotForm
 {
     public class ProviderAdapter : IQueryProvider, IQueryExecutorFactory
     {
-        IQueryProvider provider;    
+        public event CountEventHandler RaiseCountEvent;
+        public delegate void CountEventHandler(object sender, CountEventArgs args);
+
+        IQueryProvider provider;
+        
         public ProviderAdapter(IQueryable source)
         {
             provider = source.Provider;
@@ -72,14 +77,29 @@ namespace PivotForm
 
         public object Execute(Expression expression)
         {     
-            var orig_query = this.CreateQuery<object>(expression);     
-            
-            var count = GetCount<object>(orig_query.Expression);
-            if (count > 5000)
-                throw new Exception("too much");
+            var orig_query = this.CreateQuery<object>(expression);
+            //  return CheckCount(GetCount<object>(orig_query.Expression)) ? provider.Execute(expression) : new List<object>();
+            var countevent = new CountEventArgs(GetCount<object>(orig_query.Expression));
+            OnCountEvent(countevent);                        
 
-            return provider.Execute(expression);
-        }        
+            return countevent.canUpload ? provider.Execute(expression) : new List<object>();
+        }
+
+        private void CheckItOut()
+        {
+            
+        }
+
+
+        protected void OnCountEvent(CountEventArgs e)
+        {
+            CountEventHandler countEvent = RaiseCountEvent;
+            if (countEvent != null)
+            {
+                countEvent(this, e);
+            }
+        }
+              
 
         public static int GetCount<S>(Expression expression)
         {
@@ -105,77 +125,89 @@ namespace PivotForm
         }
 
 
-        new class ExecutorAdapter : DbEntityProvider.Executor
-        {
-            ClickHouseQueryProvider provider;
+         new class ExecutorAdapter : DbEntityProvider.Executor
+          {
+              ClickHouseQueryProvider provider;
 
-            public ExecutorAdapter(ClickHouseQueryProvider provider)
-                : base(provider)
-            {
-                this.provider = provider;
-            }
+              public ExecutorAdapter(ClickHouseQueryProvider provider)
+                  : base(provider)
+              {
+                  this.provider = provider;
+              }
 
-            protected override bool BufferResultRows
-            {
-                get { return true; }
-            }
+              protected override bool BufferResultRows
+              {
+                  get { return true; }
+              }
 
-            protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
-            {
-                SqlQueryType sqlType = (SqlQueryType)parameter.QueryType;
-                IDbDataParameter p;
-                if (sqlType == null)
-                {
-                    sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
-                }
-                if (parameter.Type == typeof(DateTime?))
-                {
-                    sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
-                  
-                }
-                if (parameter.Type == typeof(List<string>))
-                {
-                    p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, value);
-                }
-                else
-                {
-                    p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
+              protected override void AddParameter(IDbCommand command, QueryParameter parameter, object value)
+              {
+                  SqlQueryType sqlType = (SqlQueryType)parameter.QueryType;
+                  IDbDataParameter p;
+                  if (sqlType == null)
+                  {
+                      sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
+                  }
+                  if (parameter.Type == typeof(DateTime?))
+                  {
+                      sqlType = (SqlQueryType)this.provider.Language.TypeSystem.GetColumnType(parameter.Type);
 
-                    if (sqlType.Precision != 0)
-                    {
-                        p.Precision = (byte)sqlType.Precision;
-                    }
+                  }
+                  if (parameter.Type == typeof(List<string>))
+                  {
+                      p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, value);
+                  }
+                  else
+                  {
+                      p = (IDbDataParameter)((ClickHouseCommand)command).Parameters.Add(parameter.Name, ((SqlQueryType)sqlType).SqlType.ToDbType(), sqlType.Length);
 
-                    if (sqlType.Scale != 0)
-                    {
-                        p.Scale = (byte)sqlType.Scale;
-                    }
+                      if (sqlType.Precision != 0)
+                      {
+                          p.Precision = (byte)sqlType.Precision;
+                      }
 
-                    p.Value = value ?? DBNull.Value;
-                }
-            }
+                      if (sqlType.Scale != 0)
+                      {
+                          p.Scale = (byte)sqlType.Scale;
+                      }
 
-            public override IEnumerable<T> Execute<T>(QueryCommand command, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
-            {
-                return base.Execute(command, fnProjector, entity, paramValues);
-            }
+                      p.Value = value ?? DBNull.Value;
+                  }
+              }
 
-            protected override IEnumerable<T> Project<T>(IDataReader reader, Func<FieldReader, T> fnProjector, MappingEntity entity, bool closeReader)
-            {
+              public override IEnumerable<T> Execute<T>(QueryCommand command, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
+              {
+                  return base.Execute(command, fnProjector, entity, paramValues);
+              }
+
+              protected override IEnumerable<T> Project<T>(IDataReader reader, Func<FieldReader, T> fnProjector, MappingEntity entity, bool closeReader)
+              {
+
                 var freader = new ClickHouseFieldReader(this, reader);
                 try
                 {
                     do
                     {
-                        while (reader.Read())
+                        try
                         {
-                            yield return fnProjector(freader);
+                            if (!reader.Read())
+                            {                                
+                                continue;
+                            }
                         }
+                        catch(Exception e)
+                        {
+                            if (closeReader)
+                            {
+                                ((IDataReader)reader).Close();
+                            }
+                        }
+                         yield return fnProjector(freader);
 
                     }
                     while (reader.NextResult());
-
                 }
+
                 finally
                 {
                     if (closeReader)
@@ -183,19 +215,37 @@ namespace PivotForm
                         ((IDataReader)reader).Close();
                     }
                 }
+
+
+                //var freader = new ClickHouseFieldReader(this, reader);               
+                //try
+                //{
+                //    do
+                //    {
+                //        while (reader.Read())
+                //        {
+                //            yield return fnProjector(freader);
+                //        }
+
+                //    }
+                //    while (reader.NextResult());
+                //}
+
+                //finally
+                //{
+                //    if (closeReader)
+                //    {
+                //        ((IDataReader)reader).Close();
+                //    }
+                //}
             }
 
-            public override IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
-            {
-                return base.ExecuteDeferred(query, fnProjector, entity, paramValues);
-            }
+              public override IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
+              {
+                  return base.ExecuteDeferred(query, fnProjector, entity, paramValues);
+              }
 
-        }
+          }     
     }
-
-
-
-
-
 
 }

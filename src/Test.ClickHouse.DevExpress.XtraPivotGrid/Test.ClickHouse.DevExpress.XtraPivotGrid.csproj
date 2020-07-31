@@ -7,8 +7,8 @@
     <ProjectGuid>{5E2D3F1E-4246-4558-9269-C621963F28DF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PivotFrom</RootNamespace>
-    <AssemblyName>PivotFrom</AssemblyName>
+    <RootNamespace>PivotForm</RootNamespace>
+    <AssemblyName>PivotForm</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -78,6 +78,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CountEventArgs.cs" />
     <Compile Include="Data\Northwind\Northwind.cs" />
     <Compile Include="FormNorthwindIQT.cs">
       <SubType>Form</SubType>
@@ -90,6 +91,9 @@
     </Compile>
     <Compile Include="FormNorthwindXpo.Designer.cs">
       <DependentUpon>FormNorthwindXpo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PivotLinqAdapter.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

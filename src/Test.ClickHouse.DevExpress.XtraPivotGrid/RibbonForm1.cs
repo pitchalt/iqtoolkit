@@ -10,29 +10,41 @@ using System.Windows.Forms;
 using DevExpress.XtraBars;
 using Test;
 using DevExpress.XtraPivotGrid.Customization;
-
+using DevExpress.XtraPivotGrid;
 
 namespace PivotForm
 {
     public partial class RibbonForm1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
         StarBench _starBench;
+        PivotLinqAdapter pivot;
+
+        bool firstQuery = true;
+
         public RibbonForm1(StarBench starBench)
         {
             InitializeComponent();
+            pivot = new PivotLinqAdapter();
 
 
             _starBench = starBench;
             ProviderAdapter adapter = new ProviderAdapter(_starBench.LineOrder);
+            adapter.RaiseCountEvent += HandleCountEvent;
 
-            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
-            pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;            
-            pivotGridControl1.FieldsCustomization(this.panelControl1);
-
+            pivotGridControl1.FieldAreaChanging += PivotGridControl1_FieldAreaChanging;
+            pivotGridControl1.BeforeLoadLayout += PivotGridControl1_BeforeLoadLayout;
+            pivotGridControl1.BeginRefresh += PivotGridControl1_BeginRefresh;
+            pivotGridControl1.ChangeUICues += PivotGridControl1_ChangeUICues;
           
 
-            DevExpress.XtraPivotGrid.PivotGridField sumfield = new DevExpress.XtraPivotGrid.PivotGridField();
-          //  pivotGridControl1.Fields.Add()
+            var control = pivotGridControl1.Parent;
+            
+
+            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
+            pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
+            pivotGridControl1.FieldsCustomization(this.panelControl1);
+
+            LayotSave();
 
             this.fieldCADDRESS1.Caption = "Адрес покупателя";
             this.fieldCADDRESS1.Visible = false;
@@ -74,6 +86,7 @@ namespace PivotForm
             this.fieldPNAME1.Visible = false;
             this.fieldPSIZE1.Caption = "Объем партии";
             this.fieldPSIZE1.Visible = false;
+            //this.fieldPSIZE1.TotalsVisibility = PivotTotalsVisibility.None;
             this.fieldSADDRESS1.Caption = "Адрес поставщика";
             this.fieldSADDRESS1.Visible = false;
             this.fieldSNAME1.Caption = "Наименование поставщика";
@@ -153,28 +166,98 @@ namespace PivotForm
             string filterPMFGR1 = this.fieldPMFGR1.PrefilterColumnName;
 
             //  pivotGridControl1.ActiveFilterString = "([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '02.01.1993')";
-                pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
-                  $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
-          
-            /*
-             
-SELECT C_NATION, S_NATION, toYear(LO_ORDERDATE) AS year, sum(LO_REVENUE) AS revenue FROM lineorder_flat WHERE C_REGION = 'ASIA' AND S_REGION = 'ASIA' AND year >= 1992 AND year <= 1997 GROUP BY C_NATION, S_NATION, year ORDER BY year ASC, revenue DESC;
-SELECT C_CITY, S_CITY, toYear(LO_ORDERDATE) AS year, sum(LO_REVENUE) AS revenue FROM lineorder_flat WHERE C_NATION = 'UNITED STATES' AND S_NATION = 'UNITED STATES' AND year >= 1992 AND year <= 1997 GROUP BY C_CITY, S_CITY, year ORDER BY year ASC, revenue DESC;
-SELECT C_CITY, S_CITY, toYear(LO_ORDERDATE) AS year, sum(LO_REVENUE) AS revenue FROM lineorder_flat WHERE (C_CITY = 'UNITED KI1' OR C_CITY = 'UNITED KI5') AND (S_CITY = 'UNITED KI1' OR S_CITY = 'UNITEDKI5') AND year >= 1992 AND year <= 1997 GROUP BY C_CITY, S_CITY, year ORDER BY year ASC, revenue DESC;
-SELECT C_CITY, S_CITY, toYear(LO_ORDERDATE) AS year, sum(LO_REVENUE) AS revenue FROM lineorder_flat WHERE (C_CITY = 'UNITED KI1' OR C_CITY = 'UNITED KI5') AND (S_CITY = 'UNITED KI1' OR S_CITY = 'UNITEDKI5') AND toYYYYMM(LO_ORDERDATE) = 199712 GROUP BY C_CITY, S_CITY, year ORDER BY year ASC, revenue DESC;
-
-SELECT toYear(LO_ORDERDATE) AS year, C_NATION, sum(LO_REVENUE - LO_SUPPLYCOST) AS profit FROM lineorder_flat WHERE C_REGION = 'AMERICA' AND S_REGION = 'AMERICA' AND (P_MFGR = 'MFGR#1' OR P_MFGR = 'MFGR#2') GROUP BY year, C_NATION ORDER BY year ASC, C_NATION ASC;
-SELECT toYear(LO_ORDERDATE) AS year, S_NATION, P_CATEGORY, sum(LO_REVENUE - LO_SUPPLYCOST) AS profit FROM lineorder_flat WHERE C_REGION = 'AMERICA' AND S_REGION = 'AMERICA' AND (year = 1997 OR year = 1998) AND (P_MFGR = 'MFGR#1' OR P_MFGR = 'MFGR#2') GROUP BY year, S_NATION, P_CATEGORY ORDER BY year ASC, S_NATION ASC, P_CATEGORY ASC;
-SELECT toYear(LO_ORDERDATE) AS year, S_CITY, P_BRAND, sum(LO_REVENUE - LO_SUPPLYCOST) AS profit FROM lineorder_flat WHERE S_NATION = 'UNITED STATES' AND (year = 1997 OR year = 1998) AND P_CATEGORY = 'MFGR#14' GROUP BY year, S_CITY, P_BRAND ORDER BY year ASC, S_CITY ASC, P_BRAND ASC;
-
-SELECT toYear(LO_ORDERDATE) AS year, S_NATION, P_CATEGORY, sum(LO_REVENUE - LO_SUPPLYCOST) AS profit FROM lineorder_flat WHERE C_REGION = 'AMERICA' AND S_REGION = 'AMERICA' 
-            AND (year = 1997 OR year = 1998) AND (P_MFGR = 'MFGR#1' OR P_MFGR = 'MFGR#2') GROUP BY year, S_NATION, P_CATEGORY ORDER BY year ASC, S_NATION ASC, P_CATEGORY ASC;
+            pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
+              $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
 
 
-
-             */
         }
 
+        private void PivotGridControl1_ChangeUICues(object sender, UICuesEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PivotGridControl1_BeginRefresh(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PivotGridControl1_BeforeLoadLayout(object sender, DevExpress.Utils.LayoutAllowEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PivotGridControl1_FieldAreaChanging(object sender, DevExpress.XtraPivotGrid.PivotAreaChangingEventArgs e)
+        {
+            LayotSave();
+        }
+
+        private void LayotSave()
+        {
+            pivotGridControl1.SaveLayoutToRegistry("DevExpress\\XtraGrid\\Layouts\\MainLayout");
+        }
+
+        private void LayotRestore()
+        {
+            pivotGridControl1.RestoreLayoutFromRegistry("DevExpress\\XtraGrid\\Layouts\\MainLayout");
+           // stream.Seek(0, System.IO.SeekOrigin.Begin);
+        }
+
+        // иногда падает из-за пустого списка, потестить
+        // убрать из провайдера типы object
+        // отследить первое выполнение запроса
+        // сохранить лайаут при неудачном запросе
+        // записаться к врачу, голова болит
+        private void HandleCountEvent(object sender, CountEventArgs e)
+        {
+            if (e.count <= 1000)
+            {
+                firstQuery = false;
+                foreach (PivotGridField el in pivotGridControl1.Fields)
+                {
+                    if (el.Visible == true && el.DataType == typeof(int))
+                    {
+                        
+                    }
+                }
+                //  LayotSave();
+            }
+            else if (e.count > 1000 && e.count < 10000)
+            {
+                if (AskToUploadWindow(e.count))
+                {
+                    e.canUpload = true;
+              //      LayotSave();
+                }
+                else
+                {
+                    e.canUpload = false;
+                    LayotRestore();
+                }
+            }
+            else if (e.count > 10000)
+            {
+                CreateErrorUploadWindow();
+                e.canUpload = false;
+                LayotRestore();
+            }
+
+        }
+
+        private void CreateErrorUploadWindow()
+        {
+            string caption = "Upload error";
+            string message = "The number of records is above 1 000 000, please change filters";
+            DialogResult result = MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private bool AskToUploadWindow(int count)
+        {
+            string caption = "Upload error";
+            string message = $"The number of records is {count}, are you sure to upload records?";
+            DialogResult result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo);
+            return result == DialogResult.Yes ? true : false;
+        }
 
         private void FilteringUIContext1_FieldRetrieving(object sender, DevExpress.Utils.Filtering.FilteringUIFieldRetrievingEventArgs e)
         {
