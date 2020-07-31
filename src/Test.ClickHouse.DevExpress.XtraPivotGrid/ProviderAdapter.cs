@@ -76,18 +76,34 @@ namespace PivotForm
         }
 
         public object Execute(Expression expression)
-        {     
-            var orig_query = this.CreateQuery<object>(expression);
-            //  return CheckCount(GetCount<object>(orig_query.Expression)) ? provider.Execute(expression) : new List<object>();
-            var countevent = new CountEventArgs(GetCount<object>(orig_query.Expression));
-            OnCountEvent(countevent);                        
-
-            return countevent.canUpload ? provider.Execute(expression) : new List<object>();
+        {
+            Type elementType = TypeHelper.GetElementType(expression.Type);
+            var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
+            var meme = expression.NodeType;
+            var meme1 = expression.Type;
+            var meme2 = expression.GetType();
+            GetDinamicType(elementType);
+            return NeedToCountRecords(expression) ? provider.Execute(expression) : new List<object>();
         }
 
-        private void CheckItOut()
+        private void GetDinamicType(Type type)
         {
+            var countMethod = typeof(ProviderAdapter).GetMethods().Single(m => m.Name == "Execute"
+            && m.GetParameters().Count() == 1
+            && m.IsGenericMethod == false
+                && m.GetParameters()[0].ParameterType == typeof(Expression));
+            var me = countMethod;
             
+       
+        }
+
+        private bool NeedToCountRecords(Expression expression)
+        {
+            var orig_query = this.CreateQuery<object>(expression);
+            var countevent = new CountEventArgs(GetCount<object>(orig_query.Expression));
+            OnCountEvent(countevent);
+            return countevent.canUpload;
+
         }
 
 

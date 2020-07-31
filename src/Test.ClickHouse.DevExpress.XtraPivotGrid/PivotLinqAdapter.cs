@@ -11,34 +11,25 @@ namespace PivotForm
 {
     public class PivotLinqAdapter : PivotGridControl
     {
-        protected override PivotGridViewInfoData CreateData()
-        {
-            return base.CreateData();
-        }
+        private bool isFirstQuery = true;
 
-        protected override void OnGiveFeedback(GiveFeedbackEventArgs gfbevent)
+        public bool IsFirstQuery 
         {
-            base.OnGiveFeedback(gfbevent);
-        }
-        protected override void HookOnLoaded()
-        {
-            base.HookOnLoaded();
-        }
-
-        protected override void OnBindingContextChanged(EventArgs e)
-        {
-            base.OnBindingContextChanged(e);
-        }
-
-        protected override void RaiseExportStarted()
-        {
-            base.RaiseExportStarted();
+            get { return isFirstQuery; }
         }
 
         protected override void RaiseBeginRefresh()
         {
+            isFirstQuery = false;
             base.RaiseBeginRefresh();
         }
+
+        protected override void RaiseEndRefresh()
+        {
+            base.RaiseEndRefresh();
+            isFirstQuery = true;
+        }
+
 
     }
 }
