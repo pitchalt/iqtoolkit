@@ -92,6 +92,7 @@
     <Compile Include="FormNorthwindXpo.Designer.cs">
       <DependentUpon>FormNorthwindXpo.cs</DependentUpon>
     </Compile>
+    <Compile Include="NeedToCountEventArgs.cs" />
     <Compile Include="PivotLinqAdapter.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -11,23 +11,37 @@ namespace PivotForm
 {
     public class PivotLinqAdapter : PivotGridControl
     {
-        private bool isFirstQuery = true;
+        public event NeedToCountEventHandler RaiseNeedToCountEvent;
+        public delegate void NeedToCountEventHandler(object sender, NeedToCountEventArgs args);
 
-        public bool IsFirstQuery 
+    
+        private void OnNeedToCountEvent(NeedToCountEventArgs e)
         {
-            get { return isFirstQuery; }
+            NeedToCountEventHandler needToCountEventHandler = RaiseNeedToCountEvent;
+            if (needToCountEventHandler != null)
+            {
+                needToCountEventHandler(this, e);
+            }
         }
 
         protected override void RaiseBeginRefresh()
         {
-            isFirstQuery = false;
+            var needtocountevent = new NeedToCountEventArgs();
+            needtocountevent.needToCount = true;
+            OnNeedToCountEvent(needtocountevent);
+
             base.RaiseBeginRefresh();
         }
 
         protected override void RaiseEndRefresh()
-        {
+        {        
             base.RaiseEndRefresh();
-            isFirstQuery = true;
+
+            var needtocountevent = new NeedToCountEventArgs();
+            needtocountevent.needToCount = false;
+            OnNeedToCountEvent(needtocountevent);
+
+
         }
 
 

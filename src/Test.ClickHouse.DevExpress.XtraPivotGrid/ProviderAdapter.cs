@@ -23,6 +23,10 @@ namespace PivotForm
         public event CountEventHandler RaiseCountEvent;
         public delegate void CountEventHandler(object sender, CountEventArgs args);
 
+
+        public bool NeedToCount;
+        
+
         IQueryProvider provider;
         
         public ProviderAdapter(IQueryable source)
@@ -77,37 +81,53 @@ namespace PivotForm
 
         public object Execute(Expression expression)
         {
-            Type elementType = TypeHelper.GetElementType(expression.Type);
-            var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
-            var meme = expression.NodeType;
-            var meme1 = expression.Type;
-            var meme2 = expression.GetType();
-            GetDinamicType(elementType);
-            return NeedToCountRecords(expression) ? provider.Execute(expression) : new List<object>();
+            //Type elementType = TypeHelper.GetElementType(expression.Type);
+            //var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
+            //var meme = expression.NodeType;
+            //var meme1 = expression.Type;
+            //var meme2 = expression.GetType();
+
+
+
+           // GetDinamicType(elementType);
+            return NeedToCountRecords<object>(expression) ? provider.Execute(expression) : new List<object>();
         }
+
 
         private void GetDinamicType(Type type)
         {
-            var countMethod = typeof(ProviderAdapter).GetMethods().Single(m => m.Name == "Execute"
-            && m.GetParameters().Count() == 1
-            && m.IsGenericMethod == false
-                && m.GetParameters()[0].ParameterType == typeof(Expression));
-            var me = countMethod;
+            var meme = typeof(ProviderAdapter).GetMethods().Where(m => m.Name == "Execute"
+           && m.GetParameters().Count() == 1).Select(m => m.ReturnParameter);
             
+           var countMethod = typeof(ProviderAdapter).GetMethods().Single(m => m.Name == "Execute"
+            && m.GetParameters().Count() == 1
+            && m.ReturnParameter == meme.ElementAt(0)
+                && m.GetParameters()[0].ParameterType == typeof(Expression));
+           
+          //  var meme2 = typeof(ProviderAdapter).GetMethods().Where(m => m.Name == "Execute"
+        //  && m.GetParameters().Count() == 1).Select(m => m.ReturnParameter);
+
+            var me = countMethod;          
        
         }
 
-        private bool NeedToCountRecords(Expression expression)
+        private bool NeedToCountRecords<S>(Expression expression)
         {
-            var orig_query = this.CreateQuery<object>(expression);
-            var countevent = new CountEventArgs(GetCount<object>(orig_query.Expression));
-            OnCountEvent(countevent);
-            return countevent.canUpload;
+            if (this.NeedToCount)
+            {
+                var orig_query = this.CreateQuery<S>(expression);
+                var countevent = new CountEventArgs(GetCount<S>(orig_query.Expression));
+                OnCountEvent(countevent);
+                this.NeedToCount = false;
+                return countevent.canUpload;
+            }
 
+            return false;
+            
         }
+               
 
-
-        protected void OnCountEvent(CountEventArgs e)
+        private void OnCountEvent(CountEventArgs e)
         {
             CountEventHandler countEvent = RaiseCountEvent;
             if (countEvent != null)
@@ -119,16 +139,14 @@ namespace PivotForm
 
         public static int GetCount<S>(Expression expression)
         {
-            var origType = typeof(S);
-
-            MethodCallExpression countExpression;
+            var origType = typeof(S);             
 
             var countMethod = typeof(Queryable).GetMethods().Single(m => m.Name == "Count"   
             && m.GetParameters().Count() == 1
                 && m.MakeGenericMethod(typeof(object)).GetParameters()[0].ParameterType == typeof(IQueryable<object>));
 
             var resmeth = countMethod.MakeGenericMethod(new Type[] { origType });
-            countExpression = Expression.Call(null, resmeth, new Expression[] { expression});
+            var countExpression = Expression.Call(null, resmeth, new Expression[] { expression});
 
             var res = Expression.Lambda(countExpression).Compile().DynamicInvoke();      
 
@@ -233,27 +251,6 @@ namespace PivotForm
                 }
 
 
-                //var freader = new ClickHouseFieldReader(this, reader);               
-                //try
-                //{
-                //    do
-                //    {
-                //        while (reader.Read())
-                //        {
-                //            yield return fnProjector(freader);
-                //        }
-
-                //    }
-                //    while (reader.NextResult());
-                //}
-
-                //finally
-                //{
-                //    if (closeReader)
-                //    {
-                //        ((IDataReader)reader).Close();
-                //    }
-                //}
             }
 
               public override IEnumerable<T> ExecuteDeferred<T>(QueryCommand query, Func<FieldReader, T> fnProjector, MappingEntity entity, object[] paramValues)
