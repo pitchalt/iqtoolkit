@@ -13,6 +13,9 @@ using DevExpress.XtraPivotGrid.Customization;
 using DevExpress.XtraPivotGrid;
 using DevExpress.XtraLayout;
 using DevExpress.XtraBars.Navigation;
+using DevExpress.XtraEditors;
+using DevExpress.XtraLayout.Utils;
+using DevExpress.Utils.Filtering;
 
 namespace PivotForm
 {
@@ -22,24 +25,47 @@ namespace PivotForm
         PivotLinqAdapter pivotGridControl1;
         ProviderAdapter adapter;
         AccordionControl accordion;
+        PanelControl panelControl;
+        LayoutControl lc;
+        FilteringUIContext filteringUIContext1;
 
 
         public RibbonForm1(StarBench starBench)
         {
             InitializeComponent();
             pivotGridControl1 = new PivotLinqAdapter();
-            LayoutControlItem lay = new LayoutControlItem();
-            lay.Control = pivotGridControl1;
-            lay.Parent = this.Root;
+            panelControl = new PanelControl();
+            filteringUIContext1 = new FilteringUIContext();
 
-            LayoutControlItem layacc = new LayoutControlItem();
-            layacc.Control = accordion;
-            layacc.Parent = this.Root;
+            LayoutControl lc = new LayoutControl();
+            lc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Controls.Add(lc);
+            lc.BeginUpdate();
+            try
+            {
+                lc.Root.GroupBordersVisible = false;
 
-            this.Root.AddItem("", lay, DevExpress.XtraLayout.Utils.InsertType.Right);
-            this.Root.AddItem("", layacc, DevExpress.XtraLayout.Utils.InsertType.Left);
-            // this.layoutControl1.AddItem(lay, DevExpress.XtraLayout.Utils.InsertType.Left);          
+                LayoutControlGroup group1 = new LayoutControlGroup();
 
+                LayoutControlItem item1 = group1.AddItem();
+                item1.Control = pivotGridControl1;
+
+                LayoutControlItem item2 = new LayoutControlItem(lc, accordion);
+
+                item2.Move(item1, InsertType.Right);
+
+                LayoutControlItem item3 = new LayoutControlItem(lc, panelControl);
+                item3.Move(item2, InsertType.Right);
+
+
+                lc.Root.Add(group1);
+            }
+            finally
+            {
+                lc.EndUpdate();
+            }
+
+            this.linqServerModeSource1.ElementType = typeof(lineorder_flat);
 
             _starBench = starBench;
             adapter = new ProviderAdapter(_starBench.LineOrder);
@@ -51,12 +77,9 @@ namespace PivotForm
             pivotGridControl1.FieldAreaChanging += PivotGridControl1_FieldAreaChanging;
 
 
-            var control = pivotGridControl1.Parent;
-            
-
             this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
             pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
-            // pivotGridControl1.FieldsCustomization(this.panelControl1);
+            pivotGridControl1.FieldsCustomization(this.panelControl);
 
             //LayotSave();
 
@@ -141,12 +164,8 @@ namespace PivotForm
             //this.fieldSCITY1.Caption = "Город поставщика";
             //this.fieldSCITY1.Visible = false;
 
-            filteringUIContext1.Control = accordion;
-          //  filteringUIContext1.cl
-            filteringUIContext1.FieldRetrieving += FilteringUIContext1_FieldRetrieving;
-            filteringUIContext1.RetrieveFields();
 
-            
+
 
 
 
@@ -225,7 +244,7 @@ namespace PivotForm
 
         private void Adapter_RaiseNeedToCountEvent(object sender, NeedToCountEventArgs args)
         {
-          
+
         }
 
         private void PivotGridControl1_FieldAreaChanging(object sender, DevExpress.XtraPivotGrid.PivotAreaChangingEventArgs e)
@@ -241,7 +260,7 @@ namespace PivotForm
         private void LayotRestore()
         {
             pivotGridControl1.RestoreLayoutFromRegistry("DevExpress\\XtraGrid\\Layouts\\MainLayout");
-           // stream.Seek(0, System.IO.SeekOrigin.Begin);
+            // stream.Seek(0, System.IO.SeekOrigin.Begin);
         }
 
         // иногда падает из-за пустого списка, потестить
@@ -249,7 +268,7 @@ namespace PivotForm
         // отследить первое выполнение запроса
         // сохранить лайаут при неудачном запросе
         // записаться к врачу, голова болит
-     
+
 
         private void CreateErrorUploadWindow()
         {
@@ -284,10 +303,44 @@ namespace PivotForm
             }
         }
 
+        private void HideFields()
+        {
+            foreach (PivotGridField field in pivotGridControl1.Fields)
+            {
+                if (field.Name == "fieldLOORDTOTALPRICE" || field.Name == "fieldLOORDERDATE"
+           || field.Name == "fieldCCITY" || field.Name == "fieldCREGION"
+           || field.Name == "fieldPMFGR" || field.Name == "fieldPBRAND"
+           || field.Name == "fieldSNATION" || field.Name == "fieldPCATEGORY"
+           || field.Name == "fieldSCITY" || field.Name == "fieldLOREVENUE"
+           || field.Name == "fieldLOSUPPLYCOST" || field.Name == "fieldCNATION"
+            )
+                {
+                    continue;
+                }
+                else
+                {
+                    field.Visible = false;
+                }
+            }
+        }
+
         private void RibbonForm1_Load(object sender, EventArgs e)
         {
+            accordion = new AccordionControl();
+
             pivotGridControl1.DataSource = linqServerModeSource1;
             pivotGridControl1.RetrieveFields();
+            HideFields();
+
+            filteringUIContext1.Control = accordion;
+            filteringUIContext1.Client = pivotGridControl1;
+            filteringUIContext1.FieldRetrieving += FilteringUIContext1_FieldRetrieving;
+            filteringUIContext1.FieldRetrieved += FilteringUIContext1_FieldRetrieved;
+            filteringUIContext1.RetrieveFields();
+            accordion.Update();
+            filteringUIContext1.Control.RetrieveFields(pivotGridControl1, typeof(lineorder_flat));
+
+
 
             string name = String.Empty;
             foreach (PivotGridField el in pivotGridControl1.Fields)
@@ -483,90 +536,119 @@ namespace PivotForm
                 el.Caption = name;
                 name = String.Empty;
             }
+        }
 
-            //this.fieldCADDRESS1.Caption = "Адрес покупателя";
-            //this.fieldCADDRESS1.Visible = false;
-            //this.fieldCNAME1.Caption = "Имя покупателя";
-            //this.fieldCNAME1.Visible = false;
-            //this.fieldCPHONE1.Caption = "Номер телефона покупателя";
-            //this.fieldCPHONE1.Visible = false;
-            //this.fieldLOCOMMITDATE1.Caption = "Дата завершения заказа";
-            //this.fieldLOCOMMITDATE1.Visible = false;
-            //this.fieldLOCUSTKEY1.Caption = "Идентификатор покупателя";
-            //this.fieldLOCUSTKEY1.Visible = false;
-            //this.fieldLODISCOUNT1.Caption = "Скидка на заказ";
-            //this.fieldLODISCOUNT1.Visible = false;
-            //this.fieldLOEXTENDEDPRICE1.Caption = "Полная цена заказа";
-            //this.fieldLOEXTENDEDPRICE1.Visible = false;
-            //this.fieldLOLINENUMBER1.Caption = "Порядковый номер заказа";
-            //this.fieldLOLINENUMBER1.Visible = false;
-            //this.fieldLOORDERDATE1.Caption = "Дата заказа";
-            //this.fieldLOORDERDATE1.Visible = false;
-            //this.fieldLOORDERKEY1.Caption = "Идентификатор заказа";
-            //this.fieldLOORDERKEY1.Visible = false;
-            //this.fieldLOORDTOTALPRICE1.Caption = "Итоговая цена заказа";
-            //this.fieldLOORDTOTALPRICE1.Visible = false;
-            //this.fieldLOPARTKEY1.Caption = "Идентификатор партии";
-            //this.fieldLOPARTKEY1.Visible = false;
-            //this.fieldLOQUANTITY1.Caption = "Объем заказа";
-            //this.fieldLOQUANTITY1.Visible = false;
-            //this.fieldLOREVENUE1.Caption = "Доход заказа";
-            //this.fieldLOREVENUE1.Visible = false;
-            //this.fieldLOSHIPPRIORITY1.Caption = "Приоритет доставки заказа";
-            //this.fieldLOSHIPPRIORITY1.Visible = false;
-            //this.fieldLOSUPPKEY1.Caption = "Идентификатор поставщика";
-            //this.fieldLOSUPPKEY1.Visible = false;
-            //this.fieldLOSUPPLYCOST1.Caption = "Стоимость услуг поставщика";
-            //this.fieldLOSUPPLYCOST1.Visible = false;
-            //this.fieldLOTAX1.Caption = "Налог на заказ";
-            //this.fieldLOTAX1.Visible = false;
-            //this.fieldPNAME1.Caption = "Наименование партии";
-            //this.fieldPNAME1.Visible = false;
-            //this.fieldPSIZE1.Caption = "Объем партии";
-            //this.fieldPSIZE1.Visible = false;
-            ////this.fieldPSIZE1.TotalsVisibility = PivotTotalsVisibility.None;
-            //this.fieldSADDRESS1.Caption = "Адрес поставщика";
-            //this.fieldSADDRESS1.Visible = false;
-            //this.fieldSNAME1.Caption = "Наименование поставщика";
-            //this.fieldSNAME1.Visible = false;
-            //this.fieldSPHONE1.Caption = "Номер телефона поставщика";
-            //this.fieldSPHONE1.Visible = false;
+        private void FilteringUIContext1_FieldRetrieved(object sender, FilteringUIFieldRetrievedEventArgs e)
+        {
+            if (e.PropertyName  == "fieldLOORDTOTALPRICE" || e.PropertyName == "fieldLOORDERDATE"
+          || e.PropertyName == "fieldCCITY" || e.PropertyName == "fieldCREGION"
+          || e.PropertyName == "fieldPMFGR" || e.PropertyName == "fieldPBRAND"
+          || e.PropertyName == "fieldSNATION" || e.PropertyName == "fieldPCATEGORY"
+          || e.PropertyName == "fieldSCITY" || e.PropertyName == "fieldLOREVENUE"
+          || e.PropertyName == "fieldLOSUPPLYCOST" || e.PropertyName == "fieldCNATION"
+           )
+            {
+                AccordionControlElement element = e.Item as AccordionControlElement;
 
+                element.Text = e.PropertyName;
 
-            //this.fieldCMKTSEGMENT1.Caption = "Сегмент покупателя";
-            //this.fieldCMKTSEGMENT1.Visible = false;
-            //this.fieldCNATION1.Caption = "Страна покупателя";
-            //this.fieldCNATION1.Visible = false;
-            //this.fieldPCOLOR1.Caption = "Цвет товара";
-            //this.fieldPCOLOR1.Visible = false;
-            //this.fieldPCATEGORY1.Caption = "Категория товара";
-            //this.fieldPCATEGORY1.Visible = false;
-            //this.fieldPCONTAINER1.Caption = "Контейнер товара";
-            //this.fieldPCONTAINER1.Visible = false;
-            //this.fieldPMFGR1.Caption = "Группа товара";
-            //this.fieldPMFGR1.Visible = false;
-            //this.fieldPTYPE1.Caption = "Тип товара";
-            //this.fieldPTYPE1.Visible = false;
-            //this.fieldCREGION1.Caption = "Регион покупателя";
-            //this.fieldCREGION1.Visible = false;
-            //this.fieldSNATION1.Caption = "Страна поставщика";
-            //this.fieldSNATION1.Visible = false;
-            //this.fieldSREGION1.Caption = "Регион поставщика";
-            //this.fieldSREGION1.Visible = false;
-            //this.fieldCCITY1.Caption = "Город покупателя";
-            //this.fieldCCITY1.Visible = false;
-            //this.fieldLOORDERPRIORITY1.Caption = "Приоритет заказа";
-            //this.fieldLOORDERPRIORITY1.Visible = false;
-            //this.fieldLOSHIPMODE1.Caption = "Способ транспортировки";
-            //this.fieldLOSHIPMODE1.Visible = false;
-            //this.fieldPBRAND1.Caption = "Брэнд товара";
-            //this.fieldPBRAND1.Visible = false;
-            //this.fieldSCITY1.Caption = "Город поставщика";
-            //this.fieldSCITY1.Visible = false;
+                filteringUIContext1.AddField("", e.Item.GetType());
+            }
 
+          
+        }
+        private void InitAccordionControl()
+        {
+            acControl.BeginUpdate();
+            AccordionControlElement acRootGroupHome = new AccordionControlElement();
+            AccordionControlElement acItemActivity = new AccordionControlElement();
+            AccordionControlElement acItemNews = new AccordionControlElement();
+            AccordionControlElement acRootItemSettings = new AccordionControlElement();
 
+            acControl.ElementClick += new ElementClickEventHandler(this.accordionControl1_ElementClick);
 
-            //  pivotGridControl1.Update();
+            // 
+            // Root Group 'Home'
+            // 
+            acRootGroupHome.Elements.AddRange(new AccordionControlElement[] {
+            acItemActivity,
+            acItemNews});
+            acRootGroupHome.Expanded = true;
+            acRootGroupHome.ImageOptions.ImageUri.Uri = "Home;Office2013";
+            acRootGroupHome.Name = "acRootGroupHome";
+            acRootGroupHome.Text = "Home";
+            // 
+            // Child Item 'Activity'
+            // 
+            acItemActivity.Name = "acItemActivity";
+            acItemActivity.Style = ElementStyle.Item;
+            acItemActivity.Tag = "idActivity";
+            acItemActivity.Text = "Activity";
+            // 
+            // Child Item 'News'
+            // 
+            acItemNews.Name = "acItemNews";
+            acItemNews.Style = ElementStyle.Item;
+            acItemNews.Tag = "idNews";
+            acItemNews.Text = "News";
+            // 
+            // Root Item 'Settings' with ContentContainer
+            // 
+            acRootItemSettings.ImageOptions.ImageUri.Uri = "Customization;Office2013";
+            acRootItemSettings.Name = "acRootItemSettings";
+            acRootItemSettings.Style = ElementStyle.Item;
+            acRootItemSettings.Text = "Settings";
+            // 
+            // itemSettingsControlContainer
+            // 
+            AccordionContentContainer itemSettingsControlContainer = new AccordionContentContainer();
+            HyperlinkLabelControl hyperlinkLabelControl1 = new HyperlinkLabelControl();
+            ToggleSwitch toggleSwitch1 = new ToggleSwitch();
+            acControl.Controls.Add(itemSettingsControlContainer);
+            acRootItemSettings.ContentContainer = itemSettingsControlContainer;
+            itemSettingsControlContainer.Controls.Add(hyperlinkLabelControl1);
+            itemSettingsControlContainer.Controls.Add(toggleSwitch1);
+            itemSettingsControlContainer.Appearance.BackColor = System.Drawing.SystemColors.Control;
+            itemSettingsControlContainer.Appearance.Options.UseBackColor = true;
+            itemSettingsControlContainer.Height = 60;
+            // 
+            // hyperlinkLabelControl1
+            // 
+            hyperlinkLabelControl1.Location = new System.Drawing.Point(26, 33);
+            hyperlinkLabelControl1.Size = new System.Drawing.Size(107, 13);
+            hyperlinkLabelControl1.Text = "www.devexpress.com";
+            hyperlinkLabelControl1.HyperlinkClick += new DevExpress.Utils.HyperlinkClickEventHandler(this.hyperlinkLabelControl1_HyperlinkClick);
+            // 
+            // toggleSwitch1
+            // 
+            toggleSwitch1.EditValue = true;
+            toggleSwitch1.Location = new System.Drawing.Point(24, 3);
+            toggleSwitch1.Properties.AllowFocused = false;
+            toggleSwitch1.Properties.AutoWidth = true;
+            toggleSwitch1.Properties.OffText = "Offline Mode";
+            toggleSwitch1.Properties.OnText = "Onlne Mode";
+            toggleSwitch1.Size = new System.Drawing.Size(134, 24);
+            toggleSwitch1.Toggled += new System.EventHandler(this.toggleSwitch1_Toggled);
+
+            acControl.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
+                acRootGroupHome,
+                acRootItemSettings});
+
+            acRootItemSettings.Expanded = true;
+
+            acControl.EndUpdate();
+        }
+
+        private void accordionControl1_ElementClick(object sender, DevExpress.XtraBars.Navigation.ElementClickEventArgs e)
+        {
+            if (e.Element.Style == DevExpress.XtraBars.Navigation.ElementStyle.Group) return;
+            if (e.Element.Tag == null) return;
+            string itemID = e.Element.Tag.ToString();
+            if (itemID == "idNews")
+            {
+                //...
+            }
+            listBoxControl1.Items.Add(itemID + " clicked");
         }
 
         private void ribbonStatusBar_Click(object sender, EventArgs e)
