@@ -24,13 +24,10 @@ namespace PivotForm
     public partial class RibbonForm1 : DevExpress.XtraBars.Ribbon.RibbonForm
     {
         StarBench _starBench;
-        PivotLinqAdapter pivotGridControl1;
         ProviderAdapter adapter;
-        AccordionControl accordion;
-        AccordionControlElement element;
-        PanelControl panelControl;
-        LayoutControl lc;
-        FilteringUIContext filteringUIContext1;
+
+        public event NeedToCountEventHandler RaiseNeedToCountEvent;
+        public delegate void NeedToCountEventHandler(object sender, NeedToCountEventArgs args);
 
 
         public RibbonForm1(StarBench starBench)
@@ -38,36 +35,55 @@ namespace PivotForm
             InitializeComponent();
             _starBench = starBench;
 
-            pivotGridControl1 = new PivotLinqAdapter();
-            panelControl = new PanelControl();
-            filteringUIContext1 = new FilteringUIContext();
-            lc = new LayoutControl();
-            accordion = new AccordionControl();
-            element = new AccordionControlElement();
+            adapter = new ProviderAdapter(_starBench.LineOrder);
+            adapter.RaiseCountEvent += Adapter_RaiseCountEvent;
 
+
+            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
+
+            RaiseNeedToCountEvent += PivotGridControl1_RaiseNeedToCountEvent;
+            pivotGridControl1.FieldAreaChanging += PivotGridControl1_FieldAreaChanging;
+
+            pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
+            pivotGridControl1.FieldsCustomization(this.panelControl1);
+
+     
             pivotGridControl1.BeginRefresh += PivotGridControl1_BeginRefresh;
             pivotGridControl1.EndRefresh += PivotGridControl1_EndRefresh;
 
-            //string filterCRegion = this.fieldCREGION1.PrefilterColumnName;
-            //string filterSRegion = this.fieldSREGION1.PrefilterColumnName;
-            //string filterLOOrderDate = this.fieldLOORDERDATE1.PrefilterColumnName;
-            //string filterPMFGR1 = this.fieldPMFGR1.PrefilterColumnName;
+            string filterCRegion = this.fieldCREGION1.PrefilterColumnName;
+            string filterSRegion = this.fieldSREGION1.PrefilterColumnName;
+            string filterLOOrderDate = this.fieldLOORDERDATE1.PrefilterColumnName;
+            string filterPMFGR1 = this.fieldPMFGR1.PrefilterColumnName;
 
-            ////  pivotGridControl1.ActiveFilterString = "([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '02.01.1993')";
-            //pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
-            //  $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
+            //  pivotGridControl1.ActiveFilterString = "([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '02.01.1993')";
+            pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
+              $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
 
 
+        }
+
+        private void OnNeedToCountEvent(NeedToCountEventArgs e)
+        {
+            NeedToCountEventHandler needToCountEventHandler = RaiseNeedToCountEvent;
+            if (needToCountEventHandler != null)
+            {
+                needToCountEventHandler(this, e);
+            }
         }
 
         private void PivotGridControl1_EndRefresh(object sender, EventArgs e)
         {
-         //   throw new NotImplementedException();
+            var needtocountevent = new NeedToCountEventArgs();
+            needtocountevent.needToCount = false;
+            OnNeedToCountEvent(needtocountevent);
         }
 
         private void PivotGridControl1_BeginRefresh(object sender, EventArgs e)
         {
-           // throw new NotImplementedException();
+            var needtocountevent = new NeedToCountEventArgs();
+            needtocountevent.needToCount = true;
+            OnNeedToCountEvent(needtocountevent);
         }
 
         private void PivotGridControl1_RaiseNeedToCountEvent(object sender, NeedToCountEventArgs args)
@@ -110,7 +126,7 @@ namespace PivotForm
 
         private void PivotGridControl1_FieldAreaChanging(object sender, DevExpress.XtraPivotGrid.PivotAreaChangingEventArgs e)
         {
-            LayotSave();
+        //    LayotSave();
         }
 
         private void LayotSave()
@@ -172,339 +188,281 @@ namespace PivotForm
 
         private void RibbonForm1_Load(object sender, EventArgs e)
         {      
-            lc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Controls.Add(lc);
-                   
+                  
 
-            this.linqServerModeSource1.ElementType = typeof(lineorder_flat);           
+        
 
-            adapter = new ProviderAdapter(_starBench.LineOrder);
-            adapter.RaiseCountEvent += Adapter_RaiseCountEvent;
+        }
 
-            pivotGridControl1.RaiseNeedToCountEvent += PivotGridControl1_RaiseNeedToCountEvent;
-            pivotGridControl1.FieldAreaChanging += PivotGridControl1_FieldAreaChanging;
+      //  private void CreatePreFilters()
+      //  {
+      //      string filterCRegion = this.pivotGridControl1.Fields.GetFieldByName("fieldCREGION").PrefilterColumnName;
+      //      string filterSRegion = this.pivotGridControl1.Fields.GetFieldByName("fieldSREGION").PrefilterColumnName;
+      //      string filterLOOrderDate = this.pivotGridControl1.Fields.GetFieldByName("fieldLOORDERDATE").PrefilterColumnName;
+      //      string filterPMFGR1 = this.pivotGridControl1.Fields.GetFieldByName("fieldPMFGR").PrefilterColumnName;
+
+      //      pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
+      //        $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
+
+      ////      pivotGridControl1.Prefilter.CriteriaString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
+      ////     $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
+
+      //  }
+
+        //private void RenameFields()
+        //{
+        //    string name = String.Empty;
+        //    foreach (PivotGridField el in pivotGridControl1.Fields)
+        //    {
+        //        el.Name = el.Name.Remove(0, 5);
+        //        if (el.Name.StartsWith("C"))
+        //        {
+        //            if (el.Name.Contains("ADDRESS"))
+        //                name += "Адрес ";
+
+        //            if (el.Name.Contains("CITY"))
+        //                name += "Город ";
+
+        //            if (el.Name.Contains("SEGMENT"))
+        //                name += "Сегмент ";
+
+        //            if (el.Name.Contains("NAME"))
+        //                name += "Имя ";
+
+        //            if (el.Name.Contains("NATION"))
+        //                name += "Страна ";
+
+        //            if (el.Name.Contains("PHONE"))
+        //                name += "Номер телефона ";
+
+        //            if (el.Name.Contains("REGION"))
+        //                name += "Регион ";
 
 
-            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
-            pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
-            pivotGridControl1.FieldsCustomization(this.panelControl);
 
-            
+        //            name += "покупателя";
 
-            pivotGridControl1.DataSource = linqServerModeSource1;
-            pivotGridControl1.RetrieveFields();
-            HideFields();
+        //        }
+        //        else if (el.Name.StartsWith("S"))
+        //        {
 
+        //            if (el.Name.Contains("ADDRESS"))
+        //                name += "Адрес ";
+
+        //            if (el.Name.Contains("CITY"))
+        //                name += "Город ";
+
+        //            if (el.Name.Contains("SEGMENT"))
+        //                name += "Сегмент ";
+
+        //            if (el.Name.Contains("NAME"))
+        //                name += "Наименование ";
+
+        //            if (el.Name.Contains("NATION"))
+        //                name += "Страна ";
+
+        //            if (el.Name.Contains("PHONE"))
+        //                name += "Номер телефона ";
+
+        //            if (el.Name.Contains("REGION"))
+        //                name += "Регион ";
+
+        //            name += "поставщика";
+        //        }
+        //        else if (el.Name.StartsWith("LO"))
+        //        {
+        //            if (el.Name.Contains("DATE"))
+        //            {
+        //                name += "Дата  ";
+        //                if (el.Name.Contains("COMMIT"))
+        //                    name += "завершения  ";
+        //                name += "заказа  ";
+        //            }
+
+        //            if (el.Name.Contains("KEY"))
+        //            {
+        //                name += "Идентификатор  ";
+
+        //                if (el.Name.Contains("CUST"))
+        //                    name += "покупателя  ";
+
+        //                if (el.Name.Contains("SUP"))
+        //                    name += "поставщика  ";
+
+        //                if (el.Name.Contains("ORDER"))
+        //                    name += "заказа  ";
+
+        //                if (el.Name.Contains("PART"))
+        //                    name += "партии  ";
+        //            }
+        //            if (el.Name.Contains("DISCOUNT"))
+        //            {
+        //                name += "Скидка на заказ ";
+        //            }
+
+        //            if (el.Name.Contains("PRICE"))
+        //            {
+
+        //                if (el.Name.Contains("EXTENDED"))
+        //                {
+        //                    name += "Расширенная ";
+        //                }
+
+        //                if (el.Name.Contains("TOTAL"))
+        //                {
+        //                    name += "Полная ";
+        //                }
+
+        //                name += "цена заказ ";
+        //            }
+
+        //            if (el.Name.Contains("LINENUMBER"))
+        //            {
+        //                name += "Порядковый номер заказа";
+        //            }
+
+
+        //            if (el.Name.Contains("PRIORITY"))
+        //            {
+        //                name += "Приоритет ";
+
+        //                if (el.Name.Contains("SHIP"))
+        //                {
+        //                    name += "транспортировки ";
+        //                }
+
+        //                name += "заказа";
+        //            }
+
+        //            if (el.Name.Contains("QUANTITY"))
+        //            {
+        //                name += "Объем заказа";
+        //            }
+
+        //            if (el.Name.Contains("REVENUE"))
+        //            {
+        //                name += "Доход заказа";
+        //            }
+
+        //            if (el.Name.Contains("SHIP"))
+        //            {
+
+        //                if (el.Name.Contains("MODE"))
+        //                {
+        //                    name += "Способ ";
+        //                }
+
+        //                name += "транспортировки заказа";
+        //            }
+
+        //            if (el.Name.Contains("COST"))
+        //            {
+        //                name += "Стоимость услуг поставщика";
+        //            }
+
+        //            if (el.Name.Contains("TAX"))
+        //            {
+        //                name += "Налог на заказ";
+        //            }
+
+        //        }
+
+        //        else if (el.Name.StartsWith("P"))
+        //        {
+        //            if (el.Name.Contains("BRAND"))
+        //            {
+        //                name += "Брэнд товара";
+        //            }
+
+        //            if (el.Name.Contains("CATEGORY"))
+        //            {
+        //                name += "Категория товара";
+        //            }
+
+        //            if (el.Name.Contains("COLOR"))
+        //            {
+        //                name += "Цвет товара";
+        //            }
+        //            if (el.Name.Contains("CONTAINER"))
+        //            {
+        //                name += "Контейнер товара";
+        //            }
+
+        //            if (el.Name.Contains("MFGR"))
+        //            {
+        //                name += "Группа товара";
+        //            }
+
+        //            if (el.Name.Contains("NAME"))
+        //                name += "Наименование товара ";
+
+        //            if (el.Name.Contains("SIZE"))
+        //                name += "Объем партии";
+
+        //            if (el.Name.Contains("TYPE"))
+        //                name += "Тип товара";
+        //        }
+        //        el.Caption = name;
+        //        name = String.Empty;
+        //    }
+
+        //}
+
+        //private void Accordion_ElementClick(object sender, ElementClickEventArgs e)
+        //{
+        //    if (e.Element.Style == DevExpress.XtraBars.Navigation.ElementStyle.Group) return;
+        //    if (e.Element.Text == null) return;
+        //    string itemName = e.Element.Text;
+        //    if (itemName == "C_CITY")
+        //    {
+        //        //var query = "select " + itemName + " from lineorder_flat";
+        //        var items = _starBench.LineOrder.Select(x => x.C_CITY).ToList();
+        //        var el = this.element.Elements.Single(x => x.Name == itemName);
+        //        el.BindCommand(items);
+        //        //  el.so
+        //        //e.Element.
+        //    }
+        //    else if (itemName == "P_MFGR")
+        //    {
+        //      //  var prefilter = pivotGridControl1.ActiveFilterString as Expression;
+        //        var items = _starBench.LineOrder.Select(x => x.P_MFGR).ToList();
+        //        var el = this.element.Elements.Single(x => x.Name == itemName);
+        //        el.BindCommand(items);
+        //    }
+        //}
+
+        //private void FilteringUIContext1_FieldRetrieving(object sender, DevExpress.Utils.Filtering.FilteringUIFieldRetrievingEventArgs e)
+        //{
+        //    if (e.PropertyName == "fieldLOORDTOTALPRICE" || e.PropertyName == "fieldLOORDERDATE"
+        //       || e.PropertyName == "fieldCCITY" || e.PropertyName == "fieldCREGION"
+        //       || e.PropertyName == "fieldPMFGR" || e.PropertyName == "fieldPBRAND"
+        //       || e.PropertyName == "fieldSNATION" || e.PropertyName == "fieldPCATEGORY"
+        //       || e.PropertyName == "fieldSCITY" || e.PropertyName == "fieldLOREVENUE"
+        //       || e.PropertyName == "fieldLOSUPPLYCOST" || e.PropertyName == "fieldCNATION"
+        //        )
+        //    {
+        //        e.Cancel = false;             
+        //    }
+        //    else
+        //    {
+        //        e.Cancel = true;
+        //    }
+        //}
+
+        //private void InitAccordionControl()
+        //{
+        //   accordion.BeginUpdate();
            
-
-            InitAccordionControl();
-
-            filteringUIContext1.Control = accordion;
-            filteringUIContext1.Client = pivotGridControl1;
-
-            filteringUIContext1.FieldRetrieving += FilteringUIContext1_FieldRetrieving;
-            filteringUIContext1.RetrieveFields();
-
-            CreatePreFilters();
-
-
-            accordion.ElementClick += Accordion_ElementClick;
-            lc.BeginUpdate();
-            try
-            {
-                lc.Root.GroupBordersVisible = false;
-
-                LayoutControlGroup group1 = new LayoutControlGroup();
-
-                LayoutControlItem item1 = group1.AddItem();
-                item1.Control = pivotGridControl1;
-
-                LayoutControlItem item2 = new LayoutControlItem(lc, accordion);
-                item2.Move(item1, InsertType.Right);
-
-                LayoutControlItem item3 = new LayoutControlItem(lc, panelControl);
-                item3.Move(item2, InsertType.Right);
-
-                lc.Root.Add(group1);
-            }
-            finally
-            {
-                lc.EndUpdate();
-            }
-
-            RenameFields();
-
-        }
-
-        private void CreatePreFilters()
-        {
-            string filterCRegion = this.pivotGridControl1.Fields.GetFieldByName("fieldCREGION").PrefilterColumnName;
-            string filterSRegion = this.pivotGridControl1.Fields.GetFieldByName("fieldSREGION").PrefilterColumnName;
-            string filterLOOrderDate = this.pivotGridControl1.Fields.GetFieldByName("fieldLOORDERDATE").PrefilterColumnName;
-            string filterPMFGR1 = this.pivotGridControl1.Fields.GetFieldByName("fieldPMFGR").PrefilterColumnName;
-
-            pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
-              $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
-
-      //      pivotGridControl1.Prefilter.CriteriaString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
-      //     $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
-
-        }
-
-        private void RenameFields()
-        {
-            string name = String.Empty;
-            foreach (PivotGridField el in pivotGridControl1.Fields)
-            {
-                el.Name = el.Name.Remove(0, 5);
-                if (el.Name.StartsWith("C"))
-                {
-                    if (el.Name.Contains("ADDRESS"))
-                        name += "Адрес ";
-
-                    if (el.Name.Contains("CITY"))
-                        name += "Город ";
-
-                    if (el.Name.Contains("SEGMENT"))
-                        name += "Сегмент ";
-
-                    if (el.Name.Contains("NAME"))
-                        name += "Имя ";
-
-                    if (el.Name.Contains("NATION"))
-                        name += "Страна ";
-
-                    if (el.Name.Contains("PHONE"))
-                        name += "Номер телефона ";
-
-                    if (el.Name.Contains("REGION"))
-                        name += "Регион ";
-
-
-
-                    name += "покупателя";
-
-                }
-                else if (el.Name.StartsWith("S"))
-                {
-
-                    if (el.Name.Contains("ADDRESS"))
-                        name += "Адрес ";
-
-                    if (el.Name.Contains("CITY"))
-                        name += "Город ";
-
-                    if (el.Name.Contains("SEGMENT"))
-                        name += "Сегмент ";
-
-                    if (el.Name.Contains("NAME"))
-                        name += "Наименование ";
-
-                    if (el.Name.Contains("NATION"))
-                        name += "Страна ";
-
-                    if (el.Name.Contains("PHONE"))
-                        name += "Номер телефона ";
-
-                    if (el.Name.Contains("REGION"))
-                        name += "Регион ";
-
-                    name += "поставщика";
-                }
-                else if (el.Name.StartsWith("LO"))
-                {
-                    if (el.Name.Contains("DATE"))
-                    {
-                        name += "Дата  ";
-                        if (el.Name.Contains("COMMIT"))
-                            name += "завершения  ";
-                        name += "заказа  ";
-                    }
-
-                    if (el.Name.Contains("KEY"))
-                    {
-                        name += "Идентификатор  ";
-
-                        if (el.Name.Contains("CUST"))
-                            name += "покупателя  ";
-
-                        if (el.Name.Contains("SUP"))
-                            name += "поставщика  ";
-
-                        if (el.Name.Contains("ORDER"))
-                            name += "заказа  ";
-
-                        if (el.Name.Contains("PART"))
-                            name += "партии  ";
-                    }
-                    if (el.Name.Contains("DISCOUNT"))
-                    {
-                        name += "Скидка на заказ ";
-                    }
-
-                    if (el.Name.Contains("PRICE"))
-                    {
-
-                        if (el.Name.Contains("EXTENDED"))
-                        {
-                            name += "Расширенная ";
-                        }
-
-                        if (el.Name.Contains("TOTAL"))
-                        {
-                            name += "Полная ";
-                        }
-
-                        name += "цена заказ ";
-                    }
-
-                    if (el.Name.Contains("LINENUMBER"))
-                    {
-                        name += "Порядковый номер заказа";
-                    }
-
-
-                    if (el.Name.Contains("PRIORITY"))
-                    {
-                        name += "Приоритет ";
-
-                        if (el.Name.Contains("SHIP"))
-                        {
-                            name += "транспортировки ";
-                        }
-
-                        name += "заказа";
-                    }
-
-                    if (el.Name.Contains("QUANTITY"))
-                    {
-                        name += "Объем заказа";
-                    }
-
-                    if (el.Name.Contains("REVENUE"))
-                    {
-                        name += "Доход заказа";
-                    }
-
-                    if (el.Name.Contains("SHIP"))
-                    {
-
-                        if (el.Name.Contains("MODE"))
-                        {
-                            name += "Способ ";
-                        }
-
-                        name += "транспортировки заказа";
-                    }
-
-                    if (el.Name.Contains("COST"))
-                    {
-                        name += "Стоимость услуг поставщика";
-                    }
-
-                    if (el.Name.Contains("TAX"))
-                    {
-                        name += "Налог на заказ";
-                    }
-
-                }
-
-                else if (el.Name.StartsWith("P"))
-                {
-                    if (el.Name.Contains("BRAND"))
-                    {
-                        name += "Брэнд товара";
-                    }
-
-                    if (el.Name.Contains("CATEGORY"))
-                    {
-                        name += "Категория товара";
-                    }
-
-                    if (el.Name.Contains("COLOR"))
-                    {
-                        name += "Цвет товара";
-                    }
-                    if (el.Name.Contains("CONTAINER"))
-                    {
-                        name += "Контейнер товара";
-                    }
-
-                    if (el.Name.Contains("MFGR"))
-                    {
-                        name += "Группа товара";
-                    }
-
-                    if (el.Name.Contains("NAME"))
-                        name += "Наименование товара ";
-
-                    if (el.Name.Contains("SIZE"))
-                        name += "Объем партии";
-
-                    if (el.Name.Contains("TYPE"))
-                        name += "Тип товара";
-                }
-                el.Caption = name;
-                name = String.Empty;
-            }
-
-        }
-
-        private void Accordion_ElementClick(object sender, ElementClickEventArgs e)
-        {
-            if (e.Element.Style == DevExpress.XtraBars.Navigation.ElementStyle.Group) return;
-            if (e.Element.Text == null) return;
-            string itemName = e.Element.Text;
-            if (itemName == "C_CITY")
-            {
-                //var query = "select " + itemName + " from lineorder_flat";
-                var items = _starBench.LineOrder.Select(x => x.C_CITY).ToList();
-                var el = this.element.Elements.Single(x => x.Name == itemName);
-                el.BindCommand(items);
-                //  el.so
-                //e.Element.
-            }
-            else if (itemName == "P_MFGR")
-            {
-              //  var prefilter = pivotGridControl1.ActiveFilterString as Expression;
-                var items = _starBench.LineOrder.Select(x => x.P_MFGR).ToList();
-                var el = this.element.Elements.Single(x => x.Name == itemName);
-                el.BindCommand(items);
-            }
-        }
-
-        private void FilteringUIContext1_FieldRetrieving(object sender, DevExpress.Utils.Filtering.FilteringUIFieldRetrievingEventArgs e)
-        {
-            if (e.PropertyName == "fieldLOORDTOTALPRICE" || e.PropertyName == "fieldLOORDERDATE"
-               || e.PropertyName == "fieldCCITY" || e.PropertyName == "fieldCREGION"
-               || e.PropertyName == "fieldPMFGR" || e.PropertyName == "fieldPBRAND"
-               || e.PropertyName == "fieldSNATION" || e.PropertyName == "fieldPCATEGORY"
-               || e.PropertyName == "fieldSCITY" || e.PropertyName == "fieldLOREVENUE"
-               || e.PropertyName == "fieldLOSUPPLYCOST" || e.PropertyName == "fieldCNATION"
-                )
-            {
-                e.Cancel = false;             
-            }
-            else
-            {
-                e.Cancel = true;
-            }
-        }
-
-        private void InitAccordionControl()
-        {
-           accordion.BeginUpdate();
-           
-            this.accordion.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
-            this.element});
-            this.accordion.Name = "accordionControl1";
-            this.accordion.Text = "accordionControl1";     
-            this.element.Expanded = true;
-            this.element.Name = "accordionControlElement1";
-            this.element.Text = "Фильтры";
-
-            accordion.EndUpdate();
-        }
+        //    this.accordion.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
+        //    this.element});
+        //    this.accordion.Name = "accordionControl1";
+        //    this.accordion.Text = "accordionControl1";     
+        //    this.element.Expanded = true;
+        //    this.element.Name = "accordionControlElement1";
+        //    this.element.Text = "Фильтры";
+
+        //    accordion.EndUpdate();
+        //}
 
 
         private void ribbonStatusBar_Click(object sender, EventArgs e)
@@ -517,6 +475,11 @@ namespace PivotForm
 
         }
 
-       // class MySelector : IChildrenSelector
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        // class MySelector : IChildrenSelector
     }
 }
