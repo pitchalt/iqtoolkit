@@ -89,8 +89,10 @@ namespace PivotForm
 
 
 
-           // GetDinamicType(elementType);
+            // GetDinamicType(elementType);
             return NeedToCountRecords<object>(expression) ? provider.Execute(expression) : new List<object>();
+          //  return provider.Execute(expression);
+
         }
 
 

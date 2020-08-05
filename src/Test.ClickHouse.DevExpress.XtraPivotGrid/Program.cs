@@ -20,8 +20,8 @@ namespace PivotForm
         [STAThread]
         static void Main()
         {
-            var dbxpo = new NorthwindXpo();
-            var dbiqt = new NorthwindIQT();
+           // var dbxpo = new NorthwindXpo();
+           // var dbiqt = new NorthwindIQT();
             var dbsb = new StarBench();
 
             //foreach (var ord in dbiqt.OrderDetail.GroupBy(x => "g0").Select(x => new {P0 = x.Sum(elem => elem.UnitPrice)})) {
@@ -29,7 +29,7 @@ namespace PivotForm
             //}
                         
 
-                Application.EnableVisualStyles();
+            Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new FormNorthwindIQT(dbiqt));
             Application.Run(new RibbonForm1(dbsb));

@@ -40,8 +40,6 @@ namespace PivotForm
             var needtocountevent = new NeedToCountEventArgs();
             needtocountevent.needToCount = false;
             OnNeedToCountEvent(needtocountevent);
-
-
         }
 
 
