@@ -15,6 +15,9 @@ using System.Data;
 using ClickHouse.Ado;
 using static IQToolkit.Data.ClickHouse.ClickHouseQueryProvider;
 using System.Windows.Forms;
+using DevExpress.Data.Filtering;
+using DevExpress.Data.Linq;
+using DevExpress.Data.Linq.Helpers;
 
 namespace PivotForm
 {
@@ -23,9 +26,8 @@ namespace PivotForm
         public event CountEventHandler RaiseCountEvent;
         public delegate void CountEventHandler(object sender, CountEventArgs args);
 
-
         public bool NeedToCount;
-        
+        private bool FirstQuery = true;
 
         IQueryProvider provider;
         
@@ -33,13 +35,7 @@ namespace PivotForm
         {
             provider = source.Provider;
         }
-        public IQueryable GetQueryableSource
-        {
-            get 
-            {
-                return new QueryAdapter<lineorder_flat>(this);
-            }           
-        }
+        public IQueryable GetQueryableSource {  get  {  return new QueryAdapter<lineorder_flat>(this); }  }
 
         public IQueryable<S> CreateQuery<S>(IQueryable<S> query)
         {
@@ -51,21 +47,18 @@ namespace PivotForm
             return new QueryAdapter<S>(this, expression);
         }
 
-
         public IQueryable CreateQuery(Expression expression)
         {
             Type elementType = TypeHelper.GetElementType(expression.Type);          
             try
             {
-                var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
-                return inst;
+                return (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });                
             }
             catch (TargetInvocationException tie)
             {
                 throw tie.InnerException;
             }
         }
-
        
         IQueryable<S> IQueryProvider.CreateQuery<S>(Expression expression)
         {
@@ -74,58 +67,28 @@ namespace PivotForm
         }
 
         public S Execute<S>(Expression expression)
-        {
-           var res = provider.Execute<S>(expression);
-            return res;
+        {          
+            return provider.Execute<S>(expression);
         }
 
         public object Execute(Expression expression)
         {
-            //Type elementType = TypeHelper.GetElementType(expression.Type);
-            //var inst = (IQueryable)Activator.CreateInstance(typeof(QueryAdapter<>).MakeGenericType(elementType), new object[] { this, expression });
-            //var meme = expression.NodeType;
-            //var meme1 = expression.Type;
-            //var meme2 = expression.GetType();
-
-
-
-            // GetDinamicType(elementType);
             return NeedToCountRecords<object>(expression) ? provider.Execute(expression) : new List<object>();
-          //  return provider.Execute(expression);
-
-        }
-
-
-        private void GetDinamicType(Type type)
-        {
-            var meme = typeof(ProviderAdapter).GetMethods().Where(m => m.Name == "Execute"
-           && m.GetParameters().Count() == 1).Select(m => m.ReturnParameter);
-            
-           var countMethod = typeof(ProviderAdapter).GetMethods().Single(m => m.Name == "Execute"
-            && m.GetParameters().Count() == 1
-            && m.ReturnParameter == meme.ElementAt(0)
-                && m.GetParameters()[0].ParameterType == typeof(Expression));
-           
-          //  var meme2 = typeof(ProviderAdapter).GetMethods().Where(m => m.Name == "Execute"
-        //  && m.GetParameters().Count() == 1).Select(m => m.ReturnParameter);
-
-            var me = countMethod;          
-       
         }
 
         private bool NeedToCountRecords<S>(Expression expression)
         {
-            if (this.NeedToCount)
+            if (this.NeedToCount || FirstQuery)
             {
                 var orig_query = this.CreateQuery<S>(expression);
                 var countevent = new CountEventArgs(GetCount<S>(orig_query.Expression));
                 OnCountEvent(countevent);
                 this.NeedToCount = false;
+                FirstQuery = false;
                 return countevent.canUpload;
             }
 
-            return false;
-            
+            return false;            
         }
                
 
@@ -137,7 +100,6 @@ namespace PivotForm
                 countEvent(this, e);
             }
         }
-              
 
         public static int GetCount<S>(Expression expression)
         {
@@ -150,7 +112,7 @@ namespace PivotForm
             var resmeth = countMethod.MakeGenericMethod(new Type[] { origType });
             var countExpression = Expression.Call(null, resmeth, new Expression[] { expression});
 
-            var res = Expression.Lambda(countExpression).Compile().DynamicInvoke();      
+            var res = Expression.Lambda(countExpression).Compile().DynamicInvoke();     
 
             return (int)res;
         }
