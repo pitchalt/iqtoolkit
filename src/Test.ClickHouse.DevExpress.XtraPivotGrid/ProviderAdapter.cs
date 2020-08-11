@@ -26,8 +26,8 @@ namespace PivotForm
         public event CountEventHandler RaiseCountEvent;
         public delegate void CountEventHandler(object sender, CountEventArgs args);
 
-        public bool NeedToCount;
-        private bool FirstQuery = true;
+        public bool NeedToCount = true;
+        public bool NeedToCreateCheckCountWindow = true;
 
         IQueryProvider provider;
         
@@ -77,15 +77,20 @@ namespace PivotForm
         }
 
         private bool NeedToCountRecords<S>(Expression expression)
-        {
-            if (this.NeedToCount || FirstQuery)
+        {                
+            if (this.NeedToCount)
             {
-                var orig_query = this.CreateQuery<S>(expression);
-                var countevent = new CountEventArgs(GetCount<S>(orig_query.Expression));
-                OnCountEvent(countevent);
-                this.NeedToCount = false;
-                FirstQuery = false;
-                return countevent.canUpload;
+                if (this.NeedToCreateCheckCountWindow)
+                {
+                    var orig_query = this.CreateQuery<S>(expression);
+                    var countevent = new CountEventArgs(GetCount<S>(orig_query.Expression));
+                    OnCountEvent(countevent);
+                    this.NeedToCount = false;
+                    this.NeedToCreateCheckCountWindow = false;
+                    return countevent.CanUpload;
+                }
+                else return true;
+               
             }
 
             return false;            

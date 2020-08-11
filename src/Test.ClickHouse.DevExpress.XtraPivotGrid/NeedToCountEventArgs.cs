@@ -8,6 +8,7 @@ namespace PivotForm
 {
     public class NeedToCountEventArgs : EventArgs
     {
-        public bool needToCount { get; set; }
+        public bool NeedToCount { get; set; }
+        public bool NeedToCreateCheckCountWindow { get; set; }
     }
 }

@@ -8,13 +8,13 @@ namespace PivotForm
 {
     public class CountEventArgs : EventArgs
     {
-        public CountEventArgs(int Count, bool CanUpload = true)
+        public CountEventArgs(int count, bool canUpload = true)
         {
-            count = Count;
-            canUpload = CanUpload;
+            Count = count;
+            CanUpload = canUpload;
         }
-        public int count { get; }
-        public bool canUpload { get; set; }
-        public bool needToCount { get; set; }
+        public int Count { get; }
+        public bool CanUpload { get; set; }
+        public bool CeedToCount { get; set; }
     }
 }

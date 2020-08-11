@@ -29,37 +29,54 @@ namespace PivotForm
         public event NeedToCountEventHandler RaiseNeedToCountEvent;
         public delegate void NeedToCountEventHandler(object sender, NeedToCountEventArgs args);
 
+        bool needToRestoreLayout;
+
 
         public RibbonForm1(StarBench starBench)
         {
             InitializeComponent();
             _starBench = starBench;
 
-            adapter = new ProviderAdapter(_starBench.LineOrder);         
+            adapter = new ProviderAdapter(_starBench.LineOrder);
 
-            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;           
+            this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
 
             pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
             pivotGridControl1.FieldsCustomization(this.panelControl1);
 
-            SetEventFollow();
-            SetFieldCaption();           
+            SetEventFollows();
+            SetFieldCaption();
 
             filteringUIContext1.RetrieveFields();
 
             SetPreFilters();
-           
+
+            SendCountEvent(true, true);
 
         }
 
-        private void SetEventFollow()
+        private void SetEventFollows()
         {
-            RaiseNeedToCountEvent += PivotGridControl1_RaiseNeedToCountEvent;            
+            RaiseNeedToCountEvent += PivotGridControl1_RaiseNeedToCountEvent;
             adapter.RaiseCountEvent += Adapter_RaiseCountEvent;
-            pivotGridControl1.FieldAreaChanging += PivotGridControl1_FieldAreaChanging;
             pivotGridControl1.BeginRefresh += PivotGridControl1_BeginRefresh;
             pivotGridControl1.EndRefresh += PivotGridControl1_EndRefresh;
             filteringUIContext1.FieldRetrieving += FilteringUIContext1_FieldRetrieving;
+            accordionControl1.ElementClick += AccordionControl1_ElementClick;
+
+        }
+
+        private void AccordionControl1_ElementClick(object sender, ElementClickEventArgs e)
+        {
+            SendCountEvent(true, false);
+        }
+
+        private void SendCountEvent(bool needToCount, bool needToCreateCheckCountWindow)
+        {
+            var needtocountevent = new NeedToCountEventArgs();
+            needtocountevent.NeedToCount = needToCount;
+            needtocountevent.NeedToCreateCheckCountWindow = needToCreateCheckCountWindow;
+            OnNeedToCountEvent(needtocountevent);
         }
 
         private void SetFieldCaption()
@@ -151,8 +168,11 @@ namespace PivotForm
             string filterLOOrderDate = this.fieldLOORDERDATE1.PrefilterColumnName;
             string filterPMFGR1 = this.fieldPMFGR1.PrefilterColumnName;
 
-            pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' AND( ([" + filterLOOrderDate + "] >= '01.01.1993' And [" + filterLOOrderDate + "] < '01.01.1994') " +
-              $"OR ([" + filterLOOrderDate + "] >= '01.01.1998' and[" + filterLOOrderDate + "] < '01.01.1999' ))  AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
+            pivotGridControl1.ActiveFilterString = "[" + filterCRegion + "]= 'AMERICA' AND [" + filterSRegion + "]='AMERICA' " +
+              //  "AND( " +
+             //   "[" + filterLOOrderDate + "] < '01-01-1993')" + 
+           $" AND([" + filterPMFGR1 + "] = 'MFGR#1' OR [" + filterPMFGR1 + "] = 'MFGR#2')";
+
         }
 
         private void FilteringUIContext1_FieldRetrieving(object sender, DevExpress.Utils.Filtering.FilteringUIFieldRetrievingEventArgs e)
@@ -160,7 +180,7 @@ namespace PivotForm
             if (e.PropertyName == "fieldLOORDTOTALPRICE1" || e.PropertyName == "fieldLOORDERDATE1"
                || e.PropertyName == "fieldCCITY1" || e.PropertyName == "fieldCREGION1"
                || e.PropertyName == "fieldPMFGR1" || e.PropertyName == "fieldPBRAND1"
-               || e.PropertyName == "fieldSNATION1" || e.PropertyName == "fieldPCATEGORY1"
+               || e.PropertyName == "fieldSNATION1" || e.PropertyName == "fieldSREGION1"
                || e.PropertyName == "fieldSCITY1" || e.PropertyName == "fieldLOREVENUE1"
                || e.PropertyName == "fieldLOSUPPLYCOST1" || e.PropertyName == "fieldCNATION1"
                 )
@@ -184,55 +204,68 @@ namespace PivotForm
 
         private void PivotGridControl1_EndRefresh(object sender, EventArgs e)
         {
-            var needtocountevent = new NeedToCountEventArgs();
-            needtocountevent.needToCount = false;
-            OnNeedToCountEvent(needtocountevent);
+            SendCountEvent(false, true);
+
+            if (needToRestoreLayout)
+            {
+                pivotGridControl1.RefreshData();
+            }
+
         }
 
         private void PivotGridControl1_BeginRefresh(object sender, EventArgs e)
         {
-            var needtocountevent = new NeedToCountEventArgs();
-            needtocountevent.needToCount = true;
-            OnNeedToCountEvent(needtocountevent);
+            if (needToRestoreLayout)
+            {
+                SendCountEvent(true, false);
+                needToRestoreLayout = false;
+            }
+            else
+                SendCountEvent(true, true);
         }
 
         private void PivotGridControl1_RaiseNeedToCountEvent(object sender, NeedToCountEventArgs args)
         {
-            adapter.NeedToCount = args.needToCount;
+            adapter.NeedToCount = args.NeedToCount;
+            adapter.NeedToCreateCheckCountWindow = args.NeedToCreateCheckCountWindow;
         }
 
         private void Adapter_RaiseCountEvent(object sender, CountEventArgs args)
         {
-            if (args.count <= 1000)
+            if (args.Count <= 1000)
             {
-                   LayotSave();
+                CanUploadRecords(args);
             }
-            else if (args.count > 1000 && args.count < 10000)
+            else if (args.Count > 1000 && args.Count < 10000)
             {
-                if (AskToUploadWindow(args.count))
+                if (AskToUploadWindow(args.Count))
                 {
-                    args.canUpload = true;
-                          LayotSave();
+                    CanUploadRecords(args);
                 }
                 else
                 {
-                    args.canUpload = false;
-                       LayotRestore();
+                    CannotUploadRecords(args);
                 }
             }
-            else if (args.count > 10000)
+            else if (args.Count > 10000)
             {
                 CreateErrorUploadWindow();
-                args.canUpload = false;
-                     LayotRestore();
+                CannotUploadRecords(args);
             }
+
         }
 
-   
-
-        private void PivotGridControl1_FieldAreaChanging(object sender, DevExpress.XtraPivotGrid.PivotAreaChangingEventArgs e)
+        private void CanUploadRecords(CountEventArgs args)
         {
+            args.CanUpload = true;
             LayotSave();
+        }
+
+        private void CannotUploadRecords(CountEventArgs args)
+        {
+            args.CanUpload = false;
+            LayotRestore();
+            needToRestoreLayout = true;
         }
 
         private void LayotSave()
@@ -242,19 +275,9 @@ namespace PivotForm
 
         private void LayotRestore()
         {
-            pivotGridControl1.RestoreLayoutFromRegistry("DevExpress\\XtraGrid\\Layouts\\MainLayout");            
-            pivotGridControl1.RefreshData();
+            pivotGridControl1.RestoreLayoutFromRegistry("DevExpress\\XtraGrid\\Layouts\\MainLayout");
+
         }
-
-        // иногда падает из-за пустого списка, потестить
-        // убрать из провайдера типы object
-        // отследить первое выполнение запроса
-        // сохранить лайаут при неудачном запросе
-        // записаться к врачу
-        //
-        // сделать фильтры
-        //
-
 
         private void CreateErrorUploadWindow()
         {
@@ -272,15 +295,15 @@ namespace PivotForm
         }
 
         private void RibbonForm1_Load(object sender, EventArgs e)
-        {                               
-
+        {
+            //  needToRestoreLayout = true;
         }
 
         private void ribbonStatusBar_Click(object sender, EventArgs e)
         {
 
         }
-          
+
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
