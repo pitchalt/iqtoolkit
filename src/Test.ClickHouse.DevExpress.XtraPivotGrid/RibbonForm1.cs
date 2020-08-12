@@ -40,7 +40,7 @@ namespace PivotForm
             adapter = new ProviderAdapter(_starBench.LineOrder);
 
             this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
-
+          //  this.linqServerModeSource1.QueryableSource = _starBench.LineOrder;
             pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
             pivotGridControl1.FieldsCustomization(this.panelControl1);
 
@@ -57,8 +57,9 @@ namespace PivotForm
 
         private void SetEventFollows()
         {
-            RaiseNeedToCountEvent += PivotGridControl1_RaiseNeedToCountEvent;
-            adapter.RaiseCountEvent += Adapter_RaiseCountEvent;
+            RaiseNeedToCountEvent += adapter.HandlerNeedToCountEvent;        
+            adapter.RaiseCountEvent += HandlerCountEvent;
+
             pivotGridControl1.BeginRefresh += PivotGridControl1_BeginRefresh;
             pivotGridControl1.EndRefresh += PivotGridControl1_EndRefresh;
             filteringUIContext1.FieldRetrieving += FilteringUIContext1_FieldRetrieving;
@@ -71,12 +72,23 @@ namespace PivotForm
             SendCountEvent(true, false);
         }
 
+        
         private void SendCountEvent(bool needToCount, bool needToCreateCheckCountWindow)
         {
             var needtocountevent = new NeedToCountEventArgs();
             needtocountevent.NeedToCount = needToCount;
             needtocountevent.NeedToCreateCheckCountWindow = needToCreateCheckCountWindow;
             OnNeedToCountEvent(needtocountevent);
+        }
+
+
+        private void OnNeedToCountEvent(NeedToCountEventArgs e)
+        {
+            NeedToCountEventHandler needToCountEventHandler = RaiseNeedToCountEvent;
+            if (needToCountEventHandler != null)
+            {
+                needToCountEventHandler(this, e);
+            }
         }
 
         private void SetFieldCaption()
@@ -193,14 +205,6 @@ namespace PivotForm
             }
         }
 
-        private void OnNeedToCountEvent(NeedToCountEventArgs e)
-        {
-            NeedToCountEventHandler needToCountEventHandler = RaiseNeedToCountEvent;
-            if (needToCountEventHandler != null)
-            {
-                needToCountEventHandler(this, e);
-            }
-        }
 
         private void PivotGridControl1_EndRefresh(object sender, EventArgs e)
         {
@@ -224,13 +228,8 @@ namespace PivotForm
                 SendCountEvent(true, true);
         }
 
-        private void PivotGridControl1_RaiseNeedToCountEvent(object sender, NeedToCountEventArgs args)
-        {
-            adapter.NeedToCount = args.NeedToCount;
-            adapter.NeedToCreateCheckCountWindow = args.NeedToCreateCheckCountWindow;
-        }
-
-        private void Adapter_RaiseCountEvent(object sender, CountEventArgs args)
+    
+        private void HandlerCountEvent(object sender, CountEventArgs args)
         {
             if (args.Count <= 1000)
             {

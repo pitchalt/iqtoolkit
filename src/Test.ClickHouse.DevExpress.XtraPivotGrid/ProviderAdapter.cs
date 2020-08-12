@@ -26,8 +26,8 @@ namespace PivotForm
         public event CountEventHandler RaiseCountEvent;
         public delegate void CountEventHandler(object sender, CountEventArgs args);
 
-        public bool NeedToCount = true;
-        public bool NeedToCreateCheckCountWindow = true;
+        private bool NeedToCount = true;
+        private bool NeedToCreateCheckCountWindow = true;
 
         IQueryProvider provider;
         
@@ -95,7 +95,12 @@ namespace PivotForm
 
             return false;            
         }
-               
+
+        public void HandlerNeedToCountEvent(object sender, NeedToCountEventArgs args)
+        {
+            NeedToCount = args.NeedToCount;
+            NeedToCreateCheckCountWindow = args.NeedToCreateCheckCountWindow;
+        }
 
         private void OnCountEvent(CountEventArgs e)
         {

@@ -15,6 +15,6 @@ namespace PivotForm
         }
         public int Count { get; }
         public bool CanUpload { get; set; }
-        public bool CeedToCount { get; set; }
+      //  public bool NeedToCount { get; set; }
     }
 }
