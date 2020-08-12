@@ -38,9 +38,8 @@ namespace PivotForm
             _starBench = starBench;
 
             adapter = new ProviderAdapter(_starBench.LineOrder);
-
             this.linqServerModeSource1.QueryableSource = adapter.GetQueryableSource;
-          //  this.linqServerModeSource1.QueryableSource = _starBench.LineOrder;
+
             pivotGridControl1.OptionsCustomization.CustomizationFormStyle = CustomizationFormStyle.Excel2007;
             pivotGridControl1.FieldsCustomization(this.panelControl1);
 
@@ -51,13 +50,13 @@ namespace PivotForm
 
             SetPreFilters();
 
-            SendCountEvent(true, true);
+            SendCountEvent(true, false);
 
         }
 
         private void SetEventFollows()
         {
-            RaiseNeedToCountEvent += adapter.HandlerNeedToCountEvent;        
+            RaiseNeedToCountEvent += adapter.HandlerNeedToCountEvent;
             adapter.RaiseCountEvent += HandlerCountEvent;
 
             pivotGridControl1.BeginRefresh += PivotGridControl1_BeginRefresh;

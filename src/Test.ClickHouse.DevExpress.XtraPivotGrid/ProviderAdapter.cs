@@ -89,7 +89,8 @@ namespace PivotForm
                     this.NeedToCreateCheckCountWindow = false;
                     return countevent.CanUpload;
                 }
-                else return true;
+                else
+                return true;
                
             }
 
